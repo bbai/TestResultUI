@@ -18,8 +18,8 @@ namespace Test
             MongoDBHelper mongo = new MongoDBHelper("mongodb://10.0.3.26:27017/", "UnitTestDB", "UnitTestResults");
             Console.WriteLine("Enter Days:");
             int days = Convert.ToInt32(Console.ReadLine());
-            MongoCursor<BsonDocument> cursor = mongo.getCursorinDays(days);
-            int[] result = mongo.getNumTotalAndFail(cursor);
+            MongoCursor<BsonDocument> cursor = mongo.GetCursorinDays(days);
+            int[] result = mongo.GetNumTotalAndFail(cursor);
             Console.WriteLine("Total: " + result[0]);
             Console.WriteLine("Fail: " + result[1]);
             Console.ReadKey();
