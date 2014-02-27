@@ -55,7 +55,7 @@ namespace MongoDB
             {
                 var query = Query.And(Query.EQ("test-results.@project-name", project));
                 MongoCursor<BsonDocument> testCursor = collection.Find(query).SetLimit(1);
-                List<string> automationNames = new List<string>();
+                ArrayList automationNames = new ArrayList();
                 foreach (BsonDocument doc in testCursor)
                 {
                     BsonDocument testResult = doc["test-results"].AsBsonDocument;
@@ -83,5 +83,6 @@ namespace MongoDB
             }
             return projectAutomationTable;
         }
+
     }
 }
