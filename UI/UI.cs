@@ -43,7 +43,7 @@ namespace UI
                     mongo = new MongoDBHelper(textBox1.Text, textBox2.Text,
                             textBox3.Text, Convert.ToInt32(textBox4.Text));
                     int[] results = mongo.GetNumTotalAndFail();
-                    if (treeListView1.Columns.Count != 3)
+                    if (treeListView1.Columns.Count != 4)
                     {
                         treeListView1.Columns.Clear();
                         ToggleColumnHeader tch = new ToggleColumnHeader();
@@ -54,6 +54,9 @@ namespace UI
                         treeListView1.Columns.Add(tch);
                         tch = new ToggleColumnHeader();
                         tch.Text = "Fail";
+                        treeListView1.Columns.Add(tch);
+                        tch = new ToggleColumnHeader();
+                        tch.Text = "Last Runtime Version";
                         treeListView1.Columns.Add(tch);
                     }
                     TreeListNode tln = new TreeListNode();
@@ -75,34 +78,40 @@ namespace UI
                         {
                             TreeListNode project = new TreeListNode();
                             project.Text = projectName;
-                            ArrayList list = (ArrayList)successAllConfigTable[projectName];
-                            
-                            foreach (string listItem in list)
+                            Hashtable table = (Hashtable)successAllConfigTable[projectName];
+                            var tableKeys = table.Keys;
+                            foreach (string key in tableKeys)
                             {
                                 TreeListNode automation = new TreeListNode();
-                                automation.Text = listItem;
+                                ArrayList list = (ArrayList)table[key];
+                                automation.Text = key;
                                 automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add(Convert.ToString(list[0]));
                                 project.Nodes.Add(automation);
                             }
 
-                            int successCount = list.Count;
+                            int successCount = table.Count;
                             totalSuccessAllConfigCount += successCount;
 
 
                             if (failAllConfigTable.ContainsKey(projectName) == true)
                             {
-                                ArrayList failList = (ArrayList)failAllConfigTable[projectName];
-                                foreach (string listItem in failList)
+                                Hashtable failTable = (Hashtable)failAllConfigTable[projectName];
+                                var failTableKeys = failTable.Keys;
+                                foreach (string key in failTableKeys)
                                 {
                                     TreeListNode automation = new TreeListNode();
-                                    automation.Text = listItem;
+                                    ArrayList list = (ArrayList)failTable[key];
+                                    automation.Text = key;
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add("\u2714");
+                                    automation.SubItems.Add(Convert.ToString(list[0]));
                                     project.Nodes.Add(automation);
                                 }
-                                totalFailAllConfigCount += failList.Count;
+                                totalFailAllConfigCount += failTable.Count;
                                 project.SubItems.Add(Convert.ToString(successCount));
-                                project.SubItems.Add(Convert.ToString(failList.Count));
+                                project.SubItems.Add(Convert.ToString(failTable.Count));
                             }
                             else
                             {
@@ -117,17 +126,19 @@ namespace UI
                         {
                             if (successAllConfigTable.ContainsKey(projectName) == false)
                             {
-                                ArrayList list = (ArrayList)failAllConfigTable[projectName];
-                                int failCount = list.Count;
+                                Hashtable failTable = (Hashtable)failAllConfigTable[projectName];
+                                var failTableKeys = failTable.Keys;
+                                int failCount = failTable.Count;
                                 totalFailAllConfigCount += failCount;
-                                var nodes = allConfig.Nodes;
                                 TreeListNode project = new TreeListNode();
-                                foreach (string listItem in list)
+                                foreach (string key in failTableKeys)
                                 {
                                     TreeListNode automation = new TreeListNode();
-                                    automation.Text = listItem;
+                                    ArrayList list = (ArrayList) failTable[key];
+                                    automation.Text = key;
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add("\u2714");
+                                    automation.SubItems.Add(Convert.ToString(list[0]));
                                     project.Nodes.Add(automation);
                                 }
                                 project.Text = projectName;
@@ -157,36 +168,43 @@ namespace UI
                             {
                                 TreeListNode project = new TreeListNode();
                                 project.Text = key;
-                                HashSet<string> set = (HashSet<string>)table[key];
-                                HashSet<string> failSet = (HashSet<string>)failTable[key];
-                                foreach (string setItem in set)
+                                Hashtable successTable = (Hashtable)table[key];
+                                var tableKeys = successTable.Keys;
+                                Hashtable failSetTable = (Hashtable)failTable[key];
+                                var failSetTalbekeys = failSetTable.Keys;
+                                foreach (string automation in tableKeys)
                                 {
                                     TreeListNode node = new TreeListNode();
-                                    node.Text = setItem;
+                                    ArrayList list = (ArrayList) successTable[automation];
+                                    node.Text = automation;
                                     node.SubItems.Add("\u2714");
+                                    node.SubItems.Add(" ");
+                                    node.SubItems.Add(Convert.ToString(list[0]));
                                     project.Nodes.Add(node);
                                 }
 
                                 if (failConfigTable.ContainsKey(configNames) == true)
                                 {
-                                    if (failSet != null && failSet.Count > 0)
+                                    if (failSetTable != null && failSetTable.Count > 0)
                                     {
-                                        foreach (string setItem in failSet)
+                                        foreach (string automation in failSetTalbekeys)
                                         {
                                             TreeListNode node = new TreeListNode();
-                                            node.Text = setItem;
+                                            ArrayList list = (ArrayList) failSetTable[automation];
+                                            node.Text = automation;
                                             node.SubItems.Add(" ");
                                             node.SubItems.Add("\u2714");
+                                            node.SubItems.Add(Convert.ToString(list[0]));
                                             project.Nodes.Add(node);
                                         }
                                     }
                                 }
-                                project.SubItems.Add(Convert.ToString(set.Count));
-                                successConfigCount += set.Count;
-                                if (failSet != null)
+                                project.SubItems.Add(Convert.ToString(successTable.Count));
+                                successConfigCount += successTable.Count;
+                                if (failSetTable != null)
                                 {
-                                    project.SubItems.Add(Convert.ToString(failSet.Count));
-                                    failConfigCount += failSet.Count;
+                                    project.SubItems.Add(Convert.ToString(failSetTable.Count));
+                                    failConfigCount += failSetTable.Count;
                                 }
                                 else
                                 {
@@ -204,13 +222,16 @@ namespace UI
                                     {
                                         TreeListNode project = new TreeListNode();
                                         project.Text = key;
-                                        HashSet<string> failSet = (HashSet<string>)failTable[key];
-                                        foreach (string setItem in failSet)
+                                        Hashtable failSet = (Hashtable)failTable[key];
+                                        var failSetKeys = failSet.Keys;
+                                        foreach (string automation in failSetKeys)
                                         {
                                             TreeListNode node = new TreeListNode();
-                                            node.Text = setItem;
+                                            ArrayList list = (ArrayList) failSet[automation];
+                                            node.Text = automation;
                                             node.SubItems.Add(" ");
                                             node.SubItems.Add("\u2714");
+                                            node.SubItems.Add(Convert.ToString(list[0]));
                                             project.Nodes.Add(node);
                                         }
                                         project.SubItems.Add(Convert.ToString(failSet.Count));
@@ -239,13 +260,16 @@ namespace UI
                                     project.Text = key;
                                     project.SubItems.Add("0");
                                     project.SubItems.Add(Convert.ToString(table.Count));
-                                    HashSet<string> set = (HashSet<string>) table[key];
-                                    foreach (string setItem in set)
+                                    Hashtable set = (Hashtable) table[key];
+                                    var setKeys = set.Keys;
+                                    foreach (string setKey in setKeys)
                                     {
                                         TreeListNode automation = new TreeListNode();
-                                        automation.Text = setItem;
+                                        ArrayList list = (ArrayList) set[setKey];
+                                        automation.Text = key;
                                         automation.SubItems.Add(" ");
                                         automation.SubItems.Add("\u2714");
+                                        automation.SubItems.Add(Convert.ToString(list[0]));
                                         project.Nodes.Add(automation);
                                     }
                                 }

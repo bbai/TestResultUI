@@ -156,13 +156,35 @@ namespace Mongo
                         foreach (BsonDocument diffBson in diffs)
                         {
                             BsonDocument testResults = diffBson["test-results"].AsBsonDocument;
+                            string version = testResults["@runtime-version"].AsString;
+                            /*
+                            BsonDocument testSuite = testResults["test-suite"].AsBsonDocument;
+                            BsonDocument results = testSuite["results"].AsBsonDocument;
+                            BsonArray testCase = results["test-case"].AsBsonArray;
+                            int index = testCase.IndexOf(BsonValue.Create(automaion));
+                            BsonDocument failureDoc = testCase[0].AsBsonDocument;
+                            BsonDocument failure;
+                            BsonDocument message;
+                            try
+                            {
+                                failure = failureDoc["failure"].AsBsonDocument;
+                                message = failure["message"].AsBsonDocument;
+                            }
+                            catch (KeyNotFoundException)
+                            {
+                                message = failureDoc["message"].AsBsonDocument;
+                            }
+                            string errorMsg = message["#cdata-section"].AsString;
+                             */
                             string key = testResults["@template-name"].AsString;
                             if (failConfigTable.ContainsKey(key) == false)
                             {
                                 Hashtable projectTable = new Hashtable();
-                                HashSet<string> list = new HashSet<string>();
-                                list.Add(automaion);
-                                projectTable.Add(project, list);
+                                ArrayList list = new ArrayList();
+                                Hashtable detailTable = new Hashtable();
+                                list.Add(version);
+                                detailTable.Add(automaion, list);
+                                projectTable.Add(project, detailTable);
                                 failConfigTable.Add(key, projectTable);
                             }
                             else
@@ -174,17 +196,22 @@ namespace Mongo
                                 }
                                 if (table.ContainsKey(project))
                                 {
-                                    HashSet<string> list = (HashSet<string>)table[project];
-                                    if (list.Contains(automaion) == false)
-                                        list.Add(automaion);
-                                    table[project] = list;
+                                    Hashtable errorTable = (Hashtable)table[project];
+                                    if (errorTable.ContainsKey(automaion) == false)
+                                    {
+                                        ArrayList list = new ArrayList();
+                                        list.Add(version);
+                                        errorTable.Add(automaion, list);
+                                        table[project] = errorTable;
+                                    }
                                 }
                                 else
                                 {
-                                    HashSet<string> list = new HashSet<string>();
-                                    if (list.Contains(automaion) == false)
-                                        list.Add(automaion);
-                                    table.Add(project, list);
+                                    Hashtable errorTable = new Hashtable();
+                                    ArrayList list = new ArrayList();
+                                    list.Add(version);
+                                    errorTable.Add(automaion, list);
+                                    table.Add(project, errorTable);
                                 }
                                 failConfigTable[key] = table;
                             }
@@ -196,13 +223,16 @@ namespace Mongo
                         foreach (BsonDocument diffBson in diff)
                         {
                             BsonDocument testResults = diffBson["test-results"].AsBsonDocument;
+                            string version = testResults["@runtime-version"].AsString;
                             string key = testResults["@template-name"].AsString;
                             if (successConfigTable.ContainsKey(key) == false)
                             {
                                 Hashtable projectTable = new Hashtable();
-                                HashSet<string> list = new HashSet<string>();
-                                list.Add(automaion);
-                                projectTable.Add(project, list);
+                                Hashtable detailTable = new Hashtable();
+                                ArrayList list = new ArrayList();
+                                list.Add(version);
+                                detailTable.Add(automaion, list);
+                                projectTable.Add(project, detailTable);
                                 successConfigTable.Add(key, projectTable);
                             }
                             else
@@ -212,19 +242,35 @@ namespace Mongo
                                 {
                                     table = new Hashtable();
                                 }
-                                if (table.ContainsKey(project))
+                                if (table.ContainsKey(project) == true)
                                 {
-                                    HashSet<string> list = (HashSet<string>)table[project];
-                                    if (list.Contains(automaion) == false)
-                                        list.Add(automaion);
-                                    table[project] = list;
+
+                                    Hashtable detailTable = (Hashtable) table[project];
+                                    ArrayList list = new ArrayList();
+                                    if (detailTable.ContainsKey(automaion) == false)
+                                    {
+                                        list.Add(version);
+                                        detailTable.Add(automaion, list);
+                                    }
+                                    else
+                                    {
+                                        list = (ArrayList)detailTable[automaion];
+                                        list.Add(version);
+                                        detailTable[automaion] = list;
+                                    }
+                                    table[project] = detailTable;
                                 }
                                 else
                                 {
-                                    HashSet<string> list = new HashSet<string>();
-                                    if (list.Contains(automaion) == false)
-                                        list.Add(automaion);
-                                    table.Add(project, list);
+                                    Hashtable detailTable = new Hashtable();
+
+                                    ArrayList list = new ArrayList();
+                                    if (detailTable.ContainsKey(automaion) == false)
+                                    {
+                                        list.Add(version);
+                                        detailTable.Add(automaion, list);
+                                    }
+                                    table.Add(project, detailTable);
                                 }
                                 successConfigTable[key] = table;
                             }
@@ -232,34 +278,55 @@ namespace Mongo
                     }
                     if (testFail.Count() == 0)
                     {
-
+                        BsonDocument first = testSuccess.First();
+                        BsonDocument firstResult = first["test-results"].AsBsonDocument;
+                        string version = firstResult["@runtime-version"].AsString;
                         if (successAllConfigTable.ContainsKey(project) == false)
                         {
                             ArrayList list = new ArrayList();
-                            list.Add(automaion);
-                            successAllConfigTable.Add(project, list);
+                            list.Add(version);
+                            Hashtable table = new Hashtable();
+                            table.Add(automaion, list);
+                            successAllConfigTable.Add(project, table);
                         }
                         else
                         {
-                            ArrayList list = (ArrayList)successAllConfigTable[project];
-                            list.Add(automaion);
-                            successAllConfigTable[project] = list;
+                            Hashtable table = (Hashtable)successAllConfigTable[project];
+                            ArrayList list = (ArrayList)table[automaion];
+                            if (list == null)
+                            {
+                                list = new ArrayList();
+                            }
+                            list.Add(version);
+                            table[automaion] = list;
+                            successAllConfigTable[project] = table;
                         }
                     }
 
                     if (testSuccess.Count() == 0)
                     {
+                        BsonDocument first = testFail.First();
+                        BsonDocument firstResult = first["test-results"].AsBsonDocument;
+                        string version = firstResult["@runtime-version"].AsString;
                         if (failAllConfigTable.ContainsKey(project) == false)
                         {
                             ArrayList list = new ArrayList();
-                            list.Add(automaion);
-                            failAllConfigTable.Add(project, list);
+                            list.Add(version);
+                            Hashtable table = new Hashtable();
+                            table.Add(automaion, list);
+                            failAllConfigTable.Add(project, table);
                         }
                         else
                         {
-                            ArrayList list = (ArrayList)failAllConfigTable[project];
-                            list.Add(automaion);
-                            failAllConfigTable[project] = list;
+                            Hashtable table = (Hashtable)failAllConfigTable[project];
+                            ArrayList list = (ArrayList)table[automaion];
+                            if (list == null)
+                            {
+                                list = new ArrayList();
+                            }
+                            list.Add(version);
+                            table[automaion] = list;
+                            failAllConfigTable[project] = table;
                         }
                     }
                 }
