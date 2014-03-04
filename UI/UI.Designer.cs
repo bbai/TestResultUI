@@ -185,7 +185,7 @@
             this.Controls.Add(this.treeListView1);
             this.Controls.Add(this.groupBox1);
             this.Name = "UI";
-            this.Text = "Form1";
+            this.Text = "Test Results";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
