@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB", "MongoDB\MongoDB.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{75B305EC-3301-438E-AD56-F57B575A2EB3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{75B305EC-3301-438E-AD56-F57B575A2EB3}.Release|Mixed Platforms.Build.0 = Release|x86
 		{75B305EC-3301-438E-AD56-F57B575A2EB3}.Release|x86.ActiveCfg = Release|x86
 		{75B305EC-3301-438E-AD56-F57B575A2EB3}.Release|x86.Build.0 = Release|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Debug|x86.ActiveCfg = Debug|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Debug|x86.Build.0 = Debug|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Release|Any CPU.ActiveCfg = Release|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Release|Mixed Platforms.Build.0 = Release|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Release|x86.ActiveCfg = Release|x86
+		{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,7 @@ using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
 
-namespace MongoDB
+namespace Mongo
 {
     public class MongoDBHelper
     {
@@ -18,6 +18,7 @@ namespace MongoDB
         public Hashtable failAllConfigTable;
         public Hashtable successConfigTable;
         public Hashtable failConfigTable;
+        public string status;
         private DateTime mDate;
         public MongoDBHelper(string serverAddr, string dbName, string collectionName, int days)
         {
@@ -65,7 +66,7 @@ namespace MongoDB
             Hashtable projectAutomationTable = new Hashtable();
             foreach (string project in projectNames)
             {
-                var query = Query.And(Query.EQ("test-results.@project-name", project));
+                var query = Query.And(Query.GT("Date", mDate),Query.EQ("test-results.@project-name", project));
                 MongoCursor<BsonDocument> testCursor = collection.Find(query).SetLimit(1);
                 ArrayList automationNames = new ArrayList();
                 foreach (BsonDocument doc in testCursor)
@@ -120,7 +121,7 @@ namespace MongoDB
                                         Query.And(Query.EQ("@name", automaion),
                                         Query.EQ("@success", "True"))));
                     MongoCursor<BsonDocument> testSuccess = collection.Find(queryResults1);
-                    if (testSuccess.Count() == 0)
+                    if (testSuccess.Count() == 0 && automationNameList.Count == 1)
                     {
                         queryResults1 = Query.And(Query.GT("Date", mDate), Query.EQ("test-results.@project-name", project),
                                         Query.And((Query.EQ("test-results.test-suite.results.test-case.@name", automaion)),
@@ -131,7 +132,7 @@ namespace MongoDB
                                         Query.ElemMatch("test-results.test-suite.results.test-case",
                                         Query.EQ("@name", automaion)));
                     MongoCursor<BsonDocument> testAll = collection.Find(queryResults2);
-                    if (testAll.Count() == 0)
+                    if (testAll.Count() == 0 && automationNameList.Count == 1)
                     {
                         queryResults2 = Query.And(Query.GT("Date", mDate), Query.EQ("test-results.@project-name", project),
                                         Query.And(Query.EQ("test-results.test-suite.results.test-case.@name", automaion)));
@@ -142,7 +143,7 @@ namespace MongoDB
                                         Query.And(Query.EQ("@name", automaion),
                                         Query.EQ("@success", "False"))));
                     MongoCursor<BsonDocument> testFail = collection.Find(queryResults3);
-                    if (testFail.Count() == 0)
+                    if (testFail.Count() == 0 && automationNameList.Count == 1)
                     {
                         queryResults3 = Query.And(Query.GT("Date", mDate), Query.EQ("test-results.@project-name", project),
                                         Query.And((Query.EQ("test-results.test-suite.results.test-case.@name", automaion)),
@@ -158,15 +159,34 @@ namespace MongoDB
                             string key = testResults["@template-name"].AsString;
                             if (failConfigTable.ContainsKey(key) == false)
                             {
-                                ArrayList list = new ArrayList();
+                                Hashtable projectTable = new Hashtable();
+                                HashSet<string> list = new HashSet<string>();
                                 list.Add(automaion);
-                                failConfigTable.Add(key, list);
+                                projectTable.Add(project, list);
+                                failConfigTable.Add(key, projectTable);
                             }
                             else
                             {
-                                ArrayList list = (ArrayList)failConfigTable[key];
-                                list.Add(automaion);
-                                failConfigTable[key] = list;
+                                Hashtable table = (Hashtable)failConfigTable[key];
+                                if (table == null)
+                                {
+                                    table = new Hashtable();
+                                }
+                                if (table.ContainsKey(project))
+                                {
+                                    HashSet<string> list = (HashSet<string>)table[project];
+                                    if (list.Contains(automaion) == false)
+                                        list.Add(automaion);
+                                    table[project] = list;
+                                }
+                                else
+                                {
+                                    HashSet<string> list = new HashSet<string>();
+                                    if (list.Contains(automaion) == false)
+                                        list.Add(automaion);
+                                    table.Add(project, list);
+                                }
+                                failConfigTable[key] = table;
                             }
                         }
                     }
@@ -179,15 +199,34 @@ namespace MongoDB
                             string key = testResults["@template-name"].AsString;
                             if (successConfigTable.ContainsKey(key) == false)
                             {
-                                ArrayList list = new ArrayList();
+                                Hashtable projectTable = new Hashtable();
+                                HashSet<string> list = new HashSet<string>();
                                 list.Add(automaion);
-                                successConfigTable.Add(key, list);
+                                projectTable.Add(project, list);
+                                successConfigTable.Add(key, projectTable);
                             }
                             else
                             {
-                                ArrayList list = (ArrayList)successConfigTable[key];
-                                list.Add(automaion);
-                                successConfigTable[key] = list;
+                                Hashtable table = (Hashtable)successConfigTable[key];
+                                if (table == null)
+                                {
+                                    table = new Hashtable();
+                                }
+                                if (table.ContainsKey(project))
+                                {
+                                    HashSet<string> list = (HashSet<string>)table[project];
+                                    if (list.Contains(automaion) == false)
+                                        list.Add(automaion);
+                                    table[project] = list;
+                                }
+                                else
+                                {
+                                    HashSet<string> list = new HashSet<string>();
+                                    if (list.Contains(automaion) == false)
+                                        list.Add(automaion);
+                                    table.Add(project, list);
+                                }
+                                successConfigTable[key] = table;
                             }
                         }
                     }
