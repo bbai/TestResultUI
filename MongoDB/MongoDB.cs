@@ -157,25 +157,26 @@ namespace Mongo
                         {
                             BsonDocument testResults = diffBson["test-results"].AsBsonDocument;
                             string version = testResults["@runtime-version"].AsString;
-                            /*
                             BsonDocument testSuite = testResults["test-suite"].AsBsonDocument;
                             BsonDocument results = testSuite["results"].AsBsonDocument;
-                            BsonArray testCase = results["test-case"].AsBsonArray;
-                            int index = testCase.IndexOf(BsonValue.Create(automaion));
-                            BsonDocument failureDoc = testCase[0].AsBsonDocument;
-                            BsonDocument failure;
-                            BsonDocument message;
+                            BsonArray testCase = new BsonArray();
                             try
                             {
-                                failure = failureDoc["failure"].AsBsonDocument;
-                                message = failure["message"].AsBsonDocument;
+                                testCase = results["test-case"].AsBsonArray;
                             }
-                            catch (KeyNotFoundException)
+                            catch (InvalidCastException)
                             {
-                                message = failureDoc["message"].AsBsonDocument;
+                                testCase.Add(results["test-case"].AsBsonDocument);
                             }
-                            string errorMsg = message["#cdata-section"].AsString;
-                             */
+                            string errorMsg = string.Empty;
+                            foreach (BsonDocument test in testCase)
+                            {
+                                if (test["@success"].Equals("False") && test["@name"].Equals(automaion))
+                                {
+                                    BsonDocument failure = test["failure"].AsBsonDocument;
+                                    errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
+                                }
+                            }
                             string key = testResults["@template-name"].AsString;
                             if (failConfigTable.ContainsKey(key) == false)
                             {
@@ -183,6 +184,7 @@ namespace Mongo
                                 ArrayList list = new ArrayList();
                                 Hashtable detailTable = new Hashtable();
                                 list.Add(version);
+                                list.Add(errorMsg);
                                 detailTable.Add(automaion, list);
                                 projectTable.Add(project, detailTable);
                                 failConfigTable.Add(key, projectTable);
@@ -201,6 +203,7 @@ namespace Mongo
                                     {
                                         ArrayList list = new ArrayList();
                                         list.Add(version);
+                                        list.Add(errorMsg);
                                         errorTable.Add(automaion, list);
                                         table[project] = errorTable;
                                     }
@@ -210,6 +213,7 @@ namespace Mongo
                                     Hashtable errorTable = new Hashtable();
                                     ArrayList list = new ArrayList();
                                     list.Add(version);
+                                    list.Add(errorMsg);
                                     errorTable.Add(automaion, list);
                                     table.Add(project, errorTable);
                                 }
@@ -308,10 +312,35 @@ namespace Mongo
                         BsonDocument first = testFail.First();
                         BsonDocument firstResult = first["test-results"].AsBsonDocument;
                         string version = firstResult["@runtime-version"].AsString;
+                        string errorMsg = string.Empty;
+                        foreach (BsonDocument fail in testFail)
+                        {
+                            BsonDocument testResults = fail["test-results"].AsBsonDocument;
+                            BsonDocument testSuite = testResults["test-suite"].AsBsonDocument;
+                            BsonDocument results = testSuite["results"].AsBsonDocument;
+                            BsonArray testCase = new BsonArray();
+                            try
+                            {
+                                testCase = results["test-case"].AsBsonArray;
+                            }
+                            catch (InvalidCastException)
+                            {
+                                testCase.Add(results["test-case"].AsBsonDocument);
+                            }
+                            foreach (BsonDocument test in testCase)
+                            {
+                                if (test["@success"].Equals("False") && test["@name"].Equals(automaion))
+                                {
+                                    BsonDocument failure = test["failure"].AsBsonDocument;
+                                    errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
+                                }
+                            }
+                        }
                         if (failAllConfigTable.ContainsKey(project) == false)
                         {
                             ArrayList list = new ArrayList();
                             list.Add(version);
+                            list.Add(errorMsg);
                             Hashtable table = new Hashtable();
                             table.Add(automaion, list);
                             failAllConfigTable.Add(project, table);
@@ -325,6 +354,7 @@ namespace Mongo
                                 list = new ArrayList();
                             }
                             list.Add(version);
+                            list.Add(errorMsg);
                             table[automaion] = list;
                             failAllConfigTable[project] = table;
                         }
