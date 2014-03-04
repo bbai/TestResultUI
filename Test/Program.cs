@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
-using MongoDB;
+using Mongo;
 
 namespace Test
 {
@@ -15,13 +15,9 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            MongoDBHelper mongo = new MongoDBHelper("mongodb://10.0.3.26:27017/", "UnitTestDB", "UnitTestResults");
+            MongoDBHelper mongo = new MongoDBHelper("mongodb://10.0.3.26:27017/", "UnitTestDB", "UnitTestResults", 300);
             Console.WriteLine("Enter Days:");
             int days = Convert.ToInt32(Console.ReadLine());
-            MongoCursor<BsonDocument> cursor = mongo.GetCursorinDays(days);
-            int[] result = mongo.GetNumTotalAndFail(cursor);
-            Console.WriteLine("Total: " + result[0]);
-            Console.WriteLine("Fail: " + result[1]);
             Console.ReadKey();
         }
     }
