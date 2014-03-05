@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{75B305EC-3301-438E-AD56-F57B575A2EB3}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test</RootNamespace>
-    <AssemblyName>Test</AssemblyName>
+    <RootNamespace>UI</RootNamespace>
+    <AssemblyName>UI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -34,11 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\MongoDB\CSharpDriver 1.8.3\MongoDB.Bson.dll</HintPath>
+    <Reference Include="Interop.Shell32">
+      <HintPath>..\..\..\..\Desktop\TreeView\Interop.Shell32.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="MongoDB.Driver">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\MongoDB\CSharpDriver 1.8.3\MongoDB.Driver.dll</HintPath>
+    <Reference Include="OPaC.uxTheme">
+      <HintPath>..\..\..\..\Desktop\TreeView\OPaC.uxTheme.dll</HintPath>
+    </Reference>
+    <Reference Include="SynapticEffect.Forms">
+      <HintPath>..\..\..\..\Desktop\TreeView\SynapticEffect.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,11 +50,41 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="UI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI.Designer.cs">
+      <DependentUpon>UI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI.resx">
+      <DependentUpon>UI.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDB\MongoDB.csproj">
