@@ -34,16 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Interop.Shell32">
-      <HintPath>..\..\..\..\Desktop\TreeView\Interop.Shell32.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="OPaC.uxTheme">
-      <HintPath>..\..\..\..\Desktop\TreeView\OPaC.uxTheme.dll</HintPath>
-    </Reference>
-    <Reference Include="SynapticEffect.Forms, Version=0.9.9.27064, Culture=neutral">
+    <Reference Include="SynapticEffect.Forms, Version=0.9.9.30808, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\TreeView\SynapticEffect.Forms.dll</HintPath>
+      <HintPath>..\Reference\SynapticEffect.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
