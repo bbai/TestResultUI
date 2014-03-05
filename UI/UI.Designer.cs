@@ -44,12 +44,12 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.treeListView1 = new SynapticEffect.Forms.TreeListView();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.failureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acceptedFailureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.treeListView1 = new SynapticEffect.Forms.TreeListView();
             this.groupBox1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -195,27 +195,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "DB Address:";
             // 
-            // treeListView1
-            // 
-            this.treeListView1.BackColor = System.Drawing.SystemColors.Window;
-            this.treeListView1.ColumnSortColor = System.Drawing.Color.Gainsboro;
-            this.treeListView1.ColumnTrackColor = System.Drawing.Color.WhiteSmoke;
-            this.treeListView1.GridLineColor = System.Drawing.Color.WhiteSmoke;
-            this.treeListView1.HeaderMenu = null;
-            this.treeListView1.ItemHeight = 20;
-            this.treeListView1.ItemMenu = null;
-            this.treeListView1.LabelEdit = false;
-            this.treeListView1.Location = new System.Drawing.Point(15, 135);
-            this.treeListView1.Name = "treeListView1";
-            this.treeListView1.RowSelectColor = System.Drawing.SystemColors.Highlight;
-            this.treeListView1.RowTrackColor = System.Drawing.Color.WhiteSmoke;
-            this.treeListView1.Size = new System.Drawing.Size(1101, 792);
-            this.treeListView1.SmallImageList = null;
-            this.treeListView1.StateImageList = null;
-            this.treeListView1.TabIndex = 1;
-            this.treeListView1.Text = "treeListView1";
-            this.treeListView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeListView1_MouseClick);
-            // 
             // backgroundWorker1
             // 
             this.backgroundWorker1.WorkerReportsProgress = true;
@@ -236,18 +215,42 @@
             this.failureToolStripMenuItem.Name = "failureToolStripMenuItem";
             this.failureToolStripMenuItem.Size = new System.Drawing.Size(293, 30);
             this.failureToolStripMenuItem.Text = "Mark as Failure";
+            this.failureToolStripMenuItem.Click += new System.EventHandler(this.failureToolStripMenuItem_Click);
             // 
             // acceptedFailureToolStripMenuItem
             // 
             this.acceptedFailureToolStripMenuItem.Name = "acceptedFailureToolStripMenuItem";
             this.acceptedFailureToolStripMenuItem.Size = new System.Drawing.Size(293, 30);
             this.acceptedFailureToolStripMenuItem.Text = "Mark as Accepted Failure...";
+            this.acceptedFailureToolStripMenuItem.Click += new System.EventHandler(this.acceptedFailureToolStripMenuItem_Click);
             // 
             // bugToolStripMenuItem
             // 
             this.bugToolStripMenuItem.Name = "bugToolStripMenuItem";
             this.bugToolStripMenuItem.Size = new System.Drawing.Size(293, 30);
             this.bugToolStripMenuItem.Text = "Mark as Bug...";
+            this.bugToolStripMenuItem.Click += new System.EventHandler(this.bugToolStripMenuItem_Click);
+            // 
+            // treeListView1
+            // 
+            this.treeListView1.BackColor = System.Drawing.SystemColors.Window;
+            this.treeListView1.ColumnSortColor = System.Drawing.Color.Gainsboro;
+            this.treeListView1.ColumnTrackColor = System.Drawing.Color.WhiteSmoke;
+            this.treeListView1.GridLineColor = System.Drawing.Color.WhiteSmoke;
+            this.treeListView1.HeaderMenu = null;
+            this.treeListView1.ItemHeight = 20;
+            this.treeListView1.ItemMenu = null;
+            this.treeListView1.LabelEdit = false;
+            this.treeListView1.Location = new System.Drawing.Point(15, 135);
+            this.treeListView1.Name = "treeListView1";
+            this.treeListView1.RowSelectColor = System.Drawing.SystemColors.Highlight;
+            this.treeListView1.RowTrackColor = System.Drawing.Color.WhiteSmoke;
+            this.treeListView1.Size = new System.Drawing.Size(1101, 792);
+            this.treeListView1.SmallImageList = null;
+            this.treeListView1.StateImageList = null;
+            this.treeListView1.TabIndex = 1;
+            this.treeListView1.Text = "treeListView1";
+            this.treeListView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeListView1_MouseClick);
             // 
             // UI
             // 
