@@ -330,5 +330,13 @@ namespace UI
             treeListView1.Focus();
             label6.Text = "Done!";
         }
+
+        private void treeListView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && treeListView1.SelectedNodes.Count != 0)
+            {
+                this.contextMenuStrip1.Show(this.treeListView1, e.Location);
+            }
+        }
     }
 }
