@@ -5,8 +5,9 @@ using System.Windows.Forms;
 
 namespace AutomateTP
 {
-    static class Program
+    class RunForm
     {
+        private string authInfo { set; get; }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -15,7 +16,8 @@ namespace AutomateTP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new CRForm());
         }
+
     }
 }
