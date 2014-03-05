@@ -330,7 +330,5 @@ namespace UI
             treeListView1.Focus();
             label6.Text = "Done!";
         }
-
->>>>>>> status
     }
 }
