@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using MongoDB.Bson;
@@ -11,6 +12,8 @@ using MongoDB.Driver.Linq;
 
 namespace Mongo
 {
+    public delegate void ProgressUpdate(int e);
+
     public class MongoDBHelper
     {
         public MongoCollection<BsonDocument> collection;
@@ -18,11 +21,11 @@ namespace Mongo
         public Hashtable failAllConfigTable;
         public Hashtable successConfigTable;
         public Hashtable failConfigTable;
-        public string status;
+        public event ProgressUpdate OnProgressUpdate;
         private DateTime mDate;
         public MongoDBHelper(string serverAddr, string dbName, string collectionName, int days)
         {
-            MongoClient client = new MongoClient(serverAddr);
+            MongoClient client = new MongoClient("mongodb://" + serverAddr);
             MongoServer server = client.GetServer();
             MongoDatabase mongoDB = server.GetDatabase(dbName);
             collection = mongoDB.GetCollection(collectionName);
@@ -110,10 +113,14 @@ namespace Mongo
             failConfigTable = new Hashtable();
             var projectNames = collection.Distinct("test-results.@project-name").ToList();
             Hashtable projectAutomationTable = this.GetProjectAutomationTable();
+            int progress = 0;
+            int totalNumProject = projectNames.Count;
             foreach (string project in projectNames)
             {
                 ArrayList automationNameList = (ArrayList)projectAutomationTable[project];
                 Console.WriteLine(project);
+                int report = progress * 100 / totalNumProject;
+                OnProgressUpdate(report);
                 foreach (string automaion in automationNameList)
                 {
                     var queryResults1 = Query.And(Query.GT("Date", mDate), Query.EQ("test-results.@project-name", project),
@@ -360,7 +367,9 @@ namespace Mongo
                         }
                     }
                 }
+                progress++;
             }
+            OnProgressUpdate(100);
             ret = true;
             return ret;
         }
