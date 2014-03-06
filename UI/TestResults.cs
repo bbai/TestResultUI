@@ -9,10 +9,15 @@ using System.Text;
 using System.Windows.Forms;
 using Mongo;
 using SynapticEffect.Forms;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.GridFS;
+using MongoDB.Driver.Linq;
 
 namespace UI
 {
-    public partial class UI : Form
+    public partial class TestResults : Form
     {
         MongoDBHelper mongo;
         Hashtable successAllConfigTable;
@@ -20,7 +25,7 @@ namespace UI
         Hashtable successConfigTable;
         Hashtable failConfigTable;
         string days;
-        public UI()
+        public TestResults()
         {
             InitializeComponent();
         }
@@ -64,7 +69,15 @@ namespace UI
             {
                 treeListView1.Nodes.Clear();
             }
-            mongo.AnalyzeData();
+            try
+            {
+                mongo.AnalyzeData();
+            }
+            catch (MongoConnectionException ex)
+            {
+                e.Cancel = true;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void mongo_ProgressChanged(int e)
@@ -75,9 +88,11 @@ namespace UI
             });
         }
 
-
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+
+            if (e.Cancelled)
+                return;
             if (mongo == null || days != textBox4.Text || treeListView1.Nodes.Count == 0)
             {
                 days = textBox4.Text;

@@ -168,7 +168,7 @@ namespace Mongo
                                                         Query.EQ("@success", "True"))));
                         testSuccess = collection.Find(queryResults1);
                     }
-                    if (testSuccess.Count() == 0)
+                    if (testSuccess.Count() == 0 && automationNameList.Count == 1)
                     {
                         queryResults1 = Query.And(
                                             Query.GT("Date", mDate), 
@@ -196,7 +196,7 @@ namespace Mongo
                                                         Query.EQ("@name", automation))));
                         testAll = collection.Find(queryResults2);
                     }
-                    if (testAll.Count() == 0)
+                    if (testAll.Count() == 0 && automationNameList.Count == 1)
                     {
                         queryResults2 = Query.And(
                                             Query.GT("Date", mDate),
@@ -226,7 +226,7 @@ namespace Mongo
                                                         Query.EQ("@success", "False"))));
                         testFail = collection.Find(queryResults3);
                     }
-                    if (testFail.Count() == 0)
+                    if (testFail.Count() == 0 && automationNameList.Count == 1)
                     {
 
                         queryResults3 = Query.And(
