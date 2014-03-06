@@ -38,7 +38,7 @@ namespace Mongo
         ///          index 0 is total, 1 is fail</returns>
         public int[] GetNumTotalAndFail()
         {
-            var dateQuery = Query.And(Query.GTE("Date", mDate));
+            var dateQuery = Query.And(Query.GT("Date", mDate));
             //skip first inconsistant entry in current db.
             MongoCursor<BsonDocument> cursor = collection.Find(dateQuery);
             int numTotalTests = 0;
