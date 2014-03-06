@@ -15,6 +15,10 @@ namespace UI
     public partial class UI : Form
     {
         MongoDBHelper mongo;
+        Hashtable successAllConfigTable;
+        Hashtable failAllConfigTable;
+        Hashtable successConfigTable;
+        Hashtable failConfigTable;
         string days;
         public UI()
         {
@@ -108,8 +112,8 @@ namespace UI
 
                 if (mongo.AnalyzeData() == true)
                 {
-                    Hashtable successAllConfigTable = mongo.successAllConfigTable;
-                    Hashtable failAllConfigTable = mongo.failAllConfigTable;
+                    successAllConfigTable = mongo.successAllConfigTable;
+                    failAllConfigTable = mongo.failAllConfigTable;
                     var successKeys = successAllConfigTable.Keys;
                     var failKeys = failAllConfigTable.Keys;
                     int totalSuccessAllConfigCount = 0;
@@ -193,8 +197,8 @@ namespace UI
                     allConfig.SubItems.Add(Convert.ToString(totalFailAllConfigCount));
                     tln.Nodes.Add(allConfig);
 
-                    Hashtable successConfigTable = mongo.successConfigTable;
-                    Hashtable failConfigTable = mongo.failConfigTable;
+                    successConfigTable = mongo.successConfigTable;
+                    failConfigTable = mongo.failConfigTable;
                     var successConfigKeys = successConfigTable.Keys;
 
 
@@ -329,6 +333,63 @@ namespace UI
             }
             treeListView1.Focus();
             label6.Text = "Done!";
+        }
+
+        private void treeListView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && treeListView1.SelectedNodes.Count == 1)
+            {
+                this.contextMenuStrip1.Show(this.treeListView1, e.Location);
+            }
+        }
+
+        private void failureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedNodes = treeListView1.SelectedNodes;
+            foreach (TreeListNode node in selectedNodes)
+            {
+                if (node.SubItems.Count != 4)
+                {
+                    MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+
+                    MessageBox.Show("Marked as Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        private void acceptedFailureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedNodes = treeListView1.SelectedNodes;
+            foreach (TreeListNode node in selectedNodes)
+            {
+                if (node.SubItems.Count != 4)
+                {
+                    MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    AcceptedFailure acceptedFailureDialog = new AcceptedFailure();
+                    acceptedFailureDialog.Show();
+                }
+            }
+        }
+
+        private void bugToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedNodes = treeListView1.SelectedNodes;
+            foreach (TreeListNode node in selectedNodes)
+            {
+                if (node.SubItems.Count != 4)
+                {
+                    MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                }
+            }
         }
     }
 }

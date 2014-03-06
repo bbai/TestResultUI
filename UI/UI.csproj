@@ -34,15 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Interop.Shell32">
-      <HintPath>..\..\..\..\Desktop\TreeView\Interop.Shell32.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="OPaC.uxTheme">
-      <HintPath>..\..\..\..\Desktop\TreeView\OPaC.uxTheme.dll</HintPath>
-    </Reference>
-    <Reference Include="SynapticEffect.Forms">
-      <HintPath>..\..\..\..\Desktop\TreeView\SynapticEffect.Forms.dll</HintPath>
+    <Reference Include="SynapticEffect.Forms, Version=0.9.9.30808, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\SynapticEffect.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcceptedFailure.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AcceptedFailure.Designer.cs">
+      <DependentUpon>AcceptedFailure.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +64,9 @@
     </Compile>
     <Compile Include="UserInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AcceptedFailure.resx">
+      <DependentUpon>AcceptedFailure.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -75,7 +78,6 @@
     </Compile>
     <EmbeddedResource Include="UI.resx">
       <DependentUpon>UI.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
