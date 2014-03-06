@@ -72,7 +72,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(15, 14);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1101, 115);
+            this.groupBox1.Size = new System.Drawing.Size(1020, 115);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Database Login";
@@ -208,7 +208,7 @@
             this.acceptedFailureToolStripMenuItem,
             this.bugToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(294, 116);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(294, 94);
             // 
             // failureToolStripMenuItem
             // 
@@ -233,6 +233,9 @@
             // 
             // treeListView1
             // 
+            this.treeListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.treeListView1.BackColor = System.Drawing.SystemColors.Window;
             this.treeListView1.ColumnSortColor = System.Drawing.Color.Gainsboro;
             this.treeListView1.ColumnTrackColor = System.Drawing.Color.WhiteSmoke;
@@ -245,7 +248,7 @@
             this.treeListView1.Name = "treeListView1";
             this.treeListView1.RowSelectColor = System.Drawing.SystemColors.Highlight;
             this.treeListView1.RowTrackColor = System.Drawing.Color.WhiteSmoke;
-            this.treeListView1.Size = new System.Drawing.Size(1101, 792);
+            this.treeListView1.Size = new System.Drawing.Size(1021, 364);
             this.treeListView1.SmallImageList = null;
             this.treeListView1.StateImageList = null;
             this.treeListView1.TabIndex = 1;
@@ -256,7 +259,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1128, 941);
+            this.ClientSize = new System.Drawing.Size(1048, 511);
             this.Controls.Add(this.treeListView1);
             this.Controls.Add(this.groupBox1);
             this.Name = "UI";

@@ -37,7 +37,7 @@ namespace UI
         {
             if (textBox4.Text.Length == 0)
             {
-                MessageBox.Show("Please Enter Days.", "Error");
+                MessageBox.Show("Please Enter Days.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
@@ -337,59 +337,66 @@ namespace UI
 
         private void treeListView1_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right && treeListView1.SelectedNodes.Count == 1)
+            var selectedNodes = treeListView1.SelectedNodes;
+            if (e.Button == MouseButtons.Right && selectedNodes.Count == 1)
             {
-                this.contextMenuStrip1.Show(this.treeListView1, e.Location);
+                foreach (TreeListNode node in selectedNodes)
+                {
+                    if (node.FirstChild() == null)
+                        this.contextMenuStrip1.Show(this.treeListView1, e.Location);
+                }
             }
         }
 
         private void failureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var selectedNodes = treeListView1.SelectedNodes;
-            foreach (TreeListNode node in selectedNodes)
+            var node = treeListView1.SelectedNodes[0];
+            if (node.SubItems.Count != 4)
             {
-                if (node.SubItems.Count != 4)
-                {
-                    MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
+                MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
 
-                    MessageBox.Show("Marked as Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                MessageBox.Show("Marked as Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void acceptedFailureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var selectedNodes = treeListView1.SelectedNodes;
-            foreach (TreeListNode node in selectedNodes)
+            var node = treeListView1.SelectedNodes[0];
+            if (node.SubItems.Count != 4)
             {
-                if (node.SubItems.Count != 4)
-                {
-                    MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    AcceptedFailure acceptedFailureDialog = new AcceptedFailure();
-                    acceptedFailureDialog.Show();
-                }
+                MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                AcceptedFailure acceptedFailureDialog = new AcceptedFailure();
+                acceptedFailureDialog.Show();
             }
         }
 
         private void bugToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var selectedNodes = treeListView1.SelectedNodes;
-            foreach (TreeListNode node in selectedNodes)
+            var node = treeListView1.SelectedNodes[0];
+            if (node.SubItems.Count != 4)
             {
-                if (node.SubItems.Count != 4)
-                {
-                    MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                }
+                MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            else
+            {
+            }
+        }
+
+        private string GetSolutionName(TreeListNode selectedNode)
+        {
+            TreeListNode node = (TreeListNode)selectedNode.ParentNode();
+            return node.Text;
+        }
+
+        private string GetAutomationName(TreeListNode selectedNode)
+        {
+            return selectedNode.Text;
         }
     }
 }
