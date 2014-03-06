@@ -67,10 +67,11 @@ namespace AutomateTP
             }
             return userStories;
         }
-        public static void MakeCR()
+        public static void MakeCR(string project, string userStory, string name, string NAS, string msg)
         { 
             string url = "http://target.openspan.com/tp/api/v1/Bugs";
-            string xmlBuild = string.Empty;
+            string xml = "<entity>" +
+            
         }
         #region HttpHelp
         public static string HttpGet(string url)

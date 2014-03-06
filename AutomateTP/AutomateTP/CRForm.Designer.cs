@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.TPgroupBox = new System.Windows.Forms.GroupBox();
+            this.LoginCompleteLbl = new System.Windows.Forms.Label();
+            this.credentialsBtn = new System.Windows.Forms.Button();
             this.UsernameLbl = new System.Windows.Forms.Label();
             this.passwordTxtBox = new System.Windows.Forms.TextBox();
             this.PasswordLbl = new System.Windows.Forms.Label();
@@ -38,12 +40,10 @@
             this.NameLbl = new System.Windows.Forms.Label();
             this.FailureMsgLbl = new System.Windows.Forms.Label();
             this.NASlbl = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.NAStxtBox = new System.Windows.Forms.TextBox();
+            this.NameTxtBox = new System.Windows.Forms.TextBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SubmitCRBtn = new System.Windows.Forms.Button();
-            this.credentialsBtn = new System.Windows.Forms.Button();
-            this.LoginCompleteLbl = new System.Windows.Forms.Label();
             this.UserStoryLbl = new System.Windows.Forms.Label();
             this.userStoryComboBox = new System.Windows.Forms.ComboBox();
             this.TPgroupBox.SuspendLayout();
@@ -63,6 +63,26 @@
             this.TPgroupBox.TabIndex = 1;
             this.TPgroupBox.TabStop = false;
             this.TPgroupBox.Text = "TargetProcess Credentials";
+            // 
+            // LoginCompleteLbl
+            // 
+            this.LoginCompleteLbl.AutoSize = true;
+            this.LoginCompleteLbl.Location = new System.Drawing.Point(99, 102);
+            this.LoginCompleteLbl.Name = "LoginCompleteLbl";
+            this.LoginCompleteLbl.Size = new System.Drawing.Size(110, 17);
+            this.LoginCompleteLbl.TabIndex = 16;
+            this.LoginCompleteLbl.Text = "Log In Complete";
+            this.LoginCompleteLbl.Visible = false;
+            // 
+            // credentialsBtn
+            // 
+            this.credentialsBtn.Location = new System.Drawing.Point(9, 97);
+            this.credentialsBtn.Name = "credentialsBtn";
+            this.credentialsBtn.Size = new System.Drawing.Size(75, 27);
+            this.credentialsBtn.TabIndex = 15;
+            this.credentialsBtn.Text = "Log In";
+            this.credentialsBtn.UseVisualStyleBackColor = true;
+            this.credentialsBtn.Click += new System.EventHandler(this.credentialsBtn_Click);
             // 
             // UsernameLbl
             // 
@@ -143,19 +163,19 @@
             this.NASlbl.TabIndex = 12;
             this.NASlbl.Text = "NAS Location";
             // 
-            // textBox1
+            // NAStxtBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(126, 278);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(403, 22);
-            this.textBox1.TabIndex = 6;
+            this.NAStxtBox.Location = new System.Drawing.Point(126, 278);
+            this.NAStxtBox.Name = "NAStxtBox";
+            this.NAStxtBox.Size = new System.Drawing.Size(403, 22);
+            this.NAStxtBox.TabIndex = 6;
             // 
-            // textBox2
+            // NameTxtBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(126, 240);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(403, 22);
-            this.textBox2.TabIndex = 5;
+            this.NameTxtBox.Location = new System.Drawing.Point(126, 240);
+            this.NameTxtBox.Name = "NameTxtBox";
+            this.NameTxtBox.Size = new System.Drawing.Size(403, 22);
+            this.NameTxtBox.TabIndex = 5;
             // 
             // richTextBox1
             // 
@@ -173,26 +193,7 @@
             this.SubmitCRBtn.TabIndex = 8;
             this.SubmitCRBtn.Text = "SubmitCR";
             this.SubmitCRBtn.UseVisualStyleBackColor = true;
-            // 
-            // credentialsBtn
-            // 
-            this.credentialsBtn.Location = new System.Drawing.Point(9, 97);
-            this.credentialsBtn.Name = "credentialsBtn";
-            this.credentialsBtn.Size = new System.Drawing.Size(75, 27);
-            this.credentialsBtn.TabIndex = 15;
-            this.credentialsBtn.Text = "Log In";
-            this.credentialsBtn.UseVisualStyleBackColor = true;
-            this.credentialsBtn.Click += new System.EventHandler(this.credentialsBtn_Click);
-            // 
-            // LoginCompleteLbl
-            // 
-            this.LoginCompleteLbl.AutoSize = true;
-            this.LoginCompleteLbl.Location = new System.Drawing.Point(99, 102);
-            this.LoginCompleteLbl.Name = "LoginCompleteLbl";
-            this.LoginCompleteLbl.Size = new System.Drawing.Size(110, 17);
-            this.LoginCompleteLbl.TabIndex = 16;
-            this.LoginCompleteLbl.Text = "Log In Complete";
-            this.LoginCompleteLbl.Visible = false;
+            this.SubmitCRBtn.Click += new System.EventHandler(this.SubmitCRBtn_Click);
             // 
             // UserStoryLbl
             // 
@@ -220,8 +221,8 @@
             this.Controls.Add(this.UserStoryLbl);
             this.Controls.Add(this.TPgroupBox);
             this.Controls.Add(this.ProjectComboBox);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.NameTxtBox);
+            this.Controls.Add(this.NAStxtBox);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.NASlbl);
             this.Controls.Add(this.FailureMsgLbl);
@@ -245,8 +246,8 @@
         private System.Windows.Forms.Label FailureMsgLbl;
         private System.Windows.Forms.Label NASlbl;
         private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox NAStxtBox;
+        private System.Windows.Forms.TextBox NameTxtBox;
         private System.Windows.Forms.ComboBox ProjectComboBox;
         private System.Windows.Forms.Label UsernameLbl;
         private System.Windows.Forms.Label PasswordLbl;

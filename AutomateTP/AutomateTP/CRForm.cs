@@ -27,7 +27,34 @@ namespace AutomateTP
                 + ":" + passwordTxtBox.Text));
             ProjectComboBox.Items.AddRange(TargetProcessHelper.GetProjects().ToArray());
             userStoryComboBox.Items.AddRange(TargetProcessHelper.GetUserStories().ToArray());
+            userStoryComboBox.Items.Add(string.Empty);
             LoginCompleteLbl.Visible = true;
+        }
+        private string GetBugName()
+        {
+            return NameTxtBox.Text;
+        }
+        private string GetBugLocation()
+        {
+            return NAStxtBox.Text;
+        }
+        private string GetChosenProject()
+        {
+            return ProjectComboBox.SelectedText;
+        }
+        private string GetChosenUserStory()
+        {
+            return userStoryComboBox.SelectedText;
+        }
+        private string GetFailMessage()
+        {
+            return richTextBox1.Text;
+        }
+
+        private void SubmitCRBtn_Click(object sender, EventArgs e)
+        {
+            TargetProcessHelper.MakeCR(GetChosenProject(), GetChosenUserStory(), 
+                GetBugName(), GetBugLocation(), GetFailMessage());
         }
     }
 }
