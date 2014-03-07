@@ -28,6 +28,7 @@ namespace AutomateTP
             ProjectComboBox.Items.AddRange(TargetProcessHelper.GetProjects().ToArray());
             userStoryComboBox.Items.AddRange(TargetProcessHelper.GetUserStories().ToArray());
             userStoryComboBox.Items.Add(string.Empty);
+            SubmitCRBtn.Enabled = true;
             LoginCompleteLbl.Visible = true;
         }
         private string GetBugName()
@@ -38,13 +39,13 @@ namespace AutomateTP
         {
             return NAStxtBox.Text;
         }
-        private string GetChosenProject()
+        private ProjectInfo GetChosenProject()
         {
-            return ProjectComboBox.SelectedText;
+            return (ProjectInfo)ProjectComboBox.SelectedItem;
         }
-        private string GetChosenUserStory()
+        private UserStoryInfo GetChosenUserStory()
         {
-            return userStoryComboBox.SelectedText;
+            return (UserStoryInfo)userStoryComboBox.SelectedItem;
         }
         private string GetFailMessage()
         {

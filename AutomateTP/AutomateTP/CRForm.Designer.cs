@@ -187,6 +187,7 @@
             // 
             // SubmitCRBtn
             // 
+            this.SubmitCRBtn.Enabled = false;
             this.SubmitCRBtn.Location = new System.Drawing.Point(224, 583);
             this.SubmitCRBtn.Name = "SubmitCRBtn";
             this.SubmitCRBtn.Size = new System.Drawing.Size(87, 23);
@@ -230,7 +231,7 @@
             this.Controls.Add(this.ProjectLbl);
             this.Controls.Add(this.SubmitCRBtn);
             this.Name = "CRForm";
-            this.Text = "Enter CR Information";
+            this.Text = "Enter Bug Information";
             this.TPgroupBox.ResumeLayout(false);
             this.TPgroupBox.PerformLayout();
             this.ResumeLayout(false);

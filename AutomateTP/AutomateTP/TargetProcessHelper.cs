@@ -34,7 +34,6 @@ namespace AutomateTP
     public static class TargetProcessHelper
     {
         public static string authInfo{get; set;}
-
         public static List<ProjectInfo> GetProjects()
         {
             string url = "http://target.openspan.com/tp/api/v1/Projects/";
@@ -43,7 +42,7 @@ namespace AutomateTP
             doc.LoadXml(results);
             List<ProjectInfo> projects = new List<ProjectInfo>();
             foreach (XmlNode node in doc.SelectNodes("/Projects/Project"))
-            {
+            {               
                 ProjectInfo projectInfo = new ProjectInfo();
                 projectInfo.Name = node.Attributes["Name"].Value;
                 projectInfo.ID = node.Attributes["Id"].Value;
@@ -67,11 +66,25 @@ namespace AutomateTP
             }
             return userStories;
         }
-        public static void MakeCR(string project, string userStory, string name, string NAS, string msg)
-        { 
-            string url = "http://target.openspan.com/tp/api/v1/Bugs";
-            string xml = "<entity>" +
-            
+        public static void MakeCR(ProjectInfo project, UserStoryInfo userStory, string name, string NAS, string msg)
+        {
+            string url = "http://target.openspan.com/tp.tpondemand.com/api/v1/Bugs";
+            //string xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>";
+            string xml = @"<Bug Name=""CR-" + name + @""">";
+            //xml = xml + "<Description><div>" + msg + " " + NAS + "</div></Description>";
+
+            //xml = xml + @"<StartDate nil=""true""/><EndDate nil=""true""/>";
+            //xml = xml + "<CreateDate>" + DateTime.Today + "</CreateDate>";
+            //xml = xml + @"<ModifyDate nil=""true""/><Effort>0.0000</Effort><EffortCompleted>0.0000</EffortCompleted>";
+            //xml = xml + "<EffortToDo>0.0000</EffortToDo><TimeSpent>0.0000</TimeSpent><TimeRemain>0.0000</TimeRemain>";
+            //xml = xml + @"<PlannedStartDate nil=""true""/><PlannedEndDate nil=""true""/><EntityType Name=""Bug""/>";
+
+            //xml = xml + "<ProjectID>" + project.ID + "</ProjectID>";
+            //xml = xml + "<UserStoryID>" + userStory.ID + "</UserStoryID>";
+            //xml = xml + "<ProjectName>" + project + "</ProjectName>";
+            //xml = xml + "<UserStoryName>" + userStory + "</UserStoryName>";
+            xml = xml + "</Bug>";
+            HttpPost(url, xml);           
         }
         #region HttpHelp
         public static string HttpGet(string url)
@@ -111,7 +124,6 @@ namespace AutomateTP
             {
                 byte[] data = UTF8Encoding.UTF8.GetBytes(bodyXml);
                 request.ContentLength = data.Length;
-
                 // Send the request:
                 using (Stream post = request.GetRequestStream())
                 {
