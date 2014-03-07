@@ -9,14 +9,23 @@ using System.Text;
 using System.Windows.Forms;
 using Mongo;
 using SynapticEffect.Forms;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.GridFS;
+using MongoDB.Driver.Linq;
 
 namespace UI
 {
-    public partial class UI : Form
+    public partial class TestResults : Form
     {
         MongoDBHelper mongo;
+        Hashtable successAllConfigTable;
+        Hashtable failAllConfigTable;
+        Hashtable successConfigTable;
+        Hashtable failConfigTable;
         string days;
-        public UI()
+        public TestResults()
         {
             InitializeComponent();
         }
@@ -33,7 +42,7 @@ namespace UI
         {
             if (textBox4.Text.Length == 0)
             {
-                MessageBox.Show("Please Enter Days.", "Error");
+                MessageBox.Show("Please Enter Days.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
@@ -60,7 +69,15 @@ namespace UI
             {
                 treeListView1.Nodes.Clear();
             }
-            mongo.AnalyzeData();
+            try
+            {
+                mongo.AnalyzeData();
+            }
+            catch (MongoConnectionException ex)
+            {
+                e.Cancel = true;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void mongo_ProgressChanged(int e)
@@ -71,9 +88,11 @@ namespace UI
             });
         }
 
-
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+
+            if (e.Cancelled)
+                return;
             if (mongo == null || days != textBox4.Text || treeListView1.Nodes.Count == 0)
             {
                 days = textBox4.Text;
@@ -108,8 +127,8 @@ namespace UI
 
                 if (mongo.AnalyzeData() == true)
                 {
-                    Hashtable successAllConfigTable = mongo.successAllConfigTable;
-                    Hashtable failAllConfigTable = mongo.failAllConfigTable;
+                    successAllConfigTable = mongo.successAllConfigTable;
+                    failAllConfigTable = mongo.failAllConfigTable;
                     var successKeys = successAllConfigTable.Keys;
                     var failKeys = failAllConfigTable.Keys;
                     int totalSuccessAllConfigCount = 0;
@@ -193,8 +212,8 @@ namespace UI
                     allConfig.SubItems.Add(Convert.ToString(totalFailAllConfigCount));
                     tln.Nodes.Add(allConfig);
 
-                    Hashtable successConfigTable = mongo.successConfigTable;
-                    Hashtable failConfigTable = mongo.failConfigTable;
+                    successConfigTable = mongo.successConfigTable;
+                    failConfigTable = mongo.failConfigTable;
                     var successConfigKeys = successConfigTable.Keys;
 
 
@@ -329,6 +348,70 @@ namespace UI
             }
             treeListView1.Focus();
             label6.Text = "Done!";
+        }
+
+        private void treeListView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            var selectedNodes = treeListView1.SelectedNodes;
+            if (e.Button == MouseButtons.Right && selectedNodes.Count == 1)
+            {
+                foreach (TreeListNode node in selectedNodes)
+                {
+                    if (node.FirstChild() == null)
+                        this.contextMenuStrip1.Show(this.treeListView1, e.Location);
+                }
+            }
+        }
+
+        private void failureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var node = treeListView1.SelectedNodes[0];
+            if (node.SubItems.Count != 4)
+            {
+                MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+
+                MessageBox.Show("Marked as Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void acceptedFailureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var node = treeListView1.SelectedNodes[0];
+            if (node.SubItems.Count != 4)
+            {
+                MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                AcceptedFailure acceptedFailureDialog = new AcceptedFailure();
+                acceptedFailureDialog.Show();
+            }
+        }
+
+        private void bugToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var node = treeListView1.SelectedNodes[0];
+            if (node.SubItems.Count != 4)
+            {
+                MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+            }
+        }
+
+        private string GetSolutionName(TreeListNode selectedNode)
+        {
+            TreeListNode node = (TreeListNode)selectedNode.ParentNode();
+            return node.Text;
+        }
+
+        private string GetAutomationName(TreeListNode selectedNode)
+        {
+            return selectedNode.Text;
         }
     }
 }
