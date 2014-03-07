@@ -394,24 +394,43 @@ namespace UI
         private void bugToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
+            //if it's a failure it will have 4 subitems (for now)
             if (node.SubItems.Count != 4)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
+                LogBugCR logBugCRDialog = new LogBugCR();
+                logBugCRDialog.Show();
+                FillCrForm(logBugCRDialog);
             }
         }
 
-        private string GetSolutionName(TreeListNode selectedNode)
+        //make CR helper functions
+        #region CrFunctions
+        private string GetSolutionName()
         {
+            TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
             TreeListNode node = (TreeListNode)selectedNode.ParentNode();
             return node.Text;
         }
-
-        private string GetAutomationName(TreeListNode selectedNode)
+        private string GetAutomationName()
         {
+            TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
             return selectedNode.Text;
         }
+        private string GetFailureMsg()
+        {
+            TreeListNode selectedNode = treeListView1.SelectedNodes[0];
+            var subItem = selectedNode.SubItems[3];
+            return subItem.Text;
+        }
+        private void FillCrForm(LogBugCR LogBugCRDialog)
+        {
+            LogBugCRDialog.nameTxt.Text = GetSolutionName() + " " + GetAutomationName();
+            LogBugCRDialog.failureMsgTxt.Text = GetFailureMsg();
+        }
+        #endregion
     }
 }

@@ -68,17 +68,12 @@ namespace AutomateTP
         }
         public static void MakeCR(ProjectInfo project, UserStoryInfo userStory, string name, string NAS, string msg)
         {
-            string url = "http://target.openspan.com/tp.tpondemand.com/api/v1/Bugs";
+            string url = "http://target.openspan.com/tp/api/v1/Bugs";
             //string xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>";
             string xml = @"<Bug Name=""CR-" + name + @""">";
-            //xml = xml + "<Description><div>" + msg + " " + NAS + "</div></Description>";
-
-            //xml = xml + @"<StartDate nil=""true""/><EndDate nil=""true""/>";
-            //xml = xml + "<CreateDate>" + DateTime.Today + "</CreateDate>";
-            //xml = xml + @"<ModifyDate nil=""true""/><Effort>0.0000</Effort><EffortCompleted>0.0000</EffortCompleted>";
-            //xml = xml + "<EffortToDo>0.0000</EffortToDo><TimeSpent>0.0000</TimeSpent><TimeRemain>0.0000</TimeRemain>";
-            //xml = xml + @"<PlannedStartDate nil=""true""/><PlannedEndDate nil=""true""/><EntityType Name=""Bug""/>";
-
+            xml = xml + "<Description><div>" + msg + " " + NAS + "</div></Description>";
+            xml = xml + @"<Project ID=""" + project.ID + @""" Name=""" + project.Name + @"""/>";
+            xml = xml + @"<UserStory ID=""" + userStory.ID + @""" Name=""" + userStory.Name + @"""/>";
             //xml = xml + "<ProjectID>" + project.ID + "</ProjectID>";
             //xml = xml + "<UserStoryID>" + userStory.ID + "</UserStoryID>";
             //xml = xml + "<ProjectName>" + project + "</ProjectName>";
