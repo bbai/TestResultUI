@@ -14,6 +14,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
+using AutomateTP;
 
 namespace UI
 {
@@ -25,9 +26,11 @@ namespace UI
         Hashtable successConfigTable;
         Hashtable failConfigTable;
         string days;
+        TP TPsettings;
         public TestResults()
         {
             InitializeComponent();
+            TPsettings = new TP();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -394,24 +397,57 @@ namespace UI
         private void bugToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
+            //if it's a failure it will have 4 subitems (for now)
             if (node.SubItems.Count != 4)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
+                CRForm crform;
+                if (TPsettings.UserName == null || TPsettings.Password == null)
+                {
+                    crform = new CRForm();                    
+                }
+                else
+                {
+                    crform = new CRForm(TPsettings.UserName, TPsettings.Password);
+                }
+                crform.Show();
+                FillCrForm(crform);
             }
         }
 
-        private string GetSolutionName(TreeListNode selectedNode)
+        //make CR helper functions
+        #region CrFunctions
+        private string GetSolutionName()
         {
+            TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
             TreeListNode node = (TreeListNode)selectedNode.ParentNode();
             return node.Text;
         }
-
-        private string GetAutomationName(TreeListNode selectedNode)
+        private string GetAutomationName()
         {
+            TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
             return selectedNode.Text;
         }
+        private string GetFailureMsg()
+        {
+            TreeListNode selectedNode = treeListView1.SelectedNodes[0];
+            var subItem = selectedNode.SubItems[3];
+            return subItem.Text;
+        }
+        private void FillCrForm(CRForm LogBugCRDialog)
+        {
+            string solution = GetSolutionName();
+            char[] delimeters = {'_'};
+            string[] text = solution.Split(delimeters);
+            string platform = text[0];
+            LogBugCRDialog.NameTxtBox.Text = solution + " " + GetAutomationName();
+            LogBugCRDialog.NAStxtBox.Text = @"\\10.0.1.23\Dev_QA\Automated Tests\Tests" + 
+                platform + @"\" + solution + "_Debug.OpenSpan";
+            LogBugCRDialog.richTextBox1.Text = GetFailureMsg();
+        }
+        #endregion
     }
 }

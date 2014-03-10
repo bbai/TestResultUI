@@ -85,6 +85,11 @@
     <Compile Include="TestResults.Designer.cs">
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
+    <Compile Include="TP.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>TP.settings</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AcceptedFailure.resx">
@@ -102,6 +107,7 @@
     <EmbeddedResource Include="TestResults.resx">
       <DependentUpon>TestResults.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -111,8 +117,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="TP.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>TP.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutomateTP\AutomateTP\AutomateTP.csproj">
+      <Project>{CE7B3132-A66B-4816-BDC5-7A506148A83C}</Project>
+      <Name>AutomateTP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MongoDB\MongoDB.csproj">
       <Project>{13651E69-739E-498A-BD91-634C95EA3AFF}</Project>
       <Name>MongoDB</Name>
