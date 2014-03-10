@@ -30,6 +30,27 @@ namespace Mongo
             mFailureType = failureType;
             collection = mongoDB.GetCollection("UnitTestFailures");
         }
+        public string GetStatusMsg(string projectName, string runtimeVersion, string automationName)
+        {
+            var query = Query.And(Query.EQ("@project-name", mProjectName), Query.EQ("@runtime-version", mRuntimeVersion), Query.ElemMatch("failure.automation", Query.EQ("@name", automationName)));
+            MongoCursor<BsonDocument> cursor = collection.Find(query);
+            string statusMsg = string.Empty;
+            foreach (BsonDocument doc in cursor)
+            {
+                BsonDocument failure = doc["failure"].AsBsonDocument;
+                BsonArray automation = failure["automation"].AsBsonArray;
+                foreach (BsonDocument unitTest in automation)
+                {
+                    if (unitTest["@name"].Equals(automationName) == true)
+                    {
+                        BsonDocument status = unitTest["status"].AsBsonDocument;
+                        statusMsg = status["@message"].AsString;
+                    }
+                }
+            }
+            return statusMsg;
+        }
+
         public bool ProcessFailure(string message)
         {
             var query = Query.And(Query.EQ("@project-name", mProjectName), Query.EQ("@runtime-version", mRuntimeVersion));
