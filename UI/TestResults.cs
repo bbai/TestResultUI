@@ -396,7 +396,8 @@ namespace UI
             }
             else
             {
-                AcceptedFailure acceptedFailureDialog = new AcceptedFailure(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(node), node.SubItems[2].Text, GetAutomationName(node));
+                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "AcceptedFailure");
+                AcceptedFailure acceptedFailureDialog = new AcceptedFailure(failureTracker);
                 acceptedFailureDialog.Show();
             }
         }
@@ -412,13 +413,14 @@ namespace UI
             else
             {
                 CRForm crform;
-                if (TPsettings.UserName == null || TPsettings.Password == null)
+                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
+                if (TPsettings.UserName == "" || TPsettings.Password == "")
                 {
-                    crform = new CRForm();                    
+                    crform = new CRForm(failureTracker);                    
                 }
                 else
                 {
-                    crform = new CRForm(TPsettings.UserName, TPsettings.Password);
+                    crform = new CRForm(TPsettings.UserName, TPsettings.Password, failureTracker);
                 }
                 crform.Show();
                 FillCrForm(crform);
@@ -427,6 +429,12 @@ namespace UI
 
         //make CR helper functions
         #region CrFunctions
+
+        private string GetRuntimeVersion()
+        {
+            TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
+            return selectedNode.SubItems[2].Text;
+        }
         private string GetSolutionName()
         {
             TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
@@ -451,7 +459,7 @@ namespace UI
             string[] text = solution.Split(delimeters);
             string platform = text[0];
             LogBugCRDialog.NameTxtBox.Text = solution + " " + GetAutomationName();
-            LogBugCRDialog.NAStxtBox.Text = @"\\10.0.1.23\Dev_QA\Automated Tests\Tests" + 
+            LogBugCRDialog.NAStxtBox.Text = @"\\10.0.1.23\Dev_QA\Automated Tests\Tests\" + 
                 platform + @"\" + solution + "_Debug.OpenSpan";
             LogBugCRDialog.richTextBox1.Text = GetFailureMsg();
         }

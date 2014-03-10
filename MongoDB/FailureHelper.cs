@@ -13,19 +13,29 @@ namespace Mongo
     public class FailureHelper
     {
         public MongoCollection<BsonDocument> collection;
-        public FailureHelper(string serverAddr, string dbName)
+        private string mProjectName;
+        private string mRuntimeVersion;
+        private string mAutomationName;
+        private string mSuccess;
+        private string mFailureType;
+        public FailureHelper(string serverAddr, string port, string dbName, string projectName, string runTimeVersion, string automationName, string success, string failureType)
         {
-            MongoClient client = new MongoClient("mongodb://" + serverAddr);
+            MongoClient client = new MongoClient("mongodb://" + serverAddr + ":" + port);
             MongoServer server = client.GetServer();
             MongoDatabase mongoDB = server.GetDatabase(dbName);
+            mProjectName = projectName;
+            mRuntimeVersion = runTimeVersion;
+            mAutomationName = automationName;
+            mSuccess = success;
+            mFailureType = failureType;
             collection = mongoDB.GetCollection("UnitTestFailures");
         }
-        public bool ProcessFailure(string projectName, string runTimeVersion, string automationName, string success, string failureType, string message)
+        public bool ProcessFailure(string message)
         {
-            var query = Query.And(Query.EQ("@project-name", projectName), Query.EQ("@runtime-version", runTimeVersion));
+            var query = Query.And(Query.EQ("@project-name", mProjectName), Query.EQ("@runtime-version", mRuntimeVersion));
             MongoCursor<BsonDocument> cursor = collection.Find(query);
 
-            BsonDocument project = GetProject(cursor, projectName, runTimeVersion);
+            BsonDocument project = GetProject(cursor, mProjectName, mRuntimeVersion);
             BsonDocument failure = new BsonDocument();
             if (cursor.Count() != 0)
             {
@@ -40,7 +50,7 @@ namespace Mongo
             {
                 array = new BsonArray();
             }
-            array = AddFailureDetails(array, automationName, success, failureType, message);
+            array = AddFailureDetails(array, mAutomationName, mSuccess, mFailureType, message);
             BsonDocument doc = new BsonDocument();
             doc.Add("automation", array);
             if (cursor.Count() == 0)

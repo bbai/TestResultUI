@@ -13,17 +13,11 @@ namespace UI
     public partial class AcceptedFailure : Form
     {
 
-        FailureHelper failureTracker;
-        private string mProjectName;
-        private string mRuntimeVersion;
-        private string mAutomationName;
+        private FailureHelper mFailureTracker;
 
-        public AcceptedFailure(string serverAddr, string port, string dbName, string projectName, string runtimeVersion, string automationName)
+        public AcceptedFailure(FailureHelper failureTracker)
         {
-            failureTracker = new FailureHelper(serverAddr + ":" + port, dbName);
-            mProjectName = projectName;
-            mRuntimeVersion = runtimeVersion;
-            mAutomationName = automationName;
+            mFailureTracker = failureTracker;
             InitializeComponent();
         }
 
@@ -35,7 +29,7 @@ namespace UI
             }
             else
             {
-                bool status = failureTracker.ProcessFailure(mProjectName, mRuntimeVersion, mAutomationName, "False", "AcceptedFailure", textBox1.Text);
+                bool status = mFailureTracker.ProcessFailure(textBox1.Text);
                 if (status == true)
                 {
                     MessageBox.Show("Marking as Accepted Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);

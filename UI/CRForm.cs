@@ -7,18 +7,21 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
-
+using Mongo;
 namespace AutomateTP
 {
     public partial class CRForm : Form
     {
-        public CRForm()
+        private FailureHelper mFailureTracker;
+        public CRForm(FailureHelper failureTracker)
         {
+            mFailureTracker = failureTracker;
             InitializeComponent();
             TargetProcessHelper.client = new System.Net.WebClient();
         }
-        public CRForm(string user, string pw)
+        public CRForm(string user, string pw, FailureHelper failureTracker)
         {
+            mFailureTracker = failureTracker;
             //add in show user they don't have to enter user/pw
             TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(user, pw);
         }
@@ -105,6 +108,7 @@ namespace AutomateTP
             if (result != null)
             {
                 MessageBox.Show("Success! CR#" + result + " submitted.");
+                mFailureTracker.ProcessFailure("http://target.openspan.com/tp/entity/" + result);
                 this.Close();
             }
         }
