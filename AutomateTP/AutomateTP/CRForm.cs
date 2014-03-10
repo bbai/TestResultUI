@@ -26,16 +26,19 @@ namespace AutomateTP
         {
             try
             {
+                //if no info provided
                 if (usernameTxtBox.Text == null || passwordTxtBox.Text == null)
                 {
                     MessageBox.Show("Please enter a username and password.", "Login Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                //if credentials already provided
                 else if (TargetProcessHelper.client.Credentials != null)
                 {
                     usernameTxtBox.Text = "Already Logged In";
                     PrepareCR();
                 }
+                //set new credentials
                 else
                 {
                     TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(usernameTxtBox.Text,
@@ -44,6 +47,7 @@ namespace AutomateTP
                     PrepareCR();
                 }
             }
+            //check that user is authorized or entered correct username/password
             catch(WebException ex)
             {
                 if (ex.Message.Contains("The remote server returned an error: (401) Unauthorized."))
@@ -71,6 +75,8 @@ namespace AutomateTP
         {
             return new string[2]{usernameTxtBox.Text, passwordTxtBox.Text};
         }
+        //send information to TP to submitCR
+        #region TPstuff
         private string GetBugName()
         {
             return NameTxtBox.Text;
@@ -102,5 +108,6 @@ namespace AutomateTP
                 this.Close();
             }
         }
+        #endregion
     }
 }
