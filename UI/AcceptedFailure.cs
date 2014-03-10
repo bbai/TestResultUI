@@ -29,12 +29,19 @@ namespace UI
 
         private void button1_Click(object sender, EventArgs e)
         {
-            while (textBox1.Text.Count() == 0)
+            if (textBox1.Text.Count() == 0)
             {
                 MessageBox.Show("Please Enter Message!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            failureTracker.ProcessFailure(mProjectName, mRuntimeVersion, mAutomationName, "False", "AcceptedFailure", textBox1.Text);
-            this.Close();
+            else
+            {
+                bool status = failureTracker.ProcessFailure(mProjectName, mRuntimeVersion, mAutomationName, "False", "AcceptedFailure", textBox1.Text);
+                if (status == true)
+                {
+                    MessageBox.Show("Marking as Accepted Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                this.Close();
+            }
         }
     }
 }

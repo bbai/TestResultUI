@@ -66,7 +66,7 @@ namespace Mongo
             else
             {
                 ret.Add("@project-name", projectName);
-                ret.Add("@runtime-verison", runTimeVersion);
+                ret.Add("@runtime-version", runTimeVersion);
             }
             return ret;
         }

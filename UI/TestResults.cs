@@ -147,6 +147,7 @@ namespace UI
                             automation.SubItems.Add("\u2714");
                             automation.SubItems.Add(" ");
                             automation.SubItems.Add((string)list[0]);
+                            automation.Parent = project;
                             project.Nodes.Add(automation);
                         }
 
@@ -167,6 +168,7 @@ namespace UI
                                 automation.SubItems.Add("\u2714");
                                 automation.SubItems.Add((string)list[0]);
                                 automation.SubItems.Add((string)list[1]);
+                                automation.Parent = project;
                                 project.Nodes.Add(automation);
                             }
                             totalFailAllConfigCount += failTable.Count;
@@ -200,6 +202,7 @@ namespace UI
                                 automation.SubItems.Add("\u2714");
                                 automation.SubItems.Add((string)list[0]);
                                 automation.SubItems.Add((string)list[1]);
+                                automation.Parent = project;
                                 project.Nodes.Add(automation);
                             }
                             project.Text = projectName;
@@ -241,6 +244,7 @@ namespace UI
                                 node.SubItems.Add("\u2714");
                                 node.SubItems.Add(" ");
                                 node.SubItems.Add((string)list[0]);
+                                node.Parent = project;
                                 project.Nodes.Add(node);
                             }
 
@@ -257,6 +261,7 @@ namespace UI
                                         node.SubItems.Add("\u2714");
                                         node.SubItems.Add((string)list[0]);
                                         node.SubItems.Add((string)list[1]);
+                                        node.Parent = project;
                                         project.Nodes.Add(node);
                                     }
                                 }
@@ -295,6 +300,7 @@ namespace UI
                                         node.SubItems.Add("\u2714");
                                         node.SubItems.Add((string)list[0]);
                                         node.SubItems.Add((string)list[1]);
+                                        node.Parent = project;
                                         project.Nodes.Add(node);
                                     }
                                     project.SubItems.Add(Convert.ToString(failSet.Count));
@@ -329,13 +335,15 @@ namespace UI
                                 {
                                     TreeListNode automation = new TreeListNode();
                                     ArrayList list = (ArrayList)set[setKey];
-                                    automation.Text = key;
+                                    automation.Text = setKey;
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add("\u2714");
                                     automation.SubItems.Add((string)list[0]);
                                     automation.SubItems.Add((string)list[1]);
+                                    automation.Parent = project;
                                     project.Nodes.Add(automation);
                                 }
+                                failConfig.Nodes.Add(project);
                             }
                             failConfig.Text = configNames;
                             failConfig.SubItems.Add("0");
