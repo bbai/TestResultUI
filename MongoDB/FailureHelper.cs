@@ -30,14 +30,14 @@ namespace Mongo
             mFailureType = failureType;
             collection = mongoDB.GetCollection("UnitTestFailures");
         }
-        public string GetStatusMsg(string projectName, string runtimeVersion, string automationName)
+        public string GetStatusMsg(string solutionName, string runtimeVersion, string automationName)
         {
-            var query = Query.And(Query.EQ("@project-name", mProjectName), Query.EQ("@runtime-version", mRuntimeVersion), Query.ElemMatch("failure.automation", Query.EQ("@name", automationName)));
+            var query = Query.And(Query.EQ("@project-name", solutionName), Query.EQ("@runtime-version", runtimeVersion), Query.ElemMatch("failures.automation", Query.EQ("@name", automationName)));
             MongoCursor<BsonDocument> cursor = collection.Find(query);
             string statusMsg = string.Empty;
             foreach (BsonDocument doc in cursor)
             {
-                BsonDocument failure = doc["failure"].AsBsonDocument;
+                BsonDocument failure = doc["failures"].AsBsonDocument;
                 BsonArray automation = failure["automation"].AsBsonArray;
                 foreach (BsonDocument unitTest in automation)
                 {
@@ -47,6 +47,10 @@ namespace Mongo
                         statusMsg = status["@message"].AsString;
                     }
                 }
+            }
+            if (statusMsg.Equals(""))
+            {
+                statusMsg = "No status message.";
             }
             return statusMsg;
         }

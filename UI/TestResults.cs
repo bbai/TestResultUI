@@ -383,10 +383,12 @@ namespace UI
             }
             else
             {
-                MessageBox.Show("Marked as Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text,
+                    GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Failure");
+                failureTracker.ProcessFailure("Unknown");
+                MessageBox.Show("Successfully marked as Failure!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);      
             }
         }
-
         private void acceptedFailureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
@@ -464,5 +466,12 @@ namespace UI
             LogBugCRDialog.richTextBox1.Text = GetFailureMsg();
         }
         #endregion
+
+        private void seeStatusMessageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
+            string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
+            MessageBox.Show(msg, "Status Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
