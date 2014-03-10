@@ -372,7 +372,6 @@ namespace UI
             }
             else
             {
-
                 MessageBox.Show("Marked as Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -386,7 +385,7 @@ namespace UI
             }
             else
             {
-                AcceptedFailure acceptedFailureDialog = new AcceptedFailure();
+                AcceptedFailure acceptedFailureDialog = new AcceptedFailure(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(node), node.SubItems[2].Text, GetAutomationName(node));
                 acceptedFailureDialog.Show();
             }
         }

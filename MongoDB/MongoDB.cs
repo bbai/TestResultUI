@@ -48,20 +48,16 @@ namespace Mongo
             {
                 if (doc != null)
                 {
-                    BsonDocument testRun = doc["test-run"].AsBsonDocument;
-                    BsonArray testResults = new BsonArray();
-                    try
+                    BsonDocument testRun = doc["TestRun"].AsBsonDocument;
+                    BsonArray configs = testRun["Configuration"].AsBsonArray;
+                    foreach (BsonDocument config in configs)
                     {
-                        testResults = testRun["test-results"].AsBsonArray;
-                    }
-                    catch (InvalidCastException)
-                    {
-                        testResults.Add(testRun["test-results"].AsBsonDocument);
-                    }
-                    foreach (BsonDocument testResult in testResults)
-                    {
-                        numTotalTests += Convert.ToInt32(testResult["@total"].AsString);
-                        numFailureTests += Convert.ToInt32(testResult["@failures"].AsString);
+                        BsonArray testResults = config["test-results"].AsBsonArray;
+                        foreach (BsonDocument testResult in testResults)
+                        {
+                            numTotalTests += Convert.ToInt32(testResult["@total"].AsString);
+                            numFailureTests += Convert.ToInt32(testResult["@failures"].AsString);
+                        }
                     }
                 }
             }
@@ -77,45 +73,34 @@ namespace Mongo
         /// <returns>Hashtable that contains project-automation data</returns>
         public Hashtable GetProjectAutomationTable()
         {
-            var projectNames = collection.Distinct("test-run.test-results.@project-name").ToList();
+            var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
             Hashtable projectAutomationTable = new Hashtable();
             foreach (string project in projectNames)
             {
-                var query = Query.And(Query.GT("Date", mDate), Query.EQ("test-run.test-results.@project-name", project));
+                var query = Query.And(Query.GT("Date", mDate), Query.EQ("TestRun.Configuration.test-results.@project-name", project));
                 MongoCursor<BsonDocument> testCursor = collection.Find(query).SetLimit(1);
                 ArrayList automationNames = new ArrayList();
                 foreach (BsonDocument doc in testCursor)
                 {
-                    BsonDocument testRun = doc["test-run"].AsBsonDocument;
-                    BsonArray testResults = new BsonArray();
-                    try
+                    BsonDocument testRun = doc["TestRun"].AsBsonDocument;
+                    BsonArray configs = testRun["Configuration"].AsBsonArray;
+                    foreach (BsonDocument config in configs)
                     {
-                        testResults = testRun["test-results"].AsBsonArray;
-                    }
-                    catch (InvalidCastException)
-                    {
-                        testResults.Add(testRun["test-results"].AsBsonDocument);
-                    }
-                    foreach (BsonDocument testResult in testResults)
-                    {
-
-                        if (Convert.ToInt32(testResult["@total"]) != 0 && (testResult["@project-name"].Equals(project) == true))
+                        BsonArray testResults = config["test-results"].AsBsonArray;
+                        foreach (BsonDocument testResult in testResults)
                         {
-                            BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
-                            BsonDocument results = testSuite["results"].AsBsonDocument;
-                            BsonArray testCase = new BsonArray();
-                            try
+
+                            if (Convert.ToInt32(testResult["@total"]) != 0 && (testResult["@project-name"].Equals(project) == true))
                             {
-                                testCase = results["test-case"].AsBsonArray;
-                            }
-                            catch (InvalidCastException)
-                            {
-                                testCase.Add(results["test-case"].AsBsonDocument);
-                            }
-                            automationNames = new ArrayList();
-                            foreach (BsonDocument caseResult in testCase)
-                            {
-                                automationNames.Add(caseResult["@name"].AsString);
+                                BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
+                                BsonDocument results = testSuite["results"].AsBsonDocument;
+                                BsonArray testCase = results["test-case"].AsBsonArray;
+                                automationNames = new ArrayList();
+                                BsonDocument test = testCase[0].AsBsonDocument;
+                                foreach (BsonDocument caseResult in testCase)
+                                {
+                                    automationNames.Add(caseResult["@name"].AsString);
+                                }
                             }
                         }
                     }
@@ -136,7 +121,7 @@ namespace Mongo
             failAllConfigTable = new Hashtable();
             successConfigTable = new Hashtable();
             failConfigTable = new Hashtable();
-            var projectNames = collection.Distinct("test-run.test-results.@project-name").ToList();
+            var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
             Hashtable projectAutomationTable = this.GetProjectAutomationTable();
 
             int progress = 0;
@@ -149,7 +134,7 @@ namespace Mongo
                 foreach (string automation in automationNameList)
                 {
                     var queryResults1 = Query.And(Query.GT("Date", mDate),
-                                            Query.ElemMatch("test-run.test-results",
+                                            Query.ElemMatch("TestRun.Configuration.test-results",
                                                 Query.And(
                                                     Query.EQ("@project-name", project),
                                                     Query.ElemMatch("test-suite.results.test-case",
@@ -157,6 +142,7 @@ namespace Mongo
                                                             Query.EQ("@name", automation),
                                                             Query.EQ("@success", "True"))))));
                     MongoCursor<BsonDocument> testSuccess = collection.Find(queryResults1);
+                    /*
                     if (testSuccess.Count() == 0 && automationNameList.Count != 1)
                     {
                         queryResults1 = Query.And(
@@ -178,14 +164,15 @@ namespace Mongo
                                                 Query.EQ("test-run.test-results.test-suite.results.test-case.@success", "True")));
                         testSuccess = collection.Find(queryResults1);
                     }
-
+                    */
                     var queryResults2 = Query.And(Query.GT("Date", mDate),
-                                            Query.ElemMatch("test-run.test-results",
+                                            Query.ElemMatch("TestRun.Configuration.test-results",
                                                 Query.And(
                                                     Query.EQ("@project-name", project),
                                                             Query.ElemMatch("test-suite.results.test-case",
                                                             Query.EQ("@name", automation)))));
                     MongoCursor<BsonDocument> testAll = collection.Find(queryResults2);
+                    /*
                     if (testAll.Count() == 0 && automationNameList.Count != 1)
                     {
                         queryResults2 = Query.And(
@@ -206,8 +193,9 @@ namespace Mongo
                                                         Query.EQ("@name", automation))));
                         testAll = collection.Find(queryResults2);
                     }
+                     */
                     var queryResults3 = Query.And(Query.GT("Date", mDate),
-                                            Query.ElemMatch("test-run.test-results",
+                                            Query.ElemMatch("TestRun.Configuration.test-results",
                                                 Query.And(
                                                     Query.EQ("@project-name", project),
                                                             Query.ElemMatch("test-suite.results.test-case",
@@ -215,6 +203,7 @@ namespace Mongo
                                                                     Query.EQ("@name", automation),
                                                                     Query.EQ("@success", "False"))))));
                     MongoCursor<BsonDocument> testFail = collection.Find(queryResults3);
+                    /*
                     if (testFail.Count() == 0 && automationNameList.Count != 1)
                     {
                         queryResults3 = Query.And(
@@ -237,85 +226,90 @@ namespace Mongo
                                                     Query.EQ("test-results.test-suite.results.test-case.@success", "False")));
                         testFail = collection.Find(queryResults3);
                     }
+                     */
                     if (testSuccess.Count() != testAll.Count() && testSuccess.Count() != 0)
                     {
                         IEnumerable<BsonDocument> diffs = testAll.Except(testSuccess);
                         foreach (BsonDocument diffBson in diffs)
                         {
-                            BsonDocument testRun = diffBson["test-run"].AsBsonDocument;
-                            BsonArray testResults = new BsonArray();
-                            try
+                            BsonDocument testRun = diffBson["TestRun"].AsBsonDocument;
+                            BsonArray configs = testRun["Configuration"].AsBsonArray;
+                            foreach (BsonDocument config in configs)
                             {
-                                testResults = testRun["test-results"].AsBsonArray;
-                            }
-                            catch (InvalidCastException)
-                            {
-                                testResults.Add(testRun["test-results"].AsBsonDocument);
-                            }
-                            string version = testResults[0]["@runtime-version"].AsString;
-                            foreach (BsonDocument testResult in testResults)
-                            {
-                                BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
-                                BsonDocument results = testSuite["results"].AsBsonDocument;
-                                BsonArray testCase = new BsonArray();
+                                BsonArray testResults = new BsonArray();
                                 try
                                 {
-                                    testCase = results["test-case"].AsBsonArray;
+                                    testResults = testRun["test-results"].AsBsonArray;
                                 }
                                 catch (InvalidCastException)
                                 {
-                                    testCase.Add(results["test-case"].AsBsonDocument);
+                                    testResults.Add(testRun["test-results"].AsBsonDocument);
                                 }
-                                string errorMsg = string.Empty;
-                                foreach (BsonDocument test in testCase)
+                                string version = testResults[0]["@runtime-version"].AsString;
+                                foreach (BsonDocument testResult in testResults)
                                 {
-                                    if (test["@success"].Equals("False") && test["@name"].Equals(automation))
+                                    BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
+                                    BsonDocument results = testSuite["results"].AsBsonDocument;
+                                    BsonArray testCase = new BsonArray();
+                                    try
                                     {
-                                        BsonDocument failure = test["failure"].AsBsonDocument;
-                                        errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
+                                        testCase = results["test-case"].AsBsonArray;
                                     }
-                                }
-                                string key = testResult["@template-name"].AsString;
-                                if (failConfigTable.ContainsKey(key) == false)
-                                {
-                                    Hashtable projectTable = new Hashtable();
-                                    ArrayList list = new ArrayList();
-                                    Hashtable detailTable = new Hashtable();
-                                    list.Add(version);
-                                    list.Add(errorMsg);
-                                    detailTable.Add(automation, list);
-                                    projectTable.Add(project, detailTable);
-                                    failConfigTable.Add(key, projectTable);
-                                }
-                                else
-                                {
-                                    Hashtable table = (Hashtable)failConfigTable[key];
-                                    if (table == null)
+                                    catch (InvalidCastException)
                                     {
-                                        table = new Hashtable();
+                                        testCase.Add(results["test-case"].AsBsonDocument);
                                     }
-                                    if (table.ContainsKey(project))
+                                    string errorMsg = string.Empty;
+                                    foreach (BsonDocument test in testCase)
                                     {
-                                        Hashtable errorTable = (Hashtable)table[project];
-                                        if (errorTable.ContainsKey(automation) == false)
+                                        if (test["@success"].Equals("False") && test["@name"].Equals(automation))
                                         {
+                                            BsonDocument failure = test["failure"].AsBsonDocument;
+                                            errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
+                                        }
+                                    }
+                                    string key = testResult["@template-name"].AsString;
+                                    if (failConfigTable.ContainsKey(key) == false)
+                                    {
+                                        Hashtable projectTable = new Hashtable();
+                                        ArrayList list = new ArrayList();
+                                        Hashtable detailTable = new Hashtable();
+                                        list.Add(version);
+                                        list.Add(errorMsg);
+                                        detailTable.Add(automation, list);
+                                        projectTable.Add(project, detailTable);
+                                        failConfigTable.Add(key, projectTable);
+                                    }
+                                    else
+                                    {
+                                        Hashtable table = (Hashtable)failConfigTable[key];
+                                        if (table == null)
+                                        {
+                                            table = new Hashtable();
+                                        }
+                                        if (table.ContainsKey(project))
+                                        {
+                                            Hashtable errorTable = (Hashtable)table[project];
+                                            if (errorTable.ContainsKey(automation) == false)
+                                            {
+                                                ArrayList list = new ArrayList();
+                                                list.Add(version);
+                                                list.Add(errorMsg);
+                                                errorTable.Add(automation, list);
+                                                table[project] = errorTable;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Hashtable errorTable = new Hashtable();
                                             ArrayList list = new ArrayList();
                                             list.Add(version);
                                             list.Add(errorMsg);
                                             errorTable.Add(automation, list);
-                                            table[project] = errorTable;
+                                            table.Add(project, errorTable);
                                         }
+                                        failConfigTable[key] = table;
                                     }
-                                    else
-                                    {
-                                        Hashtable errorTable = new Hashtable();
-                                        ArrayList list = new ArrayList();
-                                        list.Add(version);
-                                        list.Add(errorMsg);
-                                        errorTable.Add(automation, list);
-                                        table.Add(project, errorTable);
-                                    }
-                                    failConfigTable[key] = table;
                                 }
                             }
                         }
@@ -325,68 +319,64 @@ namespace Mongo
                         IEnumerable<BsonDocument> diff = testAll.Except(testFail);
                         foreach (BsonDocument diffBson in diff)
                         {
-                            BsonDocument testRun = diffBson["test-run"].AsBsonDocument;
-                            BsonArray testResults = new BsonArray();
-                            try
+                            BsonDocument testRun = diffBson["TestRun"].AsBsonDocument;
+                            BsonArray configs = testRun["Configuration"].AsBsonArray;
+                            foreach (BsonDocument config in configs)
                             {
-                                testResults = testRun["test-results"].AsBsonArray;
-                            }
-                            catch (InvalidCastException)
-                            {
-                                testResults.Add(testRun["test-results"].AsBsonDocument);
-                            }
-                            string version = testResults[0]["@runtime-version"].AsString;
-                            foreach (BsonDocument testResult in testResults)
-                            {
-                                string key = testResults["@template-name"].AsString;
-                                if (successConfigTable.ContainsKey(key) == false)
+                                BsonArray testResults = config["test-results"].AsBsonArray;
+                                string version = testResults[0]["@runtime-version"].AsString;
+                                foreach (BsonDocument testResult in testResults)
                                 {
-                                    Hashtable projectTable = new Hashtable();
-                                    Hashtable detailTable = new Hashtable();
-                                    ArrayList list = new ArrayList();
-                                    list.Add(version);
-                                    detailTable.Add(automation, list);
-                                    projectTable.Add(project, detailTable);
-                                    successConfigTable.Add(key, projectTable);
-                                }
-                                else
-                                {
-                                    Hashtable table = (Hashtable)successConfigTable[key];
-                                    if (table == null)
+                                    string key = testResults["@template-name"].AsString;
+                                    if (successConfigTable.ContainsKey(key) == false)
                                     {
-                                        table = new Hashtable();
-                                    }
-                                    if (table.ContainsKey(project) == true)
-                                    {
-
-                                        Hashtable detailTable = (Hashtable)table[project];
+                                        Hashtable projectTable = new Hashtable();
+                                        Hashtable detailTable = new Hashtable();
                                         ArrayList list = new ArrayList();
-                                        if (detailTable.ContainsKey(automation) == false)
-                                        {
-                                            list.Add(version);
-                                            detailTable.Add(automation, list);
-                                        }
-                                        else
-                                        {
-                                            list = (ArrayList)detailTable[automation];
-                                            list.Add(version);
-                                            detailTable[automation] = list;
-                                        }
-                                        table[project] = detailTable;
+                                        list.Add(version);
+                                        detailTable.Add(automation, list);
+                                        projectTable.Add(project, detailTable);
+                                        successConfigTable.Add(key, projectTable);
                                     }
                                     else
                                     {
-                                        Hashtable detailTable = new Hashtable();
-
-                                        ArrayList list = new ArrayList();
-                                        if (detailTable.ContainsKey(automation) == false)
+                                        Hashtable table = (Hashtable)successConfigTable[key];
+                                        if (table == null)
                                         {
-                                            list.Add(version);
-                                            detailTable.Add(automation, list);
+                                            table = new Hashtable();
                                         }
-                                        table.Add(project, detailTable);
+                                        if (table.ContainsKey(project) == true)
+                                        {
+
+                                            Hashtable detailTable = (Hashtable)table[project];
+                                            ArrayList list = new ArrayList();
+                                            if (detailTable.ContainsKey(automation) == false)
+                                            {
+                                                list.Add(version);
+                                                detailTable.Add(automation, list);
+                                            }
+                                            else
+                                            {
+                                                list = (ArrayList)detailTable[automation];
+                                                list.Add(version);
+                                                detailTable[automation] = list;
+                                            }
+                                            table[project] = detailTable;
+                                        }
+                                        else
+                                        {
+                                            Hashtable detailTable = new Hashtable();
+
+                                            ArrayList list = new ArrayList();
+                                            if (detailTable.ContainsKey(automation) == false)
+                                            {
+                                                list.Add(version);
+                                                detailTable.Add(automation, list);
+                                            }
+                                            table.Add(project, detailTable);
+                                        }
+                                        successConfigTable[key] = table;
                                     }
-                                    successConfigTable[key] = table;
                                 }
                             }
                         }
@@ -424,38 +414,28 @@ namespace Mongo
                         string errorMsg = string.Empty;
                         foreach (BsonDocument fail in testFail)
                         {
-                            BsonDocument testRun = fail["test-run"].AsBsonDocument;
-                            BsonArray testResults = new BsonArray();
-                            try
+                            BsonDocument testRun = fail["TestRun"].AsBsonDocument;
+                            BsonArray configs = testRun["Configuration"].AsBsonArray;
+                            foreach (BsonDocument config in configs)
                             {
-                                testResults = testRun["test-results"].AsBsonArray;
-                            }
-                            catch (InvalidCastException)
-                            {
-                                testResults.Add(testRun["test-results"].AsBsonDocument);
-                            }
-                            foreach (BsonDocument testResult in testResults)
-                            {
-                                if (testResult["@project-name"].Equals(project) == true)
+                                BsonArray testResults = config["test-results"].AsBsonArray;
+                                foreach (BsonDocument testResult in testResults)
                                 {
-                                    BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
-                                    BsonDocument results = testSuite["results"].AsBsonDocument;
-                                    BsonArray testCase = new BsonArray();
-                                    try
+                                    if (testResult["@project-name"].Equals(project) == true)
                                     {
-                                        testCase = results["test-case"].AsBsonArray;
-                                    }
-                                    catch (InvalidCastException)
-                                    {
-                                        testCase.Add(results["test-case"].AsBsonDocument);
-                                    }
-                                    foreach (BsonDocument test in testCase)
-                                    {
-                                        if (test["@success"].Equals("False") && test["@name"].Equals(automation))
+                                        BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
+                                        BsonDocument results = testSuite["results"].AsBsonDocument;
+                                        BsonArray testCase = results["test-case"].AsBsonArray;
+                                        /*
+                                        foreach (BsonDocument test in testCase)
                                         {
-                                            BsonDocument failure = test["failure"].AsBsonDocument;
-                                            errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
+                                            if (test["@success"].Equals("False") && test["@name"].Equals(automation))
+                                            {
+                                                BsonDocument failure = test["failure"].AsBsonDocument;
+                                                errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
+                                            }
                                         }
+                                        */
                                     }
                                 }
                             }
@@ -493,17 +473,8 @@ namespace Mongo
 
         private string GetRuntimeVersion(BsonDocument firstElement)
         {
-            BsonDocument firtTestRun = firstElement["test-run"].AsBsonDocument;
-            BsonArray firstResults = new BsonArray();
-            try
-            {
-                firstResults = firtTestRun["test-results"].AsBsonArray;
-            }
-            catch (InvalidCastException)
-            {
-                firstResults.Add(firtTestRun["test-results"].AsBsonDocument);
-            }
-            return firstResults[0]["@runtime-version"].AsString;
+            BsonDocument firtTestRun = firstElement["TestRun"].AsBsonDocument;
+            return firtTestRun["@runtimeVersion"].AsString;
         }
     }
 }
