@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
@@ -23,22 +24,38 @@ namespace AutomateTP
         }
         private void credentialsBtn_Click(object sender, EventArgs e)
         {
-            if (usernameTxtBox.Text == null || passwordTxtBox.Text == null)
+            try
             {
-                MessageBox.Show("Please enter a username and password.", "Login Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else if (TargetProcessHelper.client.Credentials != null)
-            {
-                usernameTxtBox.Text = "Already Logged In";
-                PrepareCR();
-            }
-            else
-            {
-                TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(usernameTxtBox.Text,
-                    passwordTxtBox.Text);
+                if (usernameTxtBox.Text == null || passwordTxtBox.Text == null)
+                {
+                    MessageBox.Show("Please enter a username and password.", "Login Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (TargetProcessHelper.client.Credentials != null)
+                {
+                    usernameTxtBox.Text = "Already Logged In";
+                    PrepareCR();
+                }
+                else
+                {
+                    TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(usernameTxtBox.Text,
+                        passwordTxtBox.Text);
 
-                PrepareCR();
+                    PrepareCR();
+                }
+            }
+            catch(WebException ex)
+            {
+                if (ex.Message.Contains("The remote server returned an error: (401) Unauthorized."))
+                {
+                    MessageBox.Show("Incorrect UserName or Password", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    TargetProcessHelper.client.Credentials = null;
+                }
+                else 
+                {
+                    throw;
+                }               
             }
         }
         private void PrepareCR()
