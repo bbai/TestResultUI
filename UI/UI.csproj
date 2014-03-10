@@ -133,10 +133,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutomateTP\AutomateTP\AutomateTP.csproj">
-      <Project>{CE7B3132-A66B-4816-BDC5-7A506148A83C}</Project>
-      <Name>AutomateTP</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MongoDB\MongoDB.csproj">
       <Project>{13651E69-739E-498A-BD91-634C95EA3AFF}</Project>
       <Name>MongoDB</Name>
