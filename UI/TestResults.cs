@@ -14,6 +14,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
+using AutomateTP;
 
 namespace UI
 {
@@ -25,9 +26,11 @@ namespace UI
         Hashtable successConfigTable;
         Hashtable failConfigTable;
         string days;
+        TP TPsettings;
         public TestResults()
         {
             InitializeComponent();
+            TPsettings = new TP();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -401,9 +404,17 @@ namespace UI
             }
             else
             {
-                LogBugCR logBugCRDialog = new LogBugCR();
-                logBugCRDialog.Show();
-                FillCrForm(logBugCRDialog);
+                CRForm crform;
+                if (TPsettings.UserName == null || TPsettings.Password == null)
+                {
+                    crform = new CRForm();                    
+                }
+                else
+                {
+                    crform = new CRForm(TPsettings.UserName, TPsettings.Password);
+                }
+                crform.Show();
+                FillCrForm(crform);
             }
         }
 
@@ -426,10 +437,16 @@ namespace UI
             var subItem = selectedNode.SubItems[3];
             return subItem.Text;
         }
-        private void FillCrForm(LogBugCR LogBugCRDialog)
+        private void FillCrForm(CRForm LogBugCRDialog)
         {
-            LogBugCRDialog.nameTxt.Text = GetSolutionName() + " " + GetAutomationName();
-            LogBugCRDialog.failureMsgTxt.Text = GetFailureMsg();
+            string solution = GetSolutionName();
+            char[] delimeters = {'_'};
+            string[] text = solution.Split(delimeters);
+            string platform = text[0];
+            LogBugCRDialog.NameTxtBox.Text = solution + " " + GetAutomationName();
+            LogBugCRDialog.NAStxtBox.Text = @"\\10.0.1.23\Dev_QA\Automated Tests\Tests" + 
+                platform + @"\" + solution + "_Debug.OpenSpan";
+            LogBugCRDialog.richTextBox1.Text = GetFailureMsg();
         }
         #endregion
     }

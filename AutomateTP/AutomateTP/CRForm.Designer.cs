@@ -126,7 +126,6 @@
             this.ProjectLbl.Size = new System.Drawing.Size(52, 17);
             this.ProjectLbl.TabIndex = 9;
             this.ProjectLbl.Text = "Project";
-            this.ProjectLbl.Click += new System.EventHandler(this.label1_Click);
             // 
             // ProjectComboBox
             // 
@@ -246,14 +245,14 @@
         private System.Windows.Forms.Label NameLbl;
         private System.Windows.Forms.Label FailureMsgLbl;
         private System.Windows.Forms.Label NASlbl;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.TextBox NAStxtBox;
-        private System.Windows.Forms.TextBox NameTxtBox;
+        public System.Windows.Forms.RichTextBox richTextBox1;
+        public System.Windows.Forms.TextBox NAStxtBox;
+        public System.Windows.Forms.TextBox NameTxtBox;
         private System.Windows.Forms.ComboBox ProjectComboBox;
         private System.Windows.Forms.Label UsernameLbl;
         private System.Windows.Forms.Label PasswordLbl;
-        private System.Windows.Forms.TextBox usernameTxtBox;
-        private System.Windows.Forms.TextBox passwordTxtBox;
+        public System.Windows.Forms.TextBox usernameTxtBox;
+        public System.Windows.Forms.TextBox passwordTxtBox;
         private System.Windows.Forms.GroupBox TPgroupBox;
         private System.Windows.Forms.Button credentialsBtn;
         private System.Windows.Forms.Label LoginCompleteLbl;

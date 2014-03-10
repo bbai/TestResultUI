@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using System.Windows.Forms;
 
 
 namespace AutomateTP
@@ -30,16 +31,15 @@ namespace AutomateTP
             return this.Name;
         }
     }
-
     public static class TargetProcessHelper
     {
-        public static string authInfo{get; set;}
+        public static WebClient client;
         public static List<ProjectInfo> GetProjects()
         {
             string url = "http://target.openspan.com/tp/api/v1/Projects/";
-            string results = HttpGet(url);
+            string xmlResults = client.DownloadString(url);
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(results);
+            doc.LoadXml(xmlResults);
             List<ProjectInfo> projects = new List<ProjectInfo>();
             foreach (XmlNode node in doc.SelectNodes("/Projects/Project"))
             {               
@@ -53,9 +53,9 @@ namespace AutomateTP
         public static List<UserStoryInfo> GetUserStories()
         {
             string url = "http://target.openspan.com/tp/api/v1/UserStories/";
-            string results = HttpGet(url);
+            string xmlResults = client.DownloadString(url);
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(results);
+            doc.LoadXml(xmlResults);
             List<UserStoryInfo> userStories = new List<UserStoryInfo>();
             foreach (XmlNode node in doc.SelectNodes("/UserStories/UserStory"))
             {
@@ -66,96 +66,30 @@ namespace AutomateTP
             }
             return userStories;
         }
-        public static void MakeCR(ProjectInfo project, UserStoryInfo userStory, string name, string NAS, string msg)
+
+        public static string MakeCR(ProjectInfo project, UserStoryInfo userStory, string name, string NAS, string msg)
         {
             string url = "http://target.openspan.com/tp/api/v1/Bugs";
-            //string xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>";
-            string xml = @"<Bug Name=""CR-" + name + @""">";
-            xml = xml + "<Description><div>" + msg + " " + NAS + "</div></Description>";
-            xml = xml + @"<Project ID=""" + project.ID + @""" Name=""" + project.Name + @"""/>";
-            xml = xml + @"<UserStory ID=""" + userStory.ID + @""" Name=""" + userStory.Name + @"""/>";
-            //xml = xml + "<ProjectID>" + project.ID + "</ProjectID>";
-            //xml = xml + "<UserStoryID>" + userStory.ID + "</UserStoryID>";
-            //xml = xml + "<ProjectName>" + project + "</ProjectName>";
-            //xml = xml + "<UserStoryName>" + userStory + "</UserStoryName>";
-            xml = xml + "</Bug>";
-            HttpPost(url, xml);           
-        }
-        #region HttpHelp
-        public static string HttpGet(string url)
-        {
-            return ExecuteRequest(url, "Get", string.Empty);
-        }
-
-        private static string HttpDelete(string url)
-        {
-            return ExecuteRequest(url, "DELETE", string.Empty);
-        }
-
-        private static string HttpPut(string url)
-        {
-            return ExecuteRequest(url, "PUT", string.Empty);
-        }
-
-        private static string HttpPut(string url, string bodyXml)
-        {
-            return ExecuteRequest(url, "PUT", bodyXml);
-        }
-
-        public static string HttpPost(string url)
-        {
-            return ExecuteRequest(url, "POST", string.Empty);
-        }
-
-        private static string HttpPost(string url, string bodyXml)
-        {
-            return ExecuteRequest(url, "POST", bodyXml);
-        }
-
-        private static string ExecuteRequest(string url, string method, string bodyXml)
-        {
-            HttpWebRequest request = GetWebRequest(url, method);
-            if (string.IsNullOrEmpty(bodyXml) == false)
+            string xml = string.Format(@"<Bug Name =""CR - {0}""><Description>&lt;div&gt;{1}\n{2}&lt;/div&gt;</Description><Project Id=""{3}""/><UserStory Id=""{4}""/></Bug>",
+                name, NAS, msg, project.ID, userStory.ID);
+            client.Headers["Content-Type"] = "application/xml";
+            //client.Headers["Content-Length"] = (xml.Length).ToString();
+            string bugId = string.Empty;
+            try
             {
-                byte[] data = UTF8Encoding.UTF8.GetBytes(bodyXml);
-                request.ContentLength = data.Length;
-                // Send the request:
-                using (Stream post = request.GetRequestStream())
-                {
-                    post.Write(data, 0, data.Length);
-                }
-            }            
-            return ReadResponse(request);
-        }
-        private static string ReadResponse(HttpWebRequest request)
-        {
-            string result;
-            using (HttpWebResponse resp = request.GetResponse()
-                                                    as HttpWebResponse)
-            {
-                StreamReader reader =
-                     new StreamReader(resp.GetResponseStream());
-                result = reader.ReadToEnd();
+                string stringResult = client.UploadString(url, "POST", xml);
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(stringResult);
+                XmlNode bug = doc.SelectSingleNode("/Bug");
+                bugId = bug.Attributes["Id"].Value;
+                return bugId;
             }
-
-            return result;
-        }
-        private static HttpWebRequest GetWebRequest(string url, string method)
-        {
-            HttpWebRequest req = WebRequest.Create(new Uri(url)) as HttpWebRequest;
-            req.Method = method;
-            req.ContentType = "application/xml";
-            req.KeepAlive = false;
-            req.Accept = "application/xml";
-            req.Headers["Authorization"] = "Basic " + authInfo;
-            return req;
-        }
-        #endregion
-        private static string UrlCombine(string uri1, string uri2)
-        {
-            uri1 = uri1.TrimEnd('/');
-            uri2 = uri2.TrimStart('/');
-            return string.Format("{0}/{1}", uri1, uri2);
+            catch (WebException e)
+            {
+                MessageBox.Show(e.Status + " " + e.Message + " " + e.InnerException,
+                    "WebException", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
         }
     }
 }

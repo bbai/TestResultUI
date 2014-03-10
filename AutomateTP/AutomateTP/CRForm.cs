@@ -14,22 +14,45 @@ namespace AutomateTP
         public CRForm()
         {
             InitializeComponent();
+            TargetProcessHelper.client = new System.Net.WebClient();
         }
-
-        private void label1_Click(object sender, EventArgs e)
+        public CRForm(string user, string pw)
         {
-
+            //add in show user they don't have to enter user/pw
+            TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(user, pw);
         }
-
         private void credentialsBtn_Click(object sender, EventArgs e)
         {
-            TargetProcessHelper.authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(usernameTxtBox.Text 
-                + ":" + passwordTxtBox.Text));
+            if (usernameTxtBox.Text == null || passwordTxtBox.Text == null)
+            {
+                MessageBox.Show("Please enter a username and password.", "Login Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (TargetProcessHelper.client.Credentials != null)
+            {
+                usernameTxtBox.Text = "Already Logged In";
+                PrepareCR();
+            }
+            else
+            {
+                TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(usernameTxtBox.Text,
+                    passwordTxtBox.Text);
+
+                PrepareCR();
+            }
+        }
+        private void PrepareCR()
+        {
             ProjectComboBox.Items.AddRange(TargetProcessHelper.GetProjects().ToArray());
             userStoryComboBox.Items.AddRange(TargetProcessHelper.GetUserStories().ToArray());
             userStoryComboBox.Items.Add(string.Empty);
             SubmitCRBtn.Enabled = true;
             LoginCompleteLbl.Visible = true;
+        }
+        //currently not used. Need to find a good time to use TestResults.cs to call this one.
+        public string[] SendAuth()
+        {
+            return new string[2]{usernameTxtBox.Text, passwordTxtBox.Text};
         }
         private string GetBugName()
         {
@@ -54,8 +77,13 @@ namespace AutomateTP
 
         private void SubmitCRBtn_Click(object sender, EventArgs e)
         {
-            TargetProcessHelper.MakeCR(GetChosenProject(), GetChosenUserStory(), 
+            string result = TargetProcessHelper.MakeCR(GetChosenProject(), GetChosenUserStory(), 
                 GetBugName(), GetBugLocation(), GetFailMessage());
+            if (result != null)
+            {
+                MessageBox.Show("Success! CR#" + result + " submitted.");
+                this.Close();
+            }
         }
     }
 }

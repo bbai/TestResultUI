@@ -7,7 +7,6 @@ namespace AutomateTP
 {
     class RunForm
     {
-        private string authInfo { set; get; }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
