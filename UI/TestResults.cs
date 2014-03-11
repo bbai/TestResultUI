@@ -15,6 +15,7 @@ using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
 
+
 namespace UI
 {
     public partial class TestResults : Form
@@ -518,13 +519,16 @@ namespace UI
 
         private void treeListView1_MouseClick(object sender, MouseEventArgs e)
         {
-            var selectedNodes = treeListView1.SelectedNodes;
-            if (e.Button == MouseButtons.Right && selectedNodes.Count == 1)
+            if (e.Button == MouseButtons.Right)
             {
-                foreach (TreeListNode node in selectedNodes)
+                TreeListNode node = (treeListView1.GetNodeAt(e.X, e.Y));
+                if (node != null)
                 {
+                    treeListView1.SelectedNodes[0] = node;
                     if (node.FirstChild() == null)
+                    {
                         this.contextMenuStrip1.Show(this.treeListView1, e.Location);
+                    }
                 }
             }
         }
