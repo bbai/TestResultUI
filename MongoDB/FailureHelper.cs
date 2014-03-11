@@ -108,13 +108,31 @@ namespace Mongo
 
         public BsonArray AddFailureDetails(BsonArray automation, string automationName, string success, string failureType, string message)
         {
+            BsonArray automationSet = automation;
+            int index = 0;
+            int deleteIndex = 0;
+            bool delete = false;
+            foreach (BsonDocument unitTest in automationSet)
+            {
+                if (unitTest["@name"].Equals(automationName) == true)
+                {
+                    delete = true;
+                    deleteIndex = index;
+                }
+                index++;
+            }
+
+            if (delete == true)
+            {
+                automationSet.RemoveAt(deleteIndex);
+            }
             BsonDocument doc = new BsonDocument
             {
                 {"@name", automationName},
                 {"@success", success},
                 {"status", new BsonDocument{{"@failure-type", failureType}, {"@message", message}}}
             };
-            BsonArray array = automation;
+            BsonArray array = automationSet;
             array.Add(doc);
             return array;
         }
