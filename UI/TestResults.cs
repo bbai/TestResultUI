@@ -15,6 +15,7 @@ using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
 
+
 namespace UI
 {
     public partial class TestResults : Form
@@ -546,7 +547,6 @@ namespace UI
                 }
             }
         }
-
         private void failureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
@@ -647,7 +647,7 @@ namespace UI
         {
             FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
             string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
-            DialogResult result = MessageBox.Show(msg, "Do you want to copy the message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            DialogResult result = MessageBox.Show(msg, "Copy this message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
                 Clipboard.SetText(msg);

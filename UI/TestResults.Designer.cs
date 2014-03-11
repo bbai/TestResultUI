@@ -76,11 +76,11 @@
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(13, 11);
+            this.groupBox1.Location = new System.Drawing.Point(10, 10);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox1.Size = new System.Drawing.Size(1247, 92);
+            this.groupBox1.Size = new System.Drawing.Size(1250, 90);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Database Login";
@@ -268,12 +268,12 @@
             this.treeListView1.ItemHeight = 20;
             this.treeListView1.ItemMenu = null;
             this.treeListView1.LabelEdit = false;
-            this.treeListView1.Location = new System.Drawing.Point(13, 108);
+            this.treeListView1.Location = new System.Drawing.Point(10, 110);
             this.treeListView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.treeListView1.Name = "treeListView1";
             this.treeListView1.RowSelectColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
             this.treeListView1.RowTrackColor = System.Drawing.Color.Empty;
-            this.treeListView1.Size = new System.Drawing.Size(1248, 637);
+            this.treeListView1.Size = new System.Drawing.Size(1250, 635);
             this.treeListView1.SmallImageList = null;
             this.treeListView1.StateImageList = null;
             this.treeListView1.TabIndex = 1;
