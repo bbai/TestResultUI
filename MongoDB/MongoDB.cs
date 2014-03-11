@@ -295,7 +295,6 @@ namespace Mongo
                                                     list.Add(failureType);
                                                     list.Add(version);
                                                     list.Add(errorMsg);
-                                                    list.Add(failureMsg);
                                                     detailTable.Add(automation, list);
                                                     projectTable.Add(project, detailTable);
                                                     failConfigTable.Add(key, projectTable);
@@ -316,7 +315,6 @@ namespace Mongo
                                                             list.Add(failureType);
                                                             list.Add(version);
                                                             list.Add(errorMsg);
-                                                            list.Add(failureMsg);
                                                             errorTable.Add(automation, list);
                                                             table[project] = errorTable;
                                                         }
@@ -328,7 +326,6 @@ namespace Mongo
                                                         list.Add(failureType);
                                                         list.Add(version);
                                                         list.Add(errorMsg);
-                                                        list.Add(failureMsg);
                                                         errorTable.Add(automation, list);
                                                         table.Add(project, errorTable);
                                                     }
@@ -515,7 +512,6 @@ namespace Mongo
                             list.Add(failureType);
                             list.Add(version);
                             list.Add(errorMsg);
-                            list.Add(failureMsg);
                             Hashtable table = new Hashtable();
                             table.Add(automation, list);
                             failAllConfigTable.Add(project, table);
@@ -531,7 +527,6 @@ namespace Mongo
                             list.Add(failureType);
                             list.Add(version);
                             list.Add(errorMsg);
-                            list.Add(failureMsg);
                             table[automation] = list;
                             failAllConfigTable[project] = table;
                         }
