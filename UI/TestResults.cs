@@ -140,8 +140,12 @@ namespace UI
 
                 successAllConfigTable = mongo.successAllConfigTable;
                 failAllConfigTable = mongo.failAllConfigTable;
-                var successKeys = successAllConfigTable.Keys;
-                var failKeys = failAllConfigTable.Keys;
+                var successKey = successAllConfigTable.Keys;
+                List<string> successKeys = successKey.Cast<string>().ToList();
+                successKeys.Sort();
+                var failKey = failAllConfigTable.Keys;
+                List<string> failKeys = failKey.Cast<string>().ToList();
+                failKeys.Sort();
                 int totalSuccessAllConfigCount = 0;
                 int totalFailAllConfigCount = 0;
                 int acceptedFailureAllConfigCount = 0;
@@ -291,8 +295,9 @@ namespace UI
 
                 successConfigTable = mongo.successConfigTable;
                 failConfigTable = mongo.failConfigTable;
-                var successConfigKeys = successConfigTable.Keys;
-
+                var successConfigKey = successConfigTable.Keys;
+                List<string> successConfigKeys = successConfigKey.Cast<string>().ToList();
+                successConfigKeys.Sort();
 
                 foreach (string configNames in successConfigKeys)
                 {
@@ -303,7 +308,9 @@ namespace UI
                     TreeListNode configs = new TreeListNode();
                     Hashtable table = (Hashtable)successConfigTable[configNames];
                     Hashtable failTable = (Hashtable)failConfigTable[configNames];
-                    var keys = table.Keys;
+                    var keyTable = table.Keys;
+                    List<string> keys = keyTable.Cast<string>().ToList();
+                    keys.Sort();
                     foreach (string key in keys)
                     {
                         int acceptedFailCount = 0;
@@ -389,7 +396,9 @@ namespace UI
                     {
                         int acceptedFailCount = 0;
                         int bugFailCount = 0;
-                        var failConfKeys = failTable.Keys;
+                        var failConfKey = failTable.Keys;
+                        List<string> failConfKeys = failConfKey.Cast<string>().ToList();
+                        failConfKeys.Sort();
                         foreach (string key in failConfKeys)
                         {
                             if (table.ContainsKey(key) == false)
@@ -448,7 +457,9 @@ namespace UI
                     tln.Nodes.Add(configs);
                 }
 
-                var failConfigKeys = failConfigTable.Keys;
+                var failConfigKey = failConfigTable.Keys;
+                List<string> failConfigKeys = failConfigKey.Cast<string>().ToList();
+                failConfigKeys.Sort();
                 foreach (string configNames in failConfigKeys)
                 {
                     int acceptedFailCount = 0;
@@ -458,7 +469,9 @@ namespace UI
                     Hashtable table = (Hashtable)failConfigTable[configNames];
                     if (successConfigTable.ContainsKey(configNames) == false)
                     {
-                        var keys = table.Keys;
+                        var keyTable = table.Keys;
+                        List<string> keys = keyTable.Cast<string>().ToList();
+                        keys.Sort();
                         foreach (string key in keys)
                         {
                             project.Text = key;
