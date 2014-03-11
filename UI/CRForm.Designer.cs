@@ -61,7 +61,7 @@
             this.TPgroupBox.Controls.Add(this.passwordTxtBox);
             this.TPgroupBox.Controls.Add(this.PasswordLbl);
             this.TPgroupBox.Controls.Add(this.usernameTxtBox);
-            this.TPgroupBox.Location = new System.Drawing.Point(16, 23);
+            this.TPgroupBox.Location = new System.Drawing.Point(10, 10);
             this.TPgroupBox.Name = "TPgroupBox";
             this.TPgroupBox.Size = new System.Drawing.Size(532, 130);
             this.TPgroupBox.TabIndex = 1;
@@ -230,7 +230,7 @@
             this.groupBox1.Controls.Add(this.NameTxtBox);
             this.groupBox1.Controls.Add(this.richTextBox1);
             this.groupBox1.Controls.Add(this.NAStxtBox);
-            this.groupBox1.Location = new System.Drawing.Point(16, 148);
+            this.groupBox1.Location = new System.Drawing.Point(10, 150);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(532, 476);
             this.groupBox1.TabIndex = 15;
@@ -241,7 +241,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
-            this.ClientSize = new System.Drawing.Size(560, 636);
+            this.ClientSize = new System.Drawing.Size(552, 636);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.TPgroupBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
