@@ -103,7 +103,7 @@ namespace UI
                 treeListView1.Nodes.Clear();
 
                 int[] results = mongo.GetNumTotalAndFail();
-                if (treeListView1.Columns.Count != 5)
+                if (treeListView1.Columns.Count != 7)
                 {
                     treeListView1.Columns.Clear();
                     ToggleColumnHeader tch = new ToggleColumnHeader();
@@ -115,6 +115,12 @@ namespace UI
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Fail";
+                    treeListView1.Columns.Add(tch);
+                    tch = new ToggleColumnHeader();
+                    tch.Text = "Accepted";
+                    treeListView1.Columns.Add(tch);
+                    tch = new ToggleColumnHeader();
+                    tch.Text = "Bugs";
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Last Runtime Version";
@@ -152,6 +158,8 @@ namespace UI
                             automation.Text = key;
                             automation.SubItems.Add("\u2714");
                             automation.SubItems.Add(" ");
+                            automation.SubItems.Add(" ");
+                            automation.SubItems.Add(" ");
                             automation.SubItems.Add((string)list[0]);
                             automation.Parent = project;
                             project.Nodes.Add(automation);
@@ -172,6 +180,8 @@ namespace UI
                                 automation.Text = key;
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[0]);
                                 automation.SubItems.Add((string)list[1]);
                                 automation.Parent = project;
@@ -206,6 +216,8 @@ namespace UI
                                 automation.Text = key;
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[0]);
                                 automation.SubItems.Add((string)list[1]);
                                 automation.Parent = project;
@@ -249,6 +261,8 @@ namespace UI
                                 node.Text = automation;
                                 node.SubItems.Add("\u2714");
                                 node.SubItems.Add(" ");
+                                node.SubItems.Add(" ");
+                                node.SubItems.Add(" ");
                                 node.SubItems.Add((string)list[0]);
                                 node.Parent = project;
                                 project.Nodes.Add(node);
@@ -265,6 +279,8 @@ namespace UI
                                         node.Text = automation;
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[0]);
                                         node.SubItems.Add((string)list[1]);
                                         node.Parent = project;
@@ -304,6 +320,8 @@ namespace UI
                                         node.Text = automation;
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[0]);
                                         node.SubItems.Add((string)list[1]);
                                         node.Parent = project;
@@ -344,6 +362,8 @@ namespace UI
                                     automation.Text = setKey;
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add("\u2714");
+                                    automation.SubItems.Add(" ");
+                                    automation.SubItems.Add(" ");
                                     automation.SubItems.Add((string)list[0]);
                                     automation.SubItems.Add((string)list[1]);
                                     automation.Parent = project;
