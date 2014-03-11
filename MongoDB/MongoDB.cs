@@ -233,82 +233,73 @@ namespace Mongo
                         foreach (BsonDocument diffBson in diffs)
                         {
                             BsonDocument testRun = diffBson["TestRun"].AsBsonDocument;
+                            string version = testRun["@runtimeVersion"].AsString;
                             BsonArray configs = testRun["Configuration"].AsBsonArray;
                             foreach (BsonDocument config in configs)
                             {
-                                BsonArray testResults = new BsonArray();
-                                try
-                                {
-                                    testResults = testRun["test-results"].AsBsonArray;
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    testResults.Add(testRun["test-results"].AsBsonDocument);
-                                }
-                                string version = testResults[0]["@runtime-version"].AsString;
+                                BsonArray testResults = config["test-results"].AsBsonArray;
+                                string key = config["@templateName"].AsString;
                                 foreach (BsonDocument testResult in testResults)
                                 {
-                                    BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
-                                    BsonDocument results = testSuite["results"].AsBsonDocument;
-                                    BsonArray testCase = new BsonArray();
-                                    try
+                                    if (testResult["@project-name"].Equals(project) == true)
                                     {
-                                        testCase = results["test-case"].AsBsonArray;
-                                    }
-                                    catch (InvalidCastException)
-                                    {
-                                        testCase.Add(results["test-case"].AsBsonDocument);
-                                    }
-                                    string errorMsg = string.Empty;
-                                    foreach (BsonDocument test in testCase)
-                                    {
-                                        if (test["@success"].Equals("False") && test["@name"].Equals(automation))
+                                        BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
+                                        BsonDocument results = testSuite["results"].AsBsonDocument;
+                                        BsonArray testCase = testCase = results["test-case"].AsBsonArray;
+                                        string errorMsg = string.Empty;
+
+                                        foreach (BsonDocument test in testCase)
                                         {
-                                            BsonDocument failure = test["failure"].AsBsonDocument;
-                                            errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
-                                        }
-                                    }
-                                    string key = testResult["@template-name"].AsString;
-                                    if (failConfigTable.ContainsKey(key) == false)
-                                    {
-                                        Hashtable projectTable = new Hashtable();
-                                        ArrayList list = new ArrayList();
-                                        Hashtable detailTable = new Hashtable();
-                                        list.Add(version);
-                                        list.Add(errorMsg);
-                                        detailTable.Add(automation, list);
-                                        projectTable.Add(project, detailTable);
-                                        failConfigTable.Add(key, projectTable);
-                                    }
-                                    else
-                                    {
-                                        Hashtable table = (Hashtable)failConfigTable[key];
-                                        if (table == null)
-                                        {
-                                            table = new Hashtable();
-                                        }
-                                        if (table.ContainsKey(project))
-                                        {
-                                            Hashtable errorTable = (Hashtable)table[project];
-                                            if (errorTable.ContainsKey(automation) == false)
+                                            if (test["@success"].Equals("False") && test["@name"].Equals(automation))
                                             {
-                                                ArrayList list = new ArrayList();
-                                                list.Add(version);
-                                                list.Add(errorMsg);
-                                                errorTable.Add(automation, list);
-                                                table[project] = errorTable;
+                                                /*
+                                                BsonDocument failure = test["failure"].AsBsonDocument;
+                                                errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
+                                                 */
+                                                
+                                                if (failConfigTable.ContainsKey(key) == false)
+                                                {
+                                                    Hashtable projectTable = new Hashtable();
+                                                    ArrayList list = new ArrayList();
+                                                    Hashtable detailTable = new Hashtable();
+                                                    list.Add(version);
+                                                    list.Add(errorMsg);
+                                                    detailTable.Add(automation, list);
+                                                    projectTable.Add(project, detailTable);
+                                                    failConfigTable.Add(key, projectTable);
+                                                }
+                                                else
+                                                {
+                                                    Hashtable table = (Hashtable)failConfigTable[key];
+                                                    if (table == null)
+                                                    {
+                                                        table = new Hashtable();
+                                                    }
+                                                    if (table.ContainsKey(project))
+                                                    {
+                                                        Hashtable errorTable = (Hashtable)table[project];
+                                                        if (errorTable.ContainsKey(automation) == false)
+                                                        {
+                                                            ArrayList list = new ArrayList();
+                                                            list.Add(version);
+                                                            list.Add(errorMsg);
+                                                            errorTable.Add(automation, list);
+                                                            table[project] = errorTable;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        Hashtable errorTable = new Hashtable();
+                                                        ArrayList list = new ArrayList();
+                                                        list.Add(version);
+                                                        list.Add(errorMsg);
+                                                        errorTable.Add(automation, list);
+                                                        table.Add(project, errorTable);
+                                                    }
+                                                    failConfigTable[key] = table;
+                                                }
                                             }
                                         }
-                                        else
-                                        {
-                                            Hashtable errorTable = new Hashtable();
-                                            ArrayList list = new ArrayList();
-                                            list.Add(version);
-                                            list.Add(errorMsg);
-                                            errorTable.Add(automation, list);
-                                            table.Add(project, errorTable);
-                                        }
-                                        failConfigTable[key] = table;
                                     }
                                 }
                             }
@@ -320,62 +311,76 @@ namespace Mongo
                         foreach (BsonDocument diffBson in diff)
                         {
                             BsonDocument testRun = diffBson["TestRun"].AsBsonDocument;
+                            string version = testRun["@runtimeVersion"].AsString;
                             BsonArray configs = testRun["Configuration"].AsBsonArray;
                             foreach (BsonDocument config in configs)
                             {
                                 BsonArray testResults = config["test-results"].AsBsonArray;
-                                string version = testResults[0]["@runtime-version"].AsString;
+                                string key = config["@templateName"].AsString;
                                 foreach (BsonDocument testResult in testResults)
                                 {
-                                    string key = testResults["@template-name"].AsString;
-                                    if (successConfigTable.ContainsKey(key) == false)
+                                    if (testResult["@project-name"].Equals(project) == true)
                                     {
-                                        Hashtable projectTable = new Hashtable();
-                                        Hashtable detailTable = new Hashtable();
-                                        ArrayList list = new ArrayList();
-                                        list.Add(version);
-                                        detailTable.Add(automation, list);
-                                        projectTable.Add(project, detailTable);
-                                        successConfigTable.Add(key, projectTable);
-                                    }
-                                    else
-                                    {
-                                        Hashtable table = (Hashtable)successConfigTable[key];
-                                        if (table == null)
-                                        {
-                                            table = new Hashtable();
-                                        }
-                                        if (table.ContainsKey(project) == true)
-                                        {
+                                        BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
+                                        BsonDocument results = testSuite["results"].AsBsonDocument;
+                                        BsonArray testCase = testCase = results["test-case"].AsBsonArray;
 
-                                            Hashtable detailTable = (Hashtable)table[project];
-                                            ArrayList list = new ArrayList();
-                                            if (detailTable.ContainsKey(automation) == false)
-                                            {
-                                                list.Add(version);
-                                                detailTable.Add(automation, list);
-                                            }
-                                            else
-                                            {
-                                                list = (ArrayList)detailTable[automation];
-                                                list.Add(version);
-                                                detailTable[automation] = list;
-                                            }
-                                            table[project] = detailTable;
-                                        }
-                                        else
+                                        foreach (BsonDocument test in testCase)
                                         {
-                                            Hashtable detailTable = new Hashtable();
-
-                                            ArrayList list = new ArrayList();
-                                            if (detailTable.ContainsKey(automation) == false)
+                                            if (test["@success"].Equals("True") && test["@name"].Equals(automation))
                                             {
-                                                list.Add(version);
-                                                detailTable.Add(automation, list);
+                                                
+                                                if (successConfigTable.ContainsKey(key) == false)
+                                                {
+                                                    Hashtable projectTable = new Hashtable();
+                                                    Hashtable detailTable = new Hashtable();
+                                                    ArrayList list = new ArrayList();
+                                                    list.Add(version);
+                                                    detailTable.Add(automation, list);
+                                                    projectTable.Add(project, detailTable);
+                                                    successConfigTable.Add(key, projectTable);
+                                                }
+                                                else
+                                                {
+                                                    Hashtable table = (Hashtable)successConfigTable[key];
+                                                    if (table == null)
+                                                    {
+                                                        table = new Hashtable();
+                                                    }
+                                                    if (table.ContainsKey(project) == true)
+                                                    {
+
+                                                        Hashtable detailTable = (Hashtable)table[project];
+                                                        ArrayList list = new ArrayList();
+                                                        if (detailTable.ContainsKey(automation) == false)
+                                                        {
+                                                            list.Add(version);
+                                                            detailTable.Add(automation, list);
+                                                        }
+                                                        else
+                                                        {
+                                                            list = (ArrayList)detailTable[automation];
+                                                            list.Add(version);
+                                                            detailTable[automation] = list;
+                                                        }
+                                                        table[project] = detailTable;
+                                                    }
+                                                    else
+                                                    {
+                                                        Hashtable detailTable = new Hashtable();
+
+                                                        ArrayList list = new ArrayList();
+                                                        if (detailTable.ContainsKey(automation) == false)
+                                                        {
+                                                            list.Add(version);
+                                                            detailTable.Add(automation, list);
+                                                        }
+                                                        table.Add(project, detailTable);
+                                                    }
+                                                    successConfigTable[key] = table;
+                                                }
                                             }
-                                            table.Add(project, detailTable);
                                         }
-                                        successConfigTable[key] = table;
                                     }
                                 }
                             }
