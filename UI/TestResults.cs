@@ -319,8 +319,12 @@ namespace UI
                         project.Text = key;
                         Hashtable successTable = (Hashtable)table[key];
                         var tableKeys = successTable.Keys;
-                        Hashtable failSetTable = (Hashtable)failTable[key];
-                        var failSetTalbekeys = failSetTable.Keys;
+                        Hashtable failSetTable = new Hashtable();
+                        if (failTable.Count != 0)
+                        {
+                            failSetTable = (Hashtable)failTable[key];
+                        }
+                        
                         foreach (string automation in tableKeys)
                         {
                             TreeListNode node = new TreeListNode();
@@ -338,6 +342,7 @@ namespace UI
                         {
                             if (failSetTable != null && failSetTable.Count > 0)
                             {
+                                var failSetTalbekeys = failSetTable.Keys;
                                 foreach (string automation in failSetTalbekeys)
                                 {
                                     TreeListNode node = new TreeListNode();
@@ -569,7 +574,17 @@ namespace UI
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "AcceptedFailure");
                 AcceptedFailure acceptedFailureDialog = new AcceptedFailure(failureTracker);
                 acceptedFailureDialog.Show();
+                //acceptedFailureDialog.FormClosed += new EventHandler(AcceptedFailureDialog_Closed);
+                node.SubItems[1].Text = " ";
+                node.SubItems[2].Text = "\u2714";
+                TreeListNode parent = (TreeListNode)node.ParentNode();
+                parent.SubItems[2].Text = Convert.ToString(Convert.ToInt32(parent.SubItems[2].Text) + 1);
+                treeListView1.Focus();
             }
+        }
+
+        private void AcceptedFailureDialog_Closed(object sender)
+        {
         }
 
         private void bugToolStripMenuItem_Click(object sender, EventArgs e)
