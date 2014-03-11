@@ -9,7 +9,7 @@ using System.Xml;
 using System.Windows.Forms;
 
 
-namespace AutomateTP
+namespace UI
 {
     public class ProjectInfo
     {

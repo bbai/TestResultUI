@@ -8,22 +8,21 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using Mongo;
-namespace AutomateTP
+namespace UI
 {
     public partial class CRForm : Form
     {
         private FailureHelper mFailureTracker;
+        private Properties.TP TPsettings;
         public CRForm(FailureHelper failureTracker)
         {
             mFailureTracker = failureTracker;
             InitializeComponent();
             TargetProcessHelper.client = new System.Net.WebClient();
-        }
-        public CRForm(string user, string pw, FailureHelper failureTracker)
-        {
-            mFailureTracker = failureTracker;
-            //add in show user they don't have to enter user/pw
-            TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(user, pw);
+            this.AcceptButton = credentialsBtn;
+            TPsettings = new Properties.TP();
+            usernameTxtBox.Text = TPsettings.UserName;
+            passwordTxtBox.Text = TPsettings.Password;
         }
         private void credentialsBtn_Click(object sender, EventArgs e)
         {
@@ -35,18 +34,14 @@ namespace AutomateTP
                     MessageBox.Show("Please enter a username and password.", "Login Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                //if credentials already provided
-                else if (TargetProcessHelper.client.Credentials != null)
-                {
-                    usernameTxtBox.Text = "Already Logged In";
-                    PrepareCR();
-                }
-                //set new credentials
+                //set credentials with contents of boxes
                 else
                 {
                     TargetProcessHelper.client.Credentials = new System.Net.NetworkCredential(usernameTxtBox.Text,
                         passwordTxtBox.Text);
-
+                    //save settings
+                    TPsettings.UserName = usernameTxtBox.Text;
+                    TPsettings.Password = passwordTxtBox.Text;
                     PrepareCR();
                 }
             }
@@ -72,11 +67,6 @@ namespace AutomateTP
             userStoryComboBox.Items.Add(string.Empty);
             SubmitCRBtn.Enabled = true;
             LoginCompleteLbl.Visible = true;
-        }
-        //currently not used. Need to find a good time to use TestResults.cs to call this one.
-        public string[] SendAuth()
-        {
-            return new string[2]{usernameTxtBox.Text, passwordTxtBox.Text};
         }
         //send information to TP to submitCR
         #region TPstuff

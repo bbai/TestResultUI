@@ -49,8 +49,8 @@
             this.failureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acceptedFailureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.treeListView1 = new SynapticEffect.Forms.TreeListView();
             this.seeStatusMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.treeListView1 = new SynapticEffect.Forms.TreeListView();
             this.groupBox1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -222,7 +222,7 @@
             this.bugToolStripMenuItem,
             this.seeStatusMessageToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(254, 122);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(254, 100);
             // 
             // failureToolStripMenuItem
             // 
@@ -245,6 +245,13 @@
             this.bugToolStripMenuItem.Text = "Mark as Bug...";
             this.bugToolStripMenuItem.Click += new System.EventHandler(this.bugToolStripMenuItem_Click);
             // 
+            // seeStatusMessageToolStripMenuItem
+            // 
+            this.seeStatusMessageToolStripMenuItem.Name = "seeStatusMessageToolStripMenuItem";
+            this.seeStatusMessageToolStripMenuItem.Size = new System.Drawing.Size(253, 24);
+            this.seeStatusMessageToolStripMenuItem.Text = "See Status Message";
+            this.seeStatusMessageToolStripMenuItem.Click += new System.EventHandler(this.seeStatusMessageToolStripMenuItem_Click);
+            // 
             // treeListView1
             // 
             this.treeListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -261,7 +268,7 @@
             this.treeListView1.Location = new System.Drawing.Point(13, 108);
             this.treeListView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.treeListView1.Name = "treeListView1";
-            this.treeListView1.RowSelectColor = System.Drawing.SystemColors.Highlight;
+            this.treeListView1.RowSelectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.treeListView1.RowTrackColor = System.Drawing.Color.WhiteSmoke;
             this.treeListView1.Size = new System.Drawing.Size(908, 291);
             this.treeListView1.SmallImageList = null;
@@ -269,13 +276,6 @@
             this.treeListView1.TabIndex = 1;
             this.treeListView1.Text = "treeListView1";
             this.treeListView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeListView1_MouseClick);
-            // 
-            // seeStatusMessageToolStripMenuItem
-            // 
-            this.seeStatusMessageToolStripMenuItem.Name = "seeStatusMessageToolStripMenuItem";
-            this.seeStatusMessageToolStripMenuItem.Size = new System.Drawing.Size(253, 24);
-            this.seeStatusMessageToolStripMenuItem.Text = "See Status Message";
-            this.seeStatusMessageToolStripMenuItem.Click += new System.EventHandler(this.seeStatusMessageToolStripMenuItem_Click);
             // 
             // TestResults
             // 

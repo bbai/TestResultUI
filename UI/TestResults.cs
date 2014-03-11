@@ -14,7 +14,6 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
-using AutomateTP;
 
 namespace UI
 {
@@ -26,11 +25,11 @@ namespace UI
         Hashtable successConfigTable;
         Hashtable failConfigTable;
         string days;
-        TP TPsettings;
+        Properties.TP TPsettings;
         public TestResults()
         {
             InitializeComponent();
-            TPsettings = new TP();
+            TPsettings = new Properties.TP();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -107,6 +106,7 @@ namespace UI
                     treeListView1.Columns.Clear();
                     ToggleColumnHeader tch = new ToggleColumnHeader();
                     tch.Text = "Title";
+                    tch.Width = 200;
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Success";
@@ -416,14 +416,7 @@ namespace UI
             {
                 CRForm crform;
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-                if (TPsettings.UserName == "" || TPsettings.Password == "")
-                {
-                    crform = new CRForm(failureTracker);                    
-                }
-                else
-                {
-                    crform = new CRForm(TPsettings.UserName, TPsettings.Password, failureTracker);
-                }
+                crform = new CRForm(failureTracker);                    
                 crform.Show();
                 FillCrForm(crform);
             }

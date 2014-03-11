@@ -1,4 +1,4 @@
-﻿namespace AutomateTP
+﻿namespace UI
 {
     partial class CRForm
     {
