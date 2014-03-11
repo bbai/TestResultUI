@@ -19,6 +19,7 @@ namespace UI
 {
     public partial class TestResults : Form
     {
+        private delegate void AcceptedFormClosed(object sender);
         MongoDBHelper mongo;
         Hashtable successAllConfigTable;
         Hashtable failAllConfigTable;
@@ -220,6 +221,7 @@ namespace UI
                         project.SubItems.Add(Convert.ToString(failTable.Count - acceptedFailureCount - bugFailureCount));
                         project.SubItems.Add(Convert.ToString(acceptedFailureCount));
                         project.SubItems.Add(Convert.ToString(bugFailureCount));
+                        project.Parent = allConfig;
                         acceptedFailureAllConfigCount += acceptedFailureCount;
                         bugFailureAllConfigCount += bugFailureCount;
                     }
@@ -282,6 +284,7 @@ namespace UI
                         project.SubItems.Add(Convert.ToString(failCount - acceptedFailCount - bugFailCount));
                         project.SubItems.Add(Convert.ToString(acceptedFailCount));
                         project.SubItems.Add(Convert.ToString(bugFailCount));
+                        project.Parent = allConfig;
                         acceptedFailureAllConfigCount += acceptedFailCount;
                         bugFailureAllConfigCount += bugFailCount;
                         allConfig.Nodes.Add(project);
@@ -393,7 +396,10 @@ namespace UI
                         else
                         {
                             project.SubItems.Add("0");
+                            project.SubItems.Add(Convert.ToString(acceptedFailCount));
+                            project.SubItems.Add(Convert.ToString(bugFailCount));
                         }
+                        project.Parent = configs;
                         configs.Nodes.Add(project);
                     }
 
@@ -446,12 +452,14 @@ namespace UI
                                     node.Parent = project;
                                     project.Nodes.Add(node);
                                 }
+                                project.SubItems.Add("0");
                                 project.SubItems.Add(Convert.ToString(failSet.Count - acceptedFailCount - bugFailCount));
                                 project.SubItems.Add(Convert.ToString(acceptedFailCount));
                                 project.SubItems.Add(Convert.ToString(bugFailCount));
                                 acceptedConfigCount += acceptedFailCount;
                                 bugConfigCount += bugFailCount;
                                 failConfigCount += failSet.Count;
+                                project.Parent = configs;
                                 configs.Nodes.Add(project);
                             }
                         }
@@ -518,6 +526,7 @@ namespace UI
                                 automation.Parent = project;
                                 project.Nodes.Add(automation);
                             }
+                            project.Parent = failConfig;
                             failConfig.Nodes.Add(project);
                         }
                         failConfig.Text = configNames;
@@ -559,6 +568,9 @@ namespace UI
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text,
                     GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Failure");
                 failureTracker.ProcessFailure("Unknown");
+                node.SubItems[1].Text = "\u2714";
+                node.SubItems[2].Text = " ";
+                node.SubItems[3].Text = " ";
                 MessageBox.Show("Successfully marked as Failure!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -574,17 +586,25 @@ namespace UI
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "AcceptedFailure");
                 AcceptedFailure acceptedFailureDialog = new AcceptedFailure(failureTracker);
                 acceptedFailureDialog.Show();
-                //acceptedFailureDialog.FormClosed += new EventHandler(AcceptedFailureDialog_Closed);
+                acceptedFailureDialog.OnFormClosed += new AcceptedFailureDialogClosed(AcceptedFailureDialog_Closed);
+            }
+        }
+
+        private void AcceptedFailureDialog_Closed(string e)
+        {
+            if (e.Equals("OK"))
+            {
+                var node = treeListView1.SelectedNodes[0];
                 node.SubItems[1].Text = " ";
                 node.SubItems[2].Text = "\u2714";
                 TreeListNode parent = (TreeListNode)node.ParentNode();
                 parent.SubItems[2].Text = Convert.ToString(Convert.ToInt32(parent.SubItems[2].Text) + 1);
+                parent.SubItems[1].Text = Convert.ToString(Convert.ToInt32(parent.SubItems[1].Text) - 1);
+                TreeListNode root = (TreeListNode)parent.ParentNode();
+                root.SubItems[2].Text = Convert.ToString(Convert.ToInt32(root.SubItems[2].Text) + 1);
+                root.SubItems[1].Text = Convert.ToString(Convert.ToInt32(root.SubItems[1].Text) - 1);
                 treeListView1.Focus();
             }
-        }
-
-        private void AcceptedFailureDialog_Closed(object sender)
-        {
         }
 
         private void bugToolStripMenuItem_Click(object sender, EventArgs e)
@@ -600,8 +620,26 @@ namespace UI
                 CRForm crform;
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
                 crform = new CRForm(failureTracker);
+                crform.OnFormClosed += new CRFormClosed(CRForm_Closed);
                 crform.Show();
                 FillCrForm(crform);
+            }
+        }
+        private void CRForm_Closed(string e)
+        {
+            if (e.Equals("Submit"))
+            {
+                var node = treeListView1.SelectedNodes[0];
+                node.SubItems[1].Text = " ";
+                node.SubItems[2].Text = " ";
+                node.SubItems[3].Text = "\u2714";
+                TreeListNode parent = (TreeListNode)node.ParentNode();
+                parent.SubItems[2].Text = Convert.ToString(Convert.ToInt32(parent.SubItems[2].Text) + 1);
+                parent.SubItems[1].Text = Convert.ToString(Convert.ToInt32(parent.SubItems[1].Text) - 1);
+                TreeListNode root = (TreeListNode)parent.ParentNode();
+                root.SubItems[2].Text = Convert.ToString(Convert.ToInt32(root.SubItems[2].Text) + 1);
+                root.SubItems[1].Text = Convert.ToString(Convert.ToInt32(root.SubItems[1].Text) - 1);
+                treeListView1.Focus();
             }
         }
 

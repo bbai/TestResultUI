@@ -10,8 +10,10 @@ using System.Windows.Forms;
 using Mongo;
 namespace UI
 {
+    public delegate void CRFormClosed(string buttonClicked);
     public partial class CRForm : Form
     {
+        public event CRFormClosed OnFormClosed;
         private FailureHelper mFailureTracker;
         private Properties.TP TPsettings;
         public CRForm(FailureHelper failureTracker)
@@ -23,6 +25,7 @@ namespace UI
             TPsettings = new Properties.TP();
             usernameTxtBox.Text = TPsettings.UserName;
             passwordTxtBox.Text = TPsettings.Password;
+            button1.Enabled = true;
         }
         private void credentialsBtn_Click(object sender, EventArgs e)
         {
@@ -101,9 +104,17 @@ namespace UI
             {
                 MessageBox.Show("Success! CR#" + result + " submitted.");
                 mFailureTracker.ProcessFailure("http://target.openspan.com/tp/entity/" + result);
+                OnFormClosed("Submit");
                 this.Close();
             }
         }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            OnFormClosed("Cancel");
+            this.Close();
+        }
+
     }
 }

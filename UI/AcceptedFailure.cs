@@ -10,11 +10,12 @@ using Mongo;
 
 namespace UI
 {
+    public delegate void AcceptedFailureDialogClosed(string buttonClicked);
     public partial class AcceptedFailure : Form
     {
-
+        public event AcceptedFailureDialogClosed OnFormClosed;
         private FailureHelper mFailureTracker;
-
+        public string CloseReason = string.Empty;
         public AcceptedFailure(FailureHelper failureTracker)
         {
             mFailureTracker = failureTracker;
@@ -34,8 +35,15 @@ namespace UI
                 {
                     MessageBox.Show("Marking as Accepted Failure Success!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                OnFormClosed("OK");
                 this.Close();
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            OnFormClosed("Cancel");
+            this.Close();
         }
     }
 }
