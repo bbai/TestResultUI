@@ -14,7 +14,6 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
-using AutomateTP;
 
 namespace UI
 {
@@ -26,11 +25,12 @@ namespace UI
         Hashtable successConfigTable;
         Hashtable failConfigTable;
         string days;
-        TP TPsettings;
+        Properties.TP TPsettings;
         public TestResults()
         {
             InitializeComponent();
-            TPsettings = new TP();
+            this.AcceptButton = button1;
+            TPsettings = new Properties.TP();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -39,6 +39,7 @@ namespace UI
             textBox2.Text = "UnitTestDB";
             textBox3.Text = "UnitTestResults";
             textBox5.Text = "27017";
+            textBox4.Focus();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -107,6 +108,7 @@ namespace UI
                     treeListView1.Columns.Clear();
                     ToggleColumnHeader tch = new ToggleColumnHeader();
                     tch.Text = "Title";
+                    tch.Width = 360;
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Success";
@@ -119,6 +121,7 @@ namespace UI
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Failure Message";
+                    tch.Width = 400;
                     treeListView1.Columns.Add(tch);
                 }
                 TreeListNode tln = new TreeListNode();
@@ -416,14 +419,7 @@ namespace UI
             {
                 CRForm crform;
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-                if (TPsettings.UserName == "" || TPsettings.Password == "")
-                {
-                    crform = new CRForm(failureTracker);                    
-                }
-                else
-                {
-                    crform = new CRForm(TPsettings.UserName, TPsettings.Password, failureTracker);
-                }
+                crform = new CRForm(failureTracker);                    
                 crform.Show();
                 FillCrForm(crform);
             }
