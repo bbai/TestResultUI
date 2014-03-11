@@ -400,7 +400,7 @@ namespace UI
         private void failureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
-            if (node.SubItems.Count != 4)
+            if (node.SubItems.Count != 6)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -415,7 +415,7 @@ namespace UI
         private void acceptedFailureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
-            if (node.SubItems.Count != 4)
+            if (node.SubItems.Count != 6)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -431,7 +431,7 @@ namespace UI
         {
             var node = treeListView1.SelectedNodes[0];
             //if it's a failure it will have 4 subitems (for now)
-            if (node.SubItems.Count != 4)
+            if (node.SubItems.Count != 6)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -451,7 +451,7 @@ namespace UI
         private string GetRuntimeVersion()
         {
             TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
-            return selectedNode.SubItems[2].Text;
+            return selectedNode.SubItems[4].Text;
         }
         private string GetSolutionName()
         {
@@ -467,7 +467,7 @@ namespace UI
         private string GetFailureMsg()
         {
             TreeListNode selectedNode = treeListView1.SelectedNodes[0];
-            var subItem = selectedNode.SubItems[3];
+            var subItem = selectedNode.SubItems[5];
             return subItem.Text;
         }
         private void FillCrForm(CRForm LogBugCRDialog)
