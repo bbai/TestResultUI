@@ -152,6 +152,7 @@ namespace UI
                     project.Text = projectName;
                     Hashtable table = (Hashtable)successAllConfigTable[projectName];
                     var tableKeys = table.Keys;
+
                     foreach (string key in tableKeys)
                     {
                         TreeListNode automation = new TreeListNode();
@@ -189,7 +190,6 @@ namespace UI
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[1]);
-                                automation.SubItems.Add((string)list[2]);
                             }
                             else if (failureType.Equals("AcceptedFailure") == true)
                             {
@@ -197,7 +197,6 @@ namespace UI
                                 automation.SubItems.Add("\u2714");
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[1]);
-                                automation.SubItems.Add((string)list[3]);
                                 acceptedFailureCount++;
                             }
                             else if (failureType.Equals("Bug") == true)
@@ -206,9 +205,9 @@ namespace UI
                                 automation.SubItems.Add("");
                                 automation.SubItems.Add("\u2714");
                                 automation.SubItems.Add((string)list[1]);
-                                automation.SubItems.Add((string)list[3]);
                                 bugFailureCount++;
                             }
+                            automation.SubItems.Add((string)list[2]);
                             automation.Parent = project;
                             project.Nodes.Add(automation);
                         }
@@ -253,7 +252,6 @@ namespace UI
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[1]);
-                                automation.SubItems.Add((string)list[2]);
                             }
                             else if (failureType.Equals("AcceptedFailure") == true)
                             {
@@ -261,7 +259,6 @@ namespace UI
                                 automation.SubItems.Add("\u2714");
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[1]);
-                                automation.SubItems.Add((string)list[3]);
                                 acceptedFailCount++;
                             }
                             else if (failureType.Equals("Bug") == true)
@@ -270,9 +267,9 @@ namespace UI
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add("\u2714");
                                 automation.SubItems.Add((string)list[1]);
-                                automation.SubItems.Add((string)list[3]);
                                 bugFailCount++;
                             }
+                            automation.SubItems.Add((string)list[2]);
                             automation.Parent = project;
                             project.Nodes.Add(automation);
                         }
@@ -347,7 +344,6 @@ namespace UI
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[1]);
-                                        node.SubItems.Add((string)list[2]);
                                     }
                                     else if (failureType.Equals("AcceptedFailure") == true)
                                     {
@@ -355,7 +351,6 @@ namespace UI
                                         node.SubItems.Add("\u2714");
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[1]);
-                                        node.SubItems.Add((string)list[3]);
                                         acceptedFailCount++;
                                     }
                                     else if (failureType.Equals("Bug") == true)
@@ -364,9 +359,9 @@ namespace UI
                                         node.SubItems.Add("");
                                         node.SubItems.Add("\u2714");
                                         node.SubItems.Add((string)list[1]);
-                                        node.SubItems.Add((string)list[3]);
                                         bugFailCount++;
                                     }
+                                    node.SubItems.Add((string)list[2]);
                                     node.Parent = project;
                                     project.Nodes.Add(node);
                                 }
@@ -416,7 +411,6 @@ namespace UI
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[1]);
-                                        node.SubItems.Add((string)list[2]);
                                     }
                                     else if (failureType.Equals("AcceptedFailure") == true)
                                     {
@@ -424,7 +418,6 @@ namespace UI
                                         node.SubItems.Add("\u2714");
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[1]);
-                                        node.SubItems.Add((string)list[3]);
                                         acceptedFailCount++;
                                     }
                                     else if (failureType.Equals("Bug") == true)
@@ -433,9 +426,9 @@ namespace UI
                                         node.SubItems.Add("");
                                         node.SubItems.Add("\u2714");
                                         node.SubItems.Add((string)list[1]);
-                                        node.SubItems.Add((string)list[3]);
                                         bugConfigCount++;
                                     }
+                                    node.SubItems.Add((string)list[2]);
                                     node.Parent = project;
                                     project.Nodes.Add(node);
                                 }
@@ -486,7 +479,6 @@ namespace UI
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add((string)list[1]);
-                                    automation.SubItems.Add((string)list[2]);
                                 }
                                 else if (failureType.Equals("AcceptedFailure") == true)
                                 {
@@ -494,7 +486,6 @@ namespace UI
                                     automation.SubItems.Add("\u2714");
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add((string)list[1]);
-                                    automation.SubItems.Add((string)list[3]);
                                     acceptedFailCount++;
                                 }
                                 else if (failureType.Equals("Bug") == true)
@@ -503,9 +494,9 @@ namespace UI
                                     automation.SubItems.Add("");
                                     automation.SubItems.Add("\u2714");
                                     automation.SubItems.Add((string)list[1]);
-                                    automation.SubItems.Add((string)list[3]);
                                     bugFailCount++;
                                 }
+                                automation.SubItems.Add((string)list[2]);
                                 automation.Parent = project;
                                 project.Nodes.Add(automation);
                             }
