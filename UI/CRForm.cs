@@ -42,6 +42,7 @@ namespace UI
                     //save settings
                     TPsettings.UserName = usernameTxtBox.Text;
                     TPsettings.Password = passwordTxtBox.Text;
+                    TPsettings.Save();
                     PrepareCR();
                 }
             }

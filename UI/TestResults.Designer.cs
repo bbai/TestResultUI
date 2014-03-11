@@ -15,6 +15,7 @@
         {
             if (disposing && (components != null))
             {
+                TPsettings.Reset();
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -59,6 +60,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.groupBox1.Controls.Add(this.textBox5);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
@@ -77,8 +79,8 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox1.Size = new System.Drawing.Size(907, 92);
-            this.groupBox1.TabIndex = 0;
+            this.groupBox1.Size = new System.Drawing.Size(1247, 92);
+            this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Database Login";
             // 
@@ -88,7 +90,7 @@
             this.textBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(69, 22);
-            this.textBox5.TabIndex = 12;
+            this.textBox5.TabIndex = 2;
             // 
             // label7
             // 
@@ -96,7 +98,7 @@
             this.label7.Location = new System.Drawing.Point(228, 30);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(38, 17);
-            this.label7.TabIndex = 11;
+            this.label7.TabIndex = 7;
             this.label7.Text = "Port:";
             // 
             // label6
@@ -105,7 +107,7 @@
             this.label6.Location = new System.Drawing.Point(725, 26);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(49, 17);
-            this.label6.TabIndex = 10;
+            this.label6.TabIndex = 8;
             this.label6.Text = "Ready";
             // 
             // button2
@@ -114,7 +116,7 @@
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(83, 27);
-            this.button2.TabIndex = 9;
+            this.button2.TabIndex = 0;
             this.button2.Text = "Default";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
@@ -125,7 +127,7 @@
             this.label5.Location = new System.Drawing.Point(675, 26);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(52, 17);
-            this.label5.TabIndex = 8;
+            this.label5.TabIndex = 9;
             this.label5.Text = "Status:";
             // 
             // button1
@@ -134,7 +136,7 @@
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(83, 26);
-            this.button1.TabIndex = 7;
+            this.button1.TabIndex = 6;
             this.button1.Text = "Get Data";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -153,7 +155,7 @@
             this.label3.Location = new System.Drawing.Point(5, 66);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 17);
-            this.label3.TabIndex = 3;
+            this.label3.TabIndex = 9;
             this.label3.Text = "Collection Name:";
             // 
             // textBox4
@@ -162,7 +164,7 @@
             this.textBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(133, 22);
-            this.textBox4.TabIndex = 6;
+            this.textBox4.TabIndex = 5;
             // 
             // label4
             // 
@@ -170,7 +172,7 @@
             this.label4.Location = new System.Drawing.Point(374, 66);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 17);
-            this.label4.TabIndex = 5;
+            this.label4.TabIndex = 10;
             this.label4.Text = "Days:";
             // 
             // label2
@@ -179,7 +181,7 @@
             this.label2.Location = new System.Drawing.Point(345, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 17);
-            this.label2.TabIndex = 2;
+            this.label2.TabIndex = 11;
             this.label2.Text = "DB Name:";
             // 
             // textBox2
@@ -188,7 +190,7 @@
             this.textBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(133, 22);
-            this.textBox2.TabIndex = 1;
+            this.textBox2.TabIndex = 3;
             // 
             // textBox1
             // 
@@ -204,7 +206,7 @@
             this.label1.Location = new System.Drawing.Point(31, 30);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(87, 17);
-            this.label1.TabIndex = 0;
+            this.label1.TabIndex = 12;
             this.label1.Text = "DB Address:";
             // 
             // backgroundWorker1
@@ -257,7 +259,7 @@
             this.treeListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeListView1.BackColor = System.Drawing.SystemColors.Window;
+            this.treeListView1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.treeListView1.ColumnSortColor = System.Drawing.Color.Gainsboro;
             this.treeListView1.ColumnTrackColor = System.Drawing.Color.WhiteSmoke;
             this.treeListView1.GridLineColor = System.Drawing.Color.WhiteSmoke;
@@ -270,7 +272,7 @@
             this.treeListView1.Name = "treeListView1";
             this.treeListView1.RowSelectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.treeListView1.RowTrackColor = System.Drawing.Color.WhiteSmoke;
-            this.treeListView1.Size = new System.Drawing.Size(908, 291);
+            this.treeListView1.Size = new System.Drawing.Size(1248, 637);
             this.treeListView1.SmallImageList = null;
             this.treeListView1.StateImageList = null;
             this.treeListView1.TabIndex = 1;
@@ -281,9 +283,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(932, 409);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.ClientSize = new System.Drawing.Size(1272, 755);
             this.Controls.Add(this.treeListView1);
             this.Controls.Add(this.groupBox1);
+            this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "TestResults";
             this.Text = "Test Results";

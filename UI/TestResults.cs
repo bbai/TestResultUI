@@ -29,6 +29,7 @@ namespace UI
         public TestResults()
         {
             InitializeComponent();
+            this.AcceptButton = button1;
             TPsettings = new Properties.TP();
         }
 
@@ -38,6 +39,7 @@ namespace UI
             textBox2.Text = "UnitTestDB";
             textBox3.Text = "UnitTestResults";
             textBox5.Text = "27017";
+            textBox4.Focus();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -106,7 +108,7 @@ namespace UI
                     treeListView1.Columns.Clear();
                     ToggleColumnHeader tch = new ToggleColumnHeader();
                     tch.Text = "Title";
-                    tch.Width = 200;
+                    tch.Width = 360;
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Success";
@@ -119,6 +121,7 @@ namespace UI
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Failure Message";
+                    tch.Width = 400;
                     treeListView1.Columns.Add(tch);
                 }
                 TreeListNode tln = new TreeListNode();
