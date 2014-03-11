@@ -17,6 +17,7 @@ namespace Mongo
     public class MongoDBHelper
     {
         public MongoCollection<BsonDocument> collection;
+        public MongoCollection<BsonDocument> failCollection;
         public Hashtable successAllConfigTable;
         public Hashtable failAllConfigTable;
         public Hashtable successConfigTable;
@@ -29,6 +30,7 @@ namespace Mongo
             MongoServer server = client.GetServer();
             MongoDatabase mongoDB = server.GetDatabase(dbName);
             collection = mongoDB.GetCollection(collectionName);
+            failCollection = mongoDB.GetCollection("UnitTestFailures");
             mDate = DateTime.Now.Subtract(TimeSpan.FromDays(days));
         }
         /// <summary>
@@ -234,6 +236,26 @@ namespace Mongo
                         {
                             BsonDocument testRun = diffBson["TestRun"].AsBsonDocument;
                             string version = testRun["@runtimeVersion"].AsString;
+                            var failQuery = Query.And(
+                                                Query.EQ("@project-name", project), Query.EQ("@runtime-version", version), 
+                                                Query.ElemMatch("failures.automation", 
+                                                    Query.And(
+                                                        Query.EQ("@name", automation), Query.EQ("@success", "False"))));
+                            MongoCursor<BsonDocument> failCursor = failCollection.Find(failQuery);
+                            BsonDocument failTypeDoc = failCursor.First();
+                            BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
+                            BsonArray failAutomation = failures["automation"].AsBsonArray;
+                            string failureType = string.Empty;
+                            string failureMsg = string.Empty;
+                            foreach (BsonDocument failAuto in failAutomation)
+                            {
+                                if (failAuto["@name"].AsString.Equals(automation) == true)
+                                {
+                                    BsonDocument failStatus = failAuto["status"].AsBsonDocument;
+                                    failureType = failStatus["@failure-type"].AsString;
+                                    failureMsg = failStatus["@message"].AsString;
+                                }
+                            }
                             BsonArray configs = testRun["Configuration"].AsBsonArray;
                             foreach (BsonDocument config in configs)
                             {
@@ -252,6 +274,10 @@ namespace Mongo
                                         {
                                             if (test["@success"].Equals("False") && test["@name"].Equals(automation))
                                             {
+                                                if (failCursor.Count() == 0)
+                                                {
+                                                    failureType = "Failure";
+                                                }
                                                 /*
                                                 BsonDocument failure = test["failure"].AsBsonDocument;
                                                 errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
@@ -262,8 +288,10 @@ namespace Mongo
                                                     Hashtable projectTable = new Hashtable();
                                                     ArrayList list = new ArrayList();
                                                     Hashtable detailTable = new Hashtable();
+                                                    list.Add(failureType);
                                                     list.Add(version);
                                                     list.Add(errorMsg);
+                                                    list.Add(failureMsg);
                                                     detailTable.Add(automation, list);
                                                     projectTable.Add(project, detailTable);
                                                     failConfigTable.Add(key, projectTable);
@@ -281,8 +309,10 @@ namespace Mongo
                                                         if (errorTable.ContainsKey(automation) == false)
                                                         {
                                                             ArrayList list = new ArrayList();
+                                                            list.Add(failureType);
                                                             list.Add(version);
                                                             list.Add(errorMsg);
+                                                            list.Add(failureMsg);
                                                             errorTable.Add(automation, list);
                                                             table[project] = errorTable;
                                                         }
@@ -291,8 +321,10 @@ namespace Mongo
                                                     {
                                                         Hashtable errorTable = new Hashtable();
                                                         ArrayList list = new ArrayList();
+                                                        list.Add(failureType);
                                                         list.Add(version);
                                                         list.Add(errorMsg);
+                                                        list.Add(failureMsg);
                                                         errorTable.Add(automation, list);
                                                         table.Add(project, errorTable);
                                                     }
@@ -416,6 +448,26 @@ namespace Mongo
                     {
                         BsonDocument first = testFail.First();
                         string version = this.GetRuntimeVersion(first);
+                        var failQuery = Query.And(
+                                            Query.EQ("@project-name", project), Query.EQ("@runtime-version", version),
+                                            Query.ElemMatch("failures.automation",
+                                                Query.And(
+                                                    Query.EQ("@name", automation), Query.EQ("@success", "False"))));
+                        MongoCursor<BsonDocument> failCursor = failCollection.Find(failQuery);
+                        BsonDocument failTypeDoc = failCursor.First();
+                        BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
+                        BsonArray failAutomation = failures["automation"].AsBsonArray;
+                        string failureType = string.Empty;
+                        string failureMsg = string.Empty;
+                        foreach (BsonDocument failAuto in failAutomation)
+                        {
+                            if (failAuto["@name"].AsString.Equals(automation) == true)
+                            {
+                                BsonDocument failStatus = failAuto["status"].AsBsonDocument;
+                                failureType = failStatus["@failure-type"].AsString;
+                                failureMsg = failStatus["@message"].AsString;
+                            }
+                        }
                         string errorMsg = string.Empty;
                         foreach (BsonDocument fail in testFail)
                         {
@@ -448,8 +500,10 @@ namespace Mongo
                         if (failAllConfigTable.ContainsKey(project) == false)
                         {
                             ArrayList list = new ArrayList();
+                            list.Add(failureType);
                             list.Add(version);
                             list.Add(errorMsg);
+                            list.Add(failureMsg);
                             Hashtable table = new Hashtable();
                             table.Add(automation, list);
                             failAllConfigTable.Add(project, table);
@@ -462,8 +516,10 @@ namespace Mongo
                             {
                                 list = new ArrayList();
                             }
+                            list.Add(failureType);
                             list.Add(version);
                             list.Add(errorMsg);
+                            list.Add(failureMsg);
                             table[automation] = list;
                             failAllConfigTable[project] = table;
                         }
