@@ -137,245 +137,385 @@ namespace UI
                 tln.SubItems.Add(Convert.ToString(results[1]));
                 TreeListNode allConfig = new TreeListNode();
 
-                if (mongo.AnalyzeData() == true)
+                successAllConfigTable = mongo.successAllConfigTable;
+                failAllConfigTable = mongo.failAllConfigTable;
+                var successKeys = successAllConfigTable.Keys;
+                var failKeys = failAllConfigTable.Keys;
+                int totalSuccessAllConfigCount = 0;
+                int totalFailAllConfigCount = 0;
+                int acceptedFailureAllConfigCount = 0;
+                int bugFailureAllConfigCount = 0;
+                foreach (string projectName in successKeys)
                 {
-                    successAllConfigTable = mongo.successAllConfigTable;
-                    failAllConfigTable = mongo.failAllConfigTable;
-                    var successKeys = successAllConfigTable.Keys;
-                    var failKeys = failAllConfigTable.Keys;
-                    int totalSuccessAllConfigCount = 0;
-                    int totalFailAllConfigCount = 0;
-                    foreach (string projectName in successKeys)
+                    TreeListNode project = new TreeListNode();
+                    project.Text = projectName;
+                    Hashtable table = (Hashtable)successAllConfigTable[projectName];
+                    var tableKeys = table.Keys;
+                    foreach (string key in tableKeys)
                     {
-                        TreeListNode project = new TreeListNode();
-                        project.Text = projectName;
-                        Hashtable table = (Hashtable)successAllConfigTable[projectName];
-                        var tableKeys = table.Keys;
-                        foreach (string key in tableKeys)
+                        TreeListNode automation = new TreeListNode();
+                        ArrayList list = (ArrayList)table[key];
+                        automation.Text = key;
+                        automation.SubItems.Add("\u2714");
+                        automation.SubItems.Add(" ");
+                        automation.SubItems.Add(" ");
+                        automation.SubItems.Add(" ");
+                        automation.SubItems.Add((string)list[0]);
+                        automation.Parent = project;
+                        project.Nodes.Add(automation);
+                    }
+
+                    int successCount = table.Count;
+                    totalSuccessAllConfigCount += successCount;
+
+
+                    if (failAllConfigTable.ContainsKey(projectName) == true)
+                    {
+                        int acceptedFailureCount = 0;
+                        int bugFailureCount = 0;
+                        Hashtable failTable = (Hashtable)failAllConfigTable[projectName];
+                        var failTableKeys = failTable.Keys;
+                        foreach (string key in failTableKeys)
                         {
                             TreeListNode automation = new TreeListNode();
-                            ArrayList list = (ArrayList)table[key];
+                            ArrayList list = (ArrayList)failTable[key];
                             automation.Text = key;
-                            automation.SubItems.Add("\u2714");
                             automation.SubItems.Add(" ");
-                            automation.SubItems.Add(" ");
-                            automation.SubItems.Add(" ");
-                            automation.SubItems.Add((string)list[0]);
+                            string failureType = (string)list[0];
+                            if (failureType.Equals("Failure") == true)
+                            {
+                                automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add((string)list[1]);
+                                automation.SubItems.Add((string)list[2]);
+                            }
+                            else if (failureType.Equals("AcceptedFailure") == true)
+                            {
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add((string)list[1]);
+                                automation.SubItems.Add((string)list[3]);
+                                acceptedFailureCount++;
+                            }
+                            else if (failureType.Equals("Bug") == true)
+                            {
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add("");
+                                automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add((string)list[1]);
+                                automation.SubItems.Add((string)list[3]);
+                                bugFailureCount++;
+                            }
                             automation.Parent = project;
                             project.Nodes.Add(automation);
                         }
+                        totalFailAllConfigCount += failTable.Count;
+                        project.SubItems.Add(Convert.ToString(successCount));
+                        project.SubItems.Add(Convert.ToString(failTable.Count - acceptedFailureCount - bugFailureCount));
+                        project.SubItems.Add(Convert.ToString(acceptedFailureCount));
+                        project.SubItems.Add(Convert.ToString(bugFailureCount));
+                        acceptedFailureAllConfigCount += acceptedFailureCount;
+                        bugFailureAllConfigCount += bugFailureCount;
+                    }
+                    else
+                    {
+                        project.SubItems.Add(Convert.ToString(successCount));
+                        project.SubItems.Add("0");
+                    }
+                    allConfig.Text = "All Configs";
+                    allConfig.Nodes.Add(project);
+                }
 
-                        int successCount = table.Count;
-                        totalSuccessAllConfigCount += successCount;
-
-
-                        if (failAllConfigTable.ContainsKey(projectName) == true)
+                foreach (string projectName in failKeys)
+                {
+                    if (successAllConfigTable.ContainsKey(projectName) == false)
+                    {
+                        int acceptedFailCount = 0;
+                        int bugFailCount = 0;
+                        Hashtable failTable = (Hashtable)failAllConfigTable[projectName];
+                        var failTableKeys = failTable.Keys;
+                        int failCount = failTable.Count;
+                        totalFailAllConfigCount += failCount;
+                        TreeListNode project = new TreeListNode();
+                        foreach (string key in failTableKeys)
                         {
-                            Hashtable failTable = (Hashtable)failAllConfigTable[projectName];
-                            var failTableKeys = failTable.Keys;
-                            foreach (string key in failTableKeys)
+                            TreeListNode automation = new TreeListNode();
+                            ArrayList list = (ArrayList)failTable[key];
+                            automation.Text = key;
+                            automation.SubItems.Add(" ");
+                            string failureType = (string)list[0];
+                            if (failureType.Equals("Failure") == true)
                             {
-                                TreeListNode automation = new TreeListNode();
-                                ArrayList list = (ArrayList)failTable[key];
-                                automation.Text = key;
-                                automation.SubItems.Add(" ");
                                 automation.SubItems.Add("\u2714");
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add(" ");
-                                automation.SubItems.Add((string)list[0]);
                                 automation.SubItems.Add((string)list[1]);
-                                automation.Parent = project;
-                                project.Nodes.Add(automation);
+                                automation.SubItems.Add((string)list[2]);
                             }
-                            totalFailAllConfigCount += failTable.Count;
-                            project.SubItems.Add(Convert.ToString(successCount));
-                            project.SubItems.Add(Convert.ToString(failTable.Count));
+                            else if (failureType.Equals("AcceptedFailure") == true)
+                            {
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add((string)list[1]);
+                                automation.SubItems.Add((string)list[3]);
+                                acceptedFailCount++;
+                            }
+                            else if (failureType.Equals("Bug") == true)
+                            {
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add((string)list[1]);
+                                automation.SubItems.Add((string)list[3]);
+                                bugFailCount++;
+                            }
+                            automation.Parent = project;
+                            project.Nodes.Add(automation);
+                        }
+                        project.Text = projectName;
+                        project.SubItems.Add("0");
+                        project.SubItems.Add(Convert.ToString(failCount - acceptedFailCount - bugFailCount));
+                        project.SubItems.Add(Convert.ToString(acceptedFailCount));
+                        project.SubItems.Add(Convert.ToString(bugFailCount));
+                        acceptedFailureAllConfigCount += acceptedFailCount;
+                        bugFailureAllConfigCount += bugFailCount;
+                        allConfig.Nodes.Add(project);
+                    }
+                }
+                allConfig.SubItems.Add(Convert.ToString(totalSuccessAllConfigCount));
+                allConfig.SubItems.Add(Convert.ToString(totalFailAllConfigCount - acceptedFailureAllConfigCount - bugFailureAllConfigCount));
+                allConfig.SubItems.Add(Convert.ToString(acceptedFailureAllConfigCount));
+                allConfig.SubItems.Add(Convert.ToString(bugFailureAllConfigCount));
+                tln.Nodes.Add(allConfig);
+
+                successConfigTable = mongo.successConfigTable;
+                failConfigTable = mongo.failConfigTable;
+                var successConfigKeys = successConfigTable.Keys;
+
+
+                foreach (string configNames in successConfigKeys)
+                {
+                    int successConfigCount = 0;
+                    int failConfigCount = 0;
+                    int acceptedConfigCount = 0;
+                    int bugConfigCount = 0;
+                    TreeListNode configs = new TreeListNode();
+                    Hashtable table = (Hashtable)successConfigTable[configNames];
+                    Hashtable failTable = (Hashtable)failConfigTable[configNames];
+                    var keys = table.Keys;
+                    foreach (string key in keys)
+                    {
+                        int acceptedFailCount = 0;
+                        int bugFailCount = 0;
+                        TreeListNode project = new TreeListNode();
+                        project.Text = key;
+                        Hashtable successTable = (Hashtable)table[key];
+                        var tableKeys = successTable.Keys;
+                        Hashtable failSetTable = (Hashtable)failTable[key];
+                        var failSetTalbekeys = failSetTable.Keys;
+                        foreach (string automation in tableKeys)
+                        {
+                            TreeListNode node = new TreeListNode();
+                            ArrayList list = (ArrayList)successTable[automation];
+                            node.Text = automation;
+                            node.SubItems.Add("\u2714");
+                            node.SubItems.Add(" ");
+                            node.SubItems.Add(" ");
+                            node.SubItems.Add(" ");
+                            node.SubItems.Add((string)list[0]);
+                            node.Parent = project;
+                            project.Nodes.Add(node);
+                        }
+                        if (failConfigTable.ContainsKey(configNames) == true)
+                        {
+                            if (failSetTable != null && failSetTable.Count > 0)
+                            {
+                                foreach (string automation in failSetTalbekeys)
+                                {
+                                    TreeListNode node = new TreeListNode();
+                                    ArrayList list = (ArrayList)failSetTable[automation];
+                                    node.Text = automation;
+                                    node.SubItems.Add(" ");
+                                    string failureType = (string)list[0];
+                                    if (failureType.Equals("Failure") == true)
+                                    {
+                                        node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add((string)list[1]);
+                                        node.SubItems.Add((string)list[2]);
+                                    }
+                                    else if (failureType.Equals("AcceptedFailure") == true)
+                                    {
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add((string)list[1]);
+                                        node.SubItems.Add((string)list[3]);
+                                        acceptedFailCount++;
+                                    }
+                                    else if (failureType.Equals("Bug") == true)
+                                    {
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add("");
+                                        node.SubItems.Add("\u2714");
+                                        node.SubItems.Add((string)list[1]);
+                                        node.SubItems.Add((string)list[3]);
+                                        bugFailCount++;
+                                    }
+                                    node.Parent = project;
+                                    project.Nodes.Add(node);
+                                }
+                            }
+                        }
+                        project.SubItems.Add(Convert.ToString(successTable.Count));
+                        successConfigCount += successTable.Count;
+                        if (failSetTable != null)
+                        {
+                            project.SubItems.Add(Convert.ToString(failSetTable.Count - acceptedFailCount - bugFailCount));
+                            project.SubItems.Add(Convert.ToString(acceptedFailCount));
+                            project.SubItems.Add(Convert.ToString(bugFailCount));
+                            acceptedConfigCount += acceptedFailCount;
+                            bugConfigCount += bugFailCount;
+                            failConfigCount += failSetTable.Count;
                         }
                         else
                         {
-                            project.SubItems.Add(Convert.ToString(successCount));
                             project.SubItems.Add("0");
                         }
-                        allConfig.Text = "All Configs";
-                        allConfig.Nodes.Add(project);
+                        configs.Nodes.Add(project);
                     }
 
-                    foreach (string projectName in failKeys)
+                    if (failConfigTable.ContainsKey(configNames) == true)
                     {
-                        if (successAllConfigTable.ContainsKey(projectName) == false)
+                        int acceptedFailCount = 0;
+                        int bugFailCount = 0;
+                        var failConfKeys = failTable.Keys;
+                        foreach (string key in failConfKeys)
                         {
-                            Hashtable failTable = (Hashtable)failAllConfigTable[projectName];
-                            var failTableKeys = failTable.Keys;
-                            int failCount = failTable.Count;
-                            totalFailAllConfigCount += failCount;
-                            TreeListNode project = new TreeListNode();
-                            foreach (string key in failTableKeys)
+                            if (table.ContainsKey(key) == false)
                             {
-                                TreeListNode automation = new TreeListNode();
-                                ArrayList list = (ArrayList)failTable[key];
-                                automation.Text = key;
-                                automation.SubItems.Add(" ");
-                                automation.SubItems.Add("\u2714");
-                                automation.SubItems.Add(" ");
-                                automation.SubItems.Add(" ");
-                                automation.SubItems.Add((string)list[0]);
-                                automation.SubItems.Add((string)list[1]);
-                                automation.Parent = project;
-                                project.Nodes.Add(automation);
+                                TreeListNode project = new TreeListNode();
+                                project.Text = key;
+                                Hashtable failSet = (Hashtable)failTable[key];
+                                var failSetKeys = failSet.Keys;
+                                foreach (string automation in failSetKeys)
+                                {
+                                    TreeListNode node = new TreeListNode();
+                                    ArrayList list = (ArrayList)failSet[automation];
+                                    node.Text = automation;
+                                    node.SubItems.Add(" ");
+                                    string failureType = (string)list[0];
+                                    if (failureType.Equals("Failure") == true)
+                                    {
+                                        node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add((string)list[1]);
+                                        node.SubItems.Add((string)list[2]);
+                                    }
+                                    else if (failureType.Equals("AcceptedFailure") == true)
+                                    {
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add((string)list[1]);
+                                        node.SubItems.Add((string)list[3]);
+                                        acceptedFailCount++;
+                                    }
+                                    else if (failureType.Equals("Bug") == true)
+                                    {
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add("");
+                                        node.SubItems.Add("\u2714");
+                                        node.SubItems.Add((string)list[1]);
+                                        node.SubItems.Add((string)list[3]);
+                                        bugConfigCount++;
+                                    }
+                                    node.Parent = project;
+                                    project.Nodes.Add(node);
+                                }
+                                project.SubItems.Add(Convert.ToString(failSet.Count - acceptedFailCount - bugFailCount));
+                                project.SubItems.Add(Convert.ToString(acceptedFailCount));
+                                project.SubItems.Add(Convert.ToString(bugFailCount));
+                                acceptedConfigCount += acceptedFailCount;
+                                bugConfigCount += bugFailCount;
+                                failConfigCount += failSet.Count;
+                                configs.Nodes.Add(project);
                             }
-                            project.Text = projectName;
-                            project.SubItems.Add("0");
-                            project.SubItems.Add(Convert.ToString(failCount));
-                            allConfig.Nodes.Add(project);
                         }
                     }
-                    allConfig.SubItems.Add(Convert.ToString(totalSuccessAllConfigCount));
-                    allConfig.SubItems.Add(Convert.ToString(totalFailAllConfigCount));
-                    tln.Nodes.Add(allConfig);
+                    configs.Text = configNames;
+                    configs.SubItems.Add(Convert.ToString(successConfigCount));
+                    configs.SubItems.Add(Convert.ToString(failConfigCount));
+                    tln.Nodes.Add(configs);
+                }
 
-                    successConfigTable = mongo.successConfigTable;
-                    failConfigTable = mongo.failConfigTable;
-                    var successConfigKeys = successConfigTable.Keys;
-
-
-                    foreach (string configNames in successConfigKeys)
+                var failConfigKeys = failConfigTable.Keys;
+                foreach (string configNames in failConfigKeys)
+                {
+                    int acceptedFailCount = 0;
+                    int bugFailCount = 0;
+                    TreeListNode failConfig = new TreeListNode();
+                    TreeListNode project = new TreeListNode();
+                    Hashtable table = (Hashtable)failConfigTable[configNames];
+                    if (successConfigTable.ContainsKey(configNames) == false)
                     {
-                        int successConfigCount = 0;
-                        int failConfigCount = 0;
-                        TreeListNode configs = new TreeListNode();
-                        Hashtable table = (Hashtable)successConfigTable[configNames];
-                        Hashtable failTable = (Hashtable)failConfigTable[configNames];
                         var keys = table.Keys;
                         foreach (string key in keys)
                         {
-                            TreeListNode project = new TreeListNode();
                             project.Text = key;
-                            Hashtable successTable = (Hashtable)table[key];
-                            var tableKeys = successTable.Keys;
-                            Hashtable failSetTable = (Hashtable)failTable[key];
-                            var failSetTalbekeys = failSetTable.Keys;
-                            foreach (string automation in tableKeys)
+                            project.SubItems.Add("0");
+                            project.SubItems.Add(Convert.ToString(table.Count));
+                            Hashtable set = (Hashtable)table[key];
+                            var setKeys = set.Keys;
+                            foreach (string setKey in setKeys)
                             {
-                                TreeListNode node = new TreeListNode();
-                                ArrayList list = (ArrayList)successTable[automation];
-                                node.Text = automation;
-                                node.SubItems.Add("\u2714");
-                                node.SubItems.Add(" ");
-                                node.SubItems.Add(" ");
-                                node.SubItems.Add(" ");
-                                node.SubItems.Add((string)list[0]);
-                                node.Parent = project;
-                                project.Nodes.Add(node);
-                            }
-
-                            if (failConfigTable.ContainsKey(configNames) == true)
-                            {
-                                if (failSetTable != null && failSetTable.Count > 0)
+                                TreeListNode automation = new TreeListNode();
+                                ArrayList list = (ArrayList)set[setKey];
+                                automation.Text = setKey;
+                                automation.SubItems.Add(" ");
+                                string failureType = (string)list[0];
+                                if (failureType.Equals("Failure") == true)
                                 {
-                                    foreach (string automation in failSetTalbekeys)
-                                    {
-                                        TreeListNode node = new TreeListNode();
-                                        ArrayList list = (ArrayList)failSetTable[automation];
-                                        node.Text = automation;
-                                        node.SubItems.Add(" ");
-                                        node.SubItems.Add("\u2714");
-                                        node.SubItems.Add(" ");
-                                        node.SubItems.Add(" ");
-                                        node.SubItems.Add((string)list[0]);
-                                        node.SubItems.Add((string)list[1]);
-                                        node.Parent = project;
-                                        project.Nodes.Add(node);
-                                    }
-                                }
-                            }
-                            project.SubItems.Add(Convert.ToString(successTable.Count));
-                            successConfigCount += successTable.Count;
-                            if (failSetTable != null)
-                            {
-                                project.SubItems.Add(Convert.ToString(failSetTable.Count));
-                                failConfigCount += failSetTable.Count;
-                            }
-                            else
-                            {
-                                project.SubItems.Add("0");
-                            }
-                            configs.Nodes.Add(project);
-                        }
-
-                        if (failConfigTable.ContainsKey(configNames) == true)
-                        {
-                            var failConfKeys = failTable.Keys;
-                            foreach (string key in failConfKeys)
-                            {
-                                if (table.ContainsKey(key) == false)
-                                {
-                                    TreeListNode project = new TreeListNode();
-                                    project.Text = key;
-                                    Hashtable failSet = (Hashtable)failTable[key];
-                                    var failSetKeys = failSet.Keys;
-                                    foreach (string automation in failSetKeys)
-                                    {
-                                        TreeListNode node = new TreeListNode();
-                                        ArrayList list = (ArrayList)failSet[automation];
-                                        node.Text = automation;
-                                        node.SubItems.Add(" ");
-                                        node.SubItems.Add("\u2714");
-                                        node.SubItems.Add(" ");
-                                        node.SubItems.Add(" ");
-                                        node.SubItems.Add((string)list[0]);
-                                        node.SubItems.Add((string)list[1]);
-                                        node.Parent = project;
-                                        project.Nodes.Add(node);
-                                    }
-                                    project.SubItems.Add(Convert.ToString(failSet.Count));
-                                    failConfigCount += failSet.Count;
-                                    configs.Nodes.Add(project);
-                                }
-                            }
-                        }
-                        configs.Text = configNames;
-                        configs.SubItems.Add(Convert.ToString(successConfigCount));
-                        configs.SubItems.Add(Convert.ToString(failConfigCount));
-                        tln.Nodes.Add(configs);
-                    }
-
-                    var failConfigKeys = failConfigTable.Keys;
-                    foreach (string configNames in failConfigKeys)
-                    {
-                        TreeListNode failConfig = new TreeListNode();
-                        TreeListNode project = new TreeListNode();
-                        Hashtable table = (Hashtable)failConfigTable[configNames];
-                        if (successConfigTable.ContainsKey(configNames) == false)
-                        {
-                            var keys = table.Keys;
-                            foreach (string key in keys)
-                            {
-                                project.Text = key;
-                                project.SubItems.Add("0");
-                                project.SubItems.Add(Convert.ToString(table.Count));
-                                Hashtable set = (Hashtable)table[key];
-                                var setKeys = set.Keys;
-                                foreach (string setKey in setKeys)
-                                {
-                                    TreeListNode automation = new TreeListNode();
-                                    ArrayList list = (ArrayList)set[setKey];
-                                    automation.Text = setKey;
-                                    automation.SubItems.Add(" ");
                                     automation.SubItems.Add("\u2714");
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add(" ");
-                                    automation.SubItems.Add((string)list[0]);
                                     automation.SubItems.Add((string)list[1]);
-                                    automation.Parent = project;
-                                    project.Nodes.Add(automation);
+                                    automation.SubItems.Add((string)list[2]);
                                 }
-                                failConfig.Nodes.Add(project);
+                                else if (failureType.Equals("AcceptedFailure") == true)
+                                {
+                                    automation.SubItems.Add(" ");
+                                    automation.SubItems.Add("\u2714");
+                                    automation.SubItems.Add(" ");
+                                    automation.SubItems.Add((string)list[1]);
+                                    automation.SubItems.Add((string)list[3]);
+                                    acceptedFailCount++;
+                                }
+                                else if (failureType.Equals("Bug") == true)
+                                {
+                                    automation.SubItems.Add(" ");
+                                    automation.SubItems.Add("");
+                                    automation.SubItems.Add("\u2714");
+                                    automation.SubItems.Add((string)list[1]);
+                                    automation.SubItems.Add((string)list[3]);
+                                    bugFailCount++;
+                                }
+                                automation.Parent = project;
+                                project.Nodes.Add(automation);
                             }
-                            failConfig.Text = configNames;
-                            failConfig.SubItems.Add("0");
-                            failConfig.SubItems.Add(Convert.ToString(table.Count));
-                            tln.Nodes.Add(failConfig);
+                            failConfig.Nodes.Add(project);
                         }
+                        failConfig.Text = configNames;
+                        failConfig.SubItems.Add("0");
+                        failConfig.SubItems.Add(Convert.ToString(table.Count));
+                        failConfig.SubItems.Add(Convert.ToString(acceptedFailCount));
+                        failConfig.SubItems.Add(Convert.ToString(bugFailCount));
+                        tln.Nodes.Add(failConfig);
                     }
                 }
                 treeListView1.Nodes.Add(tln);
@@ -409,7 +549,7 @@ namespace UI
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text,
                     GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Failure");
                 failureTracker.ProcessFailure("Unknown");
-                MessageBox.Show("Successfully marked as Failure!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);      
+                MessageBox.Show("Successfully marked as Failure!", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         private void acceptedFailureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -439,7 +579,7 @@ namespace UI
             {
                 CRForm crform;
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-                crform = new CRForm(failureTracker);                    
+                crform = new CRForm(failureTracker);
                 crform.Show();
                 FillCrForm(crform);
             }
@@ -473,11 +613,11 @@ namespace UI
         private void FillCrForm(CRForm LogBugCRDialog)
         {
             string solution = GetSolutionName();
-            char[] delimeters = {'_'};
+            char[] delimeters = { '_' };
             string[] text = solution.Split(delimeters);
             string platform = text[0];
             LogBugCRDialog.NameTxtBox.Text = solution + " " + GetAutomationName();
-            LogBugCRDialog.NAStxtBox.Text = @"\\10.0.1.23\Dev_QA\Automated Tests\Tests\" + 
+            LogBugCRDialog.NAStxtBox.Text = @"\\10.0.1.23\Dev_QA\Automated Tests\Tests\" +
                 platform + @"\" + solution + "_Debug.OpenSpan";
             LogBugCRDialog.richTextBox1.Text = GetFailureMsg();
         }

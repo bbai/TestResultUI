@@ -242,9 +242,13 @@ namespace Mongo
                                                     Query.And(
                                                         Query.EQ("@name", automation), Query.EQ("@success", "False"))));
                             MongoCursor<BsonDocument> failCursor = failCollection.Find(failQuery);
-                            BsonDocument failTypeDoc = failCursor.First();
-                            BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
-                            BsonArray failAutomation = failures["automation"].AsBsonArray;
+                            BsonArray failAutomation = new BsonArray();
+                            if (failCursor.Count() != 0)
+                            {
+                                BsonDocument failTypeDoc = failCursor.First();
+                                BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
+                                failAutomation = failures["automation"].AsBsonArray;
+                            }
                             string failureType = string.Empty;
                             string failureMsg = string.Empty;
                             foreach (BsonDocument failAuto in failAutomation)
@@ -454,9 +458,13 @@ namespace Mongo
                                                 Query.And(
                                                     Query.EQ("@name", automation), Query.EQ("@success", "False"))));
                         MongoCursor<BsonDocument> failCursor = failCollection.Find(failQuery);
-                        BsonDocument failTypeDoc = failCursor.First();
-                        BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
-                        BsonArray failAutomation = failures["automation"].AsBsonArray;
+                        BsonArray failAutomation = new BsonArray();
+                        if (failCursor.Count() != 0)
+                        {
+                            BsonDocument failTypeDoc = failCursor.First();
+                            BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
+                            failAutomation = failures["automation"].AsBsonArray;
+                        }
                         string failureType = string.Empty;
                         string failureMsg = string.Empty;
                         foreach (BsonDocument failAuto in failAutomation)
@@ -467,6 +475,10 @@ namespace Mongo
                                 failureType = failStatus["@failure-type"].AsString;
                                 failureMsg = failStatus["@message"].AsString;
                             }
+                        }
+                        if (failCursor.Count() == 0)
+                        {
+                            failureType = "Failure";
                         }
                         string errorMsg = string.Empty;
                         foreach (BsonDocument fail in testFail)
