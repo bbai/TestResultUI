@@ -628,7 +628,7 @@ namespace UI
         {
             FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
             string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
-            DialogResult result = MessageBox.Show(msg, "Do you want to copy the message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            DialogResult result = MessageBox.Show(msg, "Copy this message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
                 Clipboard.SetText(msg);
