@@ -271,8 +271,8 @@
             this.treeListView1.Location = new System.Drawing.Point(13, 108);
             this.treeListView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.treeListView1.Name = "treeListView1";
-            this.treeListView1.RowSelectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.treeListView1.RowTrackColor = System.Drawing.Color.WhiteSmoke;
+            this.treeListView1.RowSelectColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
+            this.treeListView1.RowTrackColor = System.Drawing.Color.Empty;
             this.treeListView1.Size = new System.Drawing.Size(1248, 637);
             this.treeListView1.SmallImageList = null;
             this.treeListView1.StateImageList = null;
