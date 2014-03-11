@@ -547,8 +547,6 @@ namespace UI
                 }
             }
         }
-
-
         private void failureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];

@@ -71,12 +71,12 @@ namespace UI
         {
             string url = "http://target.openspan.com/tp/api/v1/Bugs";
             //can't get new line to work
-            //string xml = string.Format(@"<Bug Name =""CR - {0}""><Description>&lt;div&gt;{1}{2}&lt;/div&gt;</Description><Project Id=""{3}""/><UserStory Id=""{4}""/></Bug>",
-            //    name, NAS, msg, project.ID, userStory.ID);
-            string xml = @"<Bug Name =""CR - " + name + @"""><Description>" + NAS + "\n\r" + msg +
-                @"</Description><Project Id=""" + project.ID + @"""/><UserStory Id=""" + userStory.ID + @"""/></Bug>";
+            string xml = string.Format(@"<Bug Name =""CR - {0}""><Description>&lt;div&gt;{1}&lt;br/&gt;&lt;br/&gt;{2}&lt;/div&gt;</Description><Project Id=""{3}""/><UserStory Id=""{4}""/></Bug>",
+                name, NAS, msg, project.ID, userStory.ID);
+            //string xml = @"<Bug Name =""CR - " + name + @"""><Description>" + NAS + "\n\r" + msg +
+            //    @"</Description><Project Id=""" + project.ID + @"""/><UserStory Id=""" + userStory.ID + @"""/></Bug>";
             client.Headers["Content-Type"] = "application/xml";
-            //client.Headers["Content-Length"] = (xml.Length).ToString();
+
             string bugId = string.Empty;
             try
             {
