@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CRForm));
             this.TPgroupBox = new System.Windows.Forms.GroupBox();
             this.LoginCompleteLbl = new System.Windows.Forms.Label();
             this.credentialsBtn = new System.Windows.Forms.Button();
@@ -239,10 +240,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
             this.ClientSize = new System.Drawing.Size(560, 636);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.TPgroupBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CRForm";
             this.Text = "Enter Bug Information";
             this.TPgroupBox.ResumeLayout(false);
