@@ -14,7 +14,6 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
-using AutomateTP;
 
 namespace UI
 {
@@ -26,11 +25,12 @@ namespace UI
         Hashtable successConfigTable;
         Hashtable failConfigTable;
         string days;
-        TP TPsettings;
+        Properties.TP TPsettings;
         public TestResults()
         {
             InitializeComponent();
-            TPsettings = new TP();
+            this.AcceptButton = button1;
+            TPsettings = new Properties.TP();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -39,6 +39,7 @@ namespace UI
             textBox2.Text = "UnitTestDB";
             textBox3.Text = "UnitTestResults";
             textBox5.Text = "27017";
+            textBox4.Focus();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -102,11 +103,12 @@ namespace UI
                 treeListView1.Nodes.Clear();
 
                 int[] results = mongo.GetNumTotalAndFail();
-                if (treeListView1.Columns.Count != 5)
+                if (treeListView1.Columns.Count != 7)
                 {
                     treeListView1.Columns.Clear();
                     ToggleColumnHeader tch = new ToggleColumnHeader();
                     tch.Text = "Title";
+                    tch.Width = 360;
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Success";
@@ -115,10 +117,17 @@ namespace UI
                     tch.Text = "Fail";
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
+                    tch.Text = "Accepted";
+                    treeListView1.Columns.Add(tch);
+                    tch = new ToggleColumnHeader();
+                    tch.Text = "Bugs";
+                    treeListView1.Columns.Add(tch);
+                    tch = new ToggleColumnHeader();
                     tch.Text = "Last Runtime Version";
                     treeListView1.Columns.Add(tch);
                     tch = new ToggleColumnHeader();
                     tch.Text = "Failure Message";
+                    tch.Width = 400;
                     treeListView1.Columns.Add(tch);
                 }
                 TreeListNode tln = new TreeListNode();
@@ -149,6 +158,8 @@ namespace UI
                             automation.Text = key;
                             automation.SubItems.Add("\u2714");
                             automation.SubItems.Add(" ");
+                            automation.SubItems.Add(" ");
+                            automation.SubItems.Add(" ");
                             automation.SubItems.Add((string)list[0]);
                             automation.Parent = project;
                             project.Nodes.Add(automation);
@@ -169,6 +180,8 @@ namespace UI
                                 automation.Text = key;
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[0]);
                                 automation.SubItems.Add((string)list[1]);
                                 automation.Parent = project;
@@ -203,6 +216,8 @@ namespace UI
                                 automation.Text = key;
                                 automation.SubItems.Add(" ");
                                 automation.SubItems.Add("\u2714");
+                                automation.SubItems.Add(" ");
+                                automation.SubItems.Add(" ");
                                 automation.SubItems.Add((string)list[0]);
                                 automation.SubItems.Add((string)list[1]);
                                 automation.Parent = project;
@@ -246,6 +261,8 @@ namespace UI
                                 node.Text = automation;
                                 node.SubItems.Add("\u2714");
                                 node.SubItems.Add(" ");
+                                node.SubItems.Add(" ");
+                                node.SubItems.Add(" ");
                                 node.SubItems.Add((string)list[0]);
                                 node.Parent = project;
                                 project.Nodes.Add(node);
@@ -262,6 +279,8 @@ namespace UI
                                         node.Text = automation;
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[0]);
                                         node.SubItems.Add((string)list[1]);
                                         node.Parent = project;
@@ -301,6 +320,8 @@ namespace UI
                                         node.Text = automation;
                                         node.SubItems.Add(" ");
                                         node.SubItems.Add("\u2714");
+                                        node.SubItems.Add(" ");
+                                        node.SubItems.Add(" ");
                                         node.SubItems.Add((string)list[0]);
                                         node.SubItems.Add((string)list[1]);
                                         node.Parent = project;
@@ -341,6 +362,8 @@ namespace UI
                                     automation.Text = setKey;
                                     automation.SubItems.Add(" ");
                                     automation.SubItems.Add("\u2714");
+                                    automation.SubItems.Add(" ");
+                                    automation.SubItems.Add(" ");
                                     automation.SubItems.Add((string)list[0]);
                                     automation.SubItems.Add((string)list[1]);
                                     automation.Parent = project;
@@ -377,7 +400,7 @@ namespace UI
         private void failureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
-            if (node.SubItems.Count != 4)
+            if (node.SubItems.Count != 6)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -392,7 +415,7 @@ namespace UI
         private void acceptedFailureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = treeListView1.SelectedNodes[0];
-            if (node.SubItems.Count != 4)
+            if (node.SubItems.Count != 6)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -408,7 +431,7 @@ namespace UI
         {
             var node = treeListView1.SelectedNodes[0];
             //if it's a failure it will have 4 subitems (for now)
-            if (node.SubItems.Count != 4)
+            if (node.SubItems.Count != 6)
             {
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -416,14 +439,7 @@ namespace UI
             {
                 CRForm crform;
                 FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-                if (TPsettings.UserName == "" || TPsettings.Password == "")
-                {
-                    crform = new CRForm(failureTracker);                    
-                }
-                else
-                {
-                    crform = new CRForm(TPsettings.UserName, TPsettings.Password, failureTracker);
-                }
+                crform = new CRForm(failureTracker);                    
                 crform.Show();
                 FillCrForm(crform);
             }
@@ -435,7 +451,7 @@ namespace UI
         private string GetRuntimeVersion()
         {
             TreeListNode selectedNode = this.treeListView1.SelectedNodes[0];
-            return selectedNode.SubItems[2].Text;
+            return selectedNode.SubItems[4].Text;
         }
         private string GetSolutionName()
         {
@@ -451,7 +467,7 @@ namespace UI
         private string GetFailureMsg()
         {
             TreeListNode selectedNode = treeListView1.SelectedNodes[0];
-            var subItem = selectedNode.SubItems[3];
+            var subItem = selectedNode.SubItems[5];
             return subItem.Text;
         }
         private void FillCrForm(CRForm LogBugCRDialog)

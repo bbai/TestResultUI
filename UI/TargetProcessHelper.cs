@@ -9,7 +9,7 @@ using System.Xml;
 using System.Windows.Forms;
 
 
-namespace AutomateTP
+namespace UI
 {
     public class ProjectInfo
     {
@@ -70,8 +70,9 @@ namespace AutomateTP
         public static string MakeCR(ProjectInfo project, UserStoryInfo userStory, string name, string NAS, string msg)
         {
             string url = "http://target.openspan.com/tp/api/v1/Bugs";
-            string xml = string.Format(@"<Bug Name =""CR - {0}""><Description>&lt;div&gt;{1}{2}{3}&lt;/div&gt;</Description><Project Id=""{4}""/><UserStory Id=""{5}""/></Bug>",
-                name, NAS, Environment.NewLine, msg, project.ID, userStory.ID);
+            string xml = string.Format(@"<Bug Name =""CR - {0}""><Description>&lt;div&gt;{1}
+{3}&lt;/div&gt;</Description><Project Id=""{4}""/><UserStory Id=""{5}""/></Bug>",
+                name, NAS, msg, project.ID, userStory.ID);
             client.Headers["Content-Type"] = "application/xml";
             //client.Headers["Content-Length"] = (xml.Length).ToString();
             string bugId = string.Empty;
