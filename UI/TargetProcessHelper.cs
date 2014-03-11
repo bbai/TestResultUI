@@ -70,9 +70,11 @@ namespace UI
         public static string MakeCR(ProjectInfo project, UserStoryInfo userStory, string name, string NAS, string msg)
         {
             string url = "http://target.openspan.com/tp/api/v1/Bugs";
-            string xml = string.Format(@"<Bug Name =""CR - {0}""><Description>&lt;div&gt;{1}
-{3}&lt;/div&gt;</Description><Project Id=""{4}""/><UserStory Id=""{5}""/></Bug>",
-                name, NAS, msg, project.ID, userStory.ID);
+            //can't get new line to work
+            //string xml = string.Format(@"<Bug Name =""CR - {0}""><Description>&lt;div&gt;{1}{2}&lt;/div&gt;</Description><Project Id=""{3}""/><UserStory Id=""{4}""/></Bug>",
+            //    name, NAS, msg, project.ID, userStory.ID);
+            string xml = @"<Bug Name =""CR - " + name + @"""><Description>" + NAS + "\n\r" + msg +
+                @"</Description><Project Id=""" + project.ID + @"""/><UserStory Id=""" + userStory.ID + @"""/></Bug>";
             client.Headers["Content-Type"] = "application/xml";
             //client.Headers["Content-Length"] = (xml.Length).ToString();
             string bugId = string.Empty;

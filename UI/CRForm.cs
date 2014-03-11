@@ -44,6 +44,7 @@ namespace UI
                     TPsettings.Password = passwordTxtBox.Text;
                     TPsettings.Save();
                     PrepareCR();
+                    this.AcceptButton = SubmitCRBtn;
                 }
             }
             //check that user is authorized or entered correct username/password

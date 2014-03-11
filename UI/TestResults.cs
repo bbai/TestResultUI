@@ -47,6 +47,7 @@ namespace UI
             if (textBox4.Text.Length == 0)
             {
                 MessageBox.Show("Please Enter Days.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBox4.Focus();
             }
             else
             {
@@ -627,7 +628,11 @@ namespace UI
         {
             FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
             string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
-            MessageBox.Show(msg, "Status Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DialogResult result = MessageBox.Show(msg, "Do you want to copy the message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                Clipboard.SetText(msg);
+            }
         }
     }
 }

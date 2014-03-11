@@ -15,9 +15,9 @@
         {
             if (disposing && (components != null))
             {
-                TPsettings.Reset();
                 components.Dispose();
             }
+            TPsettings.Reset();
             base.Dispose(disposing);
         }
 
