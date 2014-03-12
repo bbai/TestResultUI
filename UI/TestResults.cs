@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Configuration;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -37,11 +38,13 @@ namespace UI
 
         private void DefaultBtn_Click(object sender, EventArgs e)
         {
-            DbAddressTxt.Text = "10.0.3.26";
-            DbNameTxt.Text = "UnitTestDB";
-            CollectionNameTxt.Text = "UnitTestResults";
-            PortTxt.Text = "27017";
-				ConnectBtn.Focus();
+            var serverInfo = ConfigurationManager.GetSection("mongoServerInfo") as System.Collections.Specialized.NameValueCollection;
+            
+            DbAddressTxt.Text = serverInfo["ServerAddr"].ToString();
+            DbNameTxt.Text = serverInfo["DBName"].ToString();
+            CollectionNameTxt.Text = serverInfo["CollectionName"].ToString();
+            PortTxt.Text = serverInfo["Port"].ToString();
+			ConnectBtn.Focus();
         }
 
 		  private void GetDataByDaysBtn_Click(object sender, EventArgs e)
