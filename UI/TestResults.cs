@@ -627,10 +627,9 @@ namespace UI
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
-            {
-                CRForm crform;
+            { 
                 FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-                crform = new CRForm(failureTracker);
+					 CRForm crform = new CRForm(failureTracker);
                 crform.OnFormClosed += new CRFormClosed(CRForm_Closed);
                 crform.Show();
                 FillCrForm(crform);
@@ -694,13 +693,20 @@ namespace UI
 
         private void seeStatusMessageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-            string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
-            DialogResult result = MessageBox.Show(msg, "Copy this message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-            if (result == System.Windows.Forms.DialogResult.Yes)
-            {
-                Clipboard.SetText(msg);
-            }
+				var node = treeListView1.SelectedNodes[0];
+				if (node.SubItems.Count != 6)
+				{
+					 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					 FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
+					 string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
+					 StatusMessage msgForm = new StatusMessage(msg);
+
+				}
+
+            
         }
 
 		  private void ConnectBtn_Click(object sender, EventArgs e)
