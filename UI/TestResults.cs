@@ -468,6 +468,8 @@ namespace UI
                     configs.Text = configNames;
                     configs.SubItems.Add(Convert.ToString(successConfigCount));
                     configs.SubItems.Add(Convert.ToString(failConfigCount));
+                    configs.SubItems.Add(Convert.ToString(acceptedConfigCount));
+                    configs.SubItems.Add(Convert.ToString(bugConfigCount));
                     tln.Nodes.Add(configs);
                 }
 
