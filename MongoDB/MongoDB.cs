@@ -40,7 +40,6 @@ namespace Mongo
         {
             DateTime date = DateTime.Now.Subtract(TimeSpan.FromDays(days));
             var dateQuery = Query.And(Query.GT("Date", date));
-            //skip first inconsistant entry in current db.
             MongoCursor<BsonDocument> cursor = collection.Find(dateQuery);
             int numTotalTests = 0;
             int numFailureTests = 0;
@@ -187,6 +186,8 @@ namespace Mongo
                                                         Query.And(
                                                             Query.EQ("@name", automation),
                                                             Query.EQ("@success", "True"))))));
+
+                        testSuccess = collection.Find(queryResults1);
                     }
                     /*
                     if (testSuccess.Count() == 0 && automationNameList.Count != 1)
