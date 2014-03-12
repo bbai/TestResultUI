@@ -72,14 +72,22 @@ namespace Mongo
         /// automations associated with projectname are the values(type of ArrayList)
         /// </summary>
         /// <returns>Hashtable that contains project-automation data</returns>
-        public Hashtable GetProjectAutomationTable(int days)
+        public Hashtable GetProjectAutomationTable(BsonObjectId id, int days)
         {
             DateTime date = DateTime.Now.Subtract(TimeSpan.FromDays(days));
             var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
             Hashtable projectAutomationTable = new Hashtable();
             foreach (string project in projectNames)
             {
-                var query = Query.And(Query.GT("Date", date), Query.EQ("TestRun.Configuration.test-results.@project-name", project));
+                IMongoQuery query;
+                if (id != null)
+                {
+                    query = Query.And(Query.EQ("_id", id), Query.EQ("TestRun.Configuration.test-results.@project-name", project));
+                }
+                else
+                {
+                    query = Query.And(Query.GT("Date", date), Query.EQ("TestRun.Configuration.test-results.@project-name", project));
+                }
                 MongoCursor<BsonDocument> testCursor = collection.Find(query).SetLimit(1);
                 ArrayList automationNames = new ArrayList();
                 foreach (BsonDocument doc in testCursor)
@@ -145,7 +153,7 @@ namespace Mongo
             successConfigTable = new Hashtable();
             failConfigTable = new Hashtable();
             var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
-            Hashtable projectAutomationTable = this.GetProjectAutomationTable(days);
+            Hashtable projectAutomationTable = this.GetProjectAutomationTable(objectId, days);
 
             int progress = 0;
             int totalNumProject = projectNames.Count;
