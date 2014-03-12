@@ -23,24 +23,23 @@ namespace Mongo
         public Hashtable successConfigTable;
         public Hashtable failConfigTable;
         public event ProgressUpdate OnProgressUpdate;
-        private DateTime mDate;
-        public MongoDBHelper(string serverAddr, string dbName, string collectionName, int days)
+        public MongoDBHelper(string serverAddr, string dbName, string collectionName)
         {
             MongoClient client = new MongoClient("mongodb://" + serverAddr);
             MongoServer server = client.GetServer();
             MongoDatabase mongoDB = server.GetDatabase(dbName);
             collection = mongoDB.GetCollection(collectionName);
             failCollection = mongoDB.GetCollection("UnitTestFailures");
-            mDate = DateTime.Now.Subtract(TimeSpan.FromDays(days));
         }
         /// <summary>
         /// Get the number of total test runs and failed test runs
         /// </summary>
         /// <returns>array contains total test runs and failed test run
         ///          index 0 is total, 1 is fail</returns>
-        public int[] GetNumTotalAndFail()
+        public int[] GetNumTotalAndFail(int days)
         {
-            var dateQuery = Query.And(Query.GT("Date", mDate));
+            DateTime date = DateTime.Now.Subtract(TimeSpan.FromDays(days));
+            var dateQuery = Query.And(Query.GT("Date", date));
             //skip first inconsistant entry in current db.
             MongoCursor<BsonDocument> cursor = collection.Find(dateQuery);
             int numTotalTests = 0;
@@ -73,13 +72,14 @@ namespace Mongo
         /// automations associated with projectname are the values(type of ArrayList)
         /// </summary>
         /// <returns>Hashtable that contains project-automation data</returns>
-        public Hashtable GetProjectAutomationTable()
+        public Hashtable GetProjectAutomationTable(int days)
         {
+            DateTime date = DateTime.Now.Subtract(TimeSpan.FromDays(days));
             var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
             Hashtable projectAutomationTable = new Hashtable();
             foreach (string project in projectNames)
             {
-                var query = Query.And(Query.GT("Date", mDate), Query.EQ("TestRun.Configuration.test-results.@project-name", project));
+                var query = Query.And(Query.GT("Date", date), Query.EQ("TestRun.Configuration.test-results.@project-name", project));
                 MongoCursor<BsonDocument> testCursor = collection.Find(query).SetLimit(1);
                 ArrayList automationNames = new ArrayList();
                 foreach (BsonDocument doc in testCursor)
@@ -116,15 +116,36 @@ namespace Mongo
         /// Analyze the data in the Mongodb, and put associated data in to different tables
         /// </summary>
         /// <returns>Returns true when finshed analyzing data</returns>
-        public bool AnalyzeData()
+        public bool AnalyzeData(int dropDownIndex, int days)
         {
+            DateTime date = DateTime.Now.Subtract(TimeSpan.FromDays(days));
+            SortByBuilder sbb = new SortByBuilder();
+            sbb.Descending("_id");
+            var lastDocs = collection.FindAllAs<BsonDocument>().SetSortOrder(sbb).SetLimit(15);
+            Hashtable idRunNameTable = new Hashtable();
+            ArrayList keyList = new ArrayList();
+            foreach (BsonDocument lastDoc in lastDocs)
+            {
+                BsonObjectId id = lastDoc["_id"].AsObjectId;
+                BsonDocument testRun = lastDoc["TestRun"].AsBsonDocument;
+                string testRunName = testRun["@testRunName"].AsString;
+                string userName = testRun["@userName"].AsString;
+                string timeStamp = testRun["@timeStamp"].AsString;
+                string hashtableKey = @"""" + testRunName + @""" """ + userName + @""" """ + timeStamp + @"""";
+                idRunNameTable.Add(hashtableKey, id);
+                //Track the order of each test run
+                keyList.Add(hashtableKey);
+            }
+            BsonObjectId objectId = null;
+            if (dropDownIndex >= 0)
+               objectId = (BsonObjectId) idRunNameTable[keyList[dropDownIndex]];
             bool ret = false;
             successAllConfigTable = new Hashtable();
             failAllConfigTable = new Hashtable();
             successConfigTable = new Hashtable();
             failConfigTable = new Hashtable();
             var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
-            Hashtable projectAutomationTable = this.GetProjectAutomationTable();
+            Hashtable projectAutomationTable = this.GetProjectAutomationTable(days);
 
             int progress = 0;
             int totalNumProject = projectNames.Count;
@@ -135,7 +156,22 @@ namespace Mongo
                 OnProgressUpdate(report);
                 foreach (string automation in automationNameList)
                 {
-                    var queryResults1 = Query.And(Query.GT("Date", mDate),
+                    MongoCursor<BsonDocument> testSuccess = null;
+                    if (dropDownIndex == -1)
+                    {
+                        var queryResults1 = Query.And(Query.GT("Date", date),
+                                                Query.ElemMatch("TestRun.Configuration.test-results",
+                                                    Query.And(
+                                                        Query.EQ("@project-name", project),
+                                                        Query.ElemMatch("test-suite.results.test-case",
+                                                            Query.And(
+                                                                Query.EQ("@name", automation),
+                                                                Query.EQ("@success", "True"))))));
+                        testSuccess = collection.Find(queryResults1);
+                    }
+                    else
+                    {
+                        var queryResults1 = Query.And(Query.EQ("_id", objectId),
                                             Query.ElemMatch("TestRun.Configuration.test-results",
                                                 Query.And(
                                                     Query.EQ("@project-name", project),
@@ -143,7 +179,7 @@ namespace Mongo
                                                         Query.And(
                                                             Query.EQ("@name", automation),
                                                             Query.EQ("@success", "True"))))));
-                    MongoCursor<BsonDocument> testSuccess = collection.Find(queryResults1);
+                    }
                     /*
                     if (testSuccess.Count() == 0 && automationNameList.Count != 1)
                     {
@@ -167,13 +203,27 @@ namespace Mongo
                         testSuccess = collection.Find(queryResults1);
                     }
                     */
-                    var queryResults2 = Query.And(Query.GT("Date", mDate),
-                                            Query.ElemMatch("TestRun.Configuration.test-results",
-                                                Query.And(
-                                                    Query.EQ("@project-name", project),
-                                                            Query.ElemMatch("test-suite.results.test-case",
-                                                            Query.EQ("@name", automation)))));
-                    MongoCursor<BsonDocument> testAll = collection.Find(queryResults2);
+                    MongoCursor<BsonDocument> testAll;
+                    if (dropDownIndex == -1)
+                    {
+                        var queryResults2 = Query.And(Query.GT("Date", date),
+                                                Query.ElemMatch("TestRun.Configuration.test-results",
+                                                    Query.And(
+                                                        Query.EQ("@project-name", project),
+                                                                Query.ElemMatch("test-suite.results.test-case",
+                                                                Query.EQ("@name", automation)))));
+                        testAll = collection.Find(queryResults2);
+                    }
+                    else
+                    {
+                        var queryResults2 = Query.And(Query.EQ("_id", objectId),
+                        Query.ElemMatch("TestRun.Configuration.test-results",
+                            Query.And(
+                                Query.EQ("@project-name", project),
+                                        Query.ElemMatch("test-suite.results.test-case",
+                                        Query.EQ("@name", automation)))));
+                        testAll = collection.Find(queryResults2);
+                    }
                     /*
                     if (testAll.Count() == 0 && automationNameList.Count != 1)
                     {
@@ -196,15 +246,31 @@ namespace Mongo
                         testAll = collection.Find(queryResults2);
                     }
                      */
-                    var queryResults3 = Query.And(Query.GT("Date", mDate),
-                                            Query.ElemMatch("TestRun.Configuration.test-results",
-                                                Query.And(
-                                                    Query.EQ("@project-name", project),
-                                                            Query.ElemMatch("test-suite.results.test-case",
-                                                                Query.And(
-                                                                    Query.EQ("@name", automation),
-                                                                    Query.EQ("@success", "False"))))));
-                    MongoCursor<BsonDocument> testFail = collection.Find(queryResults3);
+                    MongoCursor<BsonDocument> testFail;
+                    if (dropDownIndex == -1)
+                    {
+                        var queryResults3 = Query.And(Query.GT("Date", date),
+                                                Query.ElemMatch("TestRun.Configuration.test-results",
+                                                    Query.And(
+                                                        Query.EQ("@project-name", project),
+                                                                Query.ElemMatch("test-suite.results.test-case",
+                                                                    Query.And(
+                                                                        Query.EQ("@name", automation),
+                                                                        Query.EQ("@success", "False"))))));
+                        testFail = collection.Find(queryResults3);
+                    }
+                    else
+                    {
+                        var queryResults3 = Query.And(Query.EQ("_id", objectId),
+                                                Query.ElemMatch("TestRun.Configuration.test-results",
+                                                    Query.And(
+                                                        Query.EQ("@project-name", project),
+                                                                Query.ElemMatch("test-suite.results.test-case",
+                                                                    Query.And(
+                                                                        Query.EQ("@name", automation),
+                                                                        Query.EQ("@success", "False"))))));
+                        testFail = collection.Find(queryResults3);
+                    }
                     /*
                     if (testFail.Count() == 0 && automationNameList.Count != 1)
                     {
@@ -237,8 +303,8 @@ namespace Mongo
                             BsonDocument testRun = diffBson["TestRun"].AsBsonDocument;
                             string version = testRun["@runtimeVersion"].AsString;
                             var failQuery = Query.And(
-                                                Query.EQ("@project-name", project), Query.EQ("@runtime-version", version), 
-                                                Query.ElemMatch("failures.automation", 
+                                                Query.EQ("@project-name", project), Query.EQ("@runtime-version", version),
+                                                Query.ElemMatch("failures.automation",
                                                     Query.And(
                                                         Query.EQ("@name", automation), Query.EQ("@success", "False"))));
                             MongoCursor<BsonDocument> failCursor = failCollection.Find(failQuery);
@@ -286,7 +352,7 @@ namespace Mongo
                                                 BsonDocument failure = test["failure"].AsBsonDocument;
                                                 errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
                                                  */
-                                                
+
                                                 if (failConfigTable.ContainsKey(key) == false)
                                                 {
                                                     Hashtable projectTable = new Hashtable();
@@ -362,7 +428,7 @@ namespace Mongo
                                         {
                                             if (test["@success"].Equals("True") && test["@name"].Equals(automation))
                                             {
-                                                
+
                                                 if (successConfigTable.ContainsKey(key) == false)
                                                 {
                                                     Hashtable projectTable = new Hashtable();

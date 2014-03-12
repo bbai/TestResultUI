@@ -55,15 +55,15 @@ namespace UI
             {
                 if (backgroundWorker1.IsBusy != true)
                 {
-                    backgroundWorker1.RunWorkerAsync();
+                    backgroundWorker1.RunWorkerAsync(-1);
                 }
             }
         }
 
+
+
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            mongo = new MongoDBHelper(textBox1.Text + ":" + textBox5.Text, textBox2.Text,
-                    textBox3.Text, Convert.ToInt32(textBox4.Text));
             mongo.OnProgressUpdate += new ProgressUpdate(mongo_ProgressChanged);
             if (treeListView1.InvokeRequired)
             {
@@ -78,7 +78,10 @@ namespace UI
             }
             try
             {
-                mongo.AnalyzeData();
+                if (textBox4.Text.Count() == 0)
+                    mongo.AnalyzeData(Convert.ToInt32(e.Argument), 0);
+                else
+                    mongo.AnalyzeData(Convert.ToInt32(e.Argument), Convert.ToInt32(textBox4.Text));
             }
             catch (MongoConnectionException ex)
             {
@@ -102,10 +105,18 @@ namespace UI
                 return;
             if (mongo == null || days != textBox4.Text || treeListView1.Nodes.Count == 0)
             {
-                days = textBox4.Text;
+                if (textBox4.Text.Count() == 0)
+                {
+                    days = "0";
+                }
+                else
+                {
+                    days = textBox4.Text;
+                }
                 treeListView1.Nodes.Clear();
 
-                int[] results = mongo.GetNumTotalAndFail();
+                
+                int[] results = mongo.GetNumTotalAndFail(Convert.ToInt32(days));
                 if (treeListView1.Columns.Count != 7)
                 {
                     treeListView1.Columns.Clear();
@@ -691,6 +702,40 @@ namespace UI
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
                 Clipboard.SetText(msg);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            mongo = new MongoDBHelper(textBox1.Text + ":" + textBox5.Text, textBox2.Text,
+                    textBox3.Text);
+            SortByBuilder sbb = new SortByBuilder();
+            sbb.Descending("_id");
+            var lastDocs = mongo.collection.FindAllAs<BsonDocument>().SetSortOrder(sbb).SetLimit(15);
+            ArrayList keyList = new ArrayList();
+            foreach (BsonDocument lastDoc in lastDocs)
+            {
+                BsonObjectId id = lastDoc["_id"].AsObjectId;
+                BsonDocument testRun = lastDoc["TestRun"].AsBsonDocument;
+                string testRunName = testRun["@testRunName"].AsString;
+                string userName = testRun["@userName"].AsString;
+                string timeStamp = testRun["@timeStamp"].AsString;
+                string hashtableKey = @"""" + testRunName + @""" """ + userName + @""" """ + timeStamp + @"""";
+                //Track the order of each test run
+                keyList.Add(hashtableKey);
+            }
+            for (int i = 0; i < keyList.Count; i++)
+            {
+                comboBox1.Items.Insert(i, keyList[i]);
+            }
+            label6.Text = "Connection Successful";
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (backgroundWorker1.IsBusy != true)
+            {
+                backgroundWorker1.RunWorkerAsync(comboBox1.SelectedIndex);
             }
         }
     }
