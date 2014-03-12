@@ -732,7 +732,7 @@ namespace UI
 
 		  private void GetTestRunBtn_Click(object sender, EventArgs e)
         {
-				if (TestRunComboBox.SelectedText.Length == 0)
+				if (TestRunComboBox.SelectedIndex == -1)
 				{
 					 MessageBox.Show("Please Choose Test Run", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					 TestRunComboBox.Focus();
