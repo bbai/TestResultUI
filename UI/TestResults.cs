@@ -112,9 +112,7 @@ namespace UI
                     days = DaysTxt.Text;
                 }
                 treeListView1.Nodes.Clear();
-
-                
-                int[] results = mongo.GetNumTotalAndFail(Convert.ToInt32(days));
+            
                 if (treeListView1.Columns.Count != 7)
                 {
                     treeListView1.Columns.Clear();
@@ -145,8 +143,6 @@ namespace UI
                 TreeListNode tln = new TreeListNode();
                 tln.Text = "Test Run";
                 tln.ImageIndex = 1;
-                tln.SubItems.Add(Convert.ToString(results[0] - results[1]));
-                tln.SubItems.Add(Convert.ToString(results[1]));
                 TreeListNode allConfig = new TreeListNode();
 
                 successAllConfigTable = mongo.successAllConfigTable;
@@ -157,10 +153,14 @@ namespace UI
                 var failKey = failAllConfigTable.Keys;
                 List<string> failKeys = failKey.Cast<string>().ToList();
                 failKeys.Sort();
+
                 int totalSuccessAllConfigCount = 0;
                 int totalFailAllConfigCount = 0;
                 int acceptedFailureAllConfigCount = 0;
                 int bugFailureAllConfigCount = 0;
+                int totalSuccessCount = 0;
+                int totalFailCount = 0;
+
                 foreach (string projectName in successKeys)
                 {
                     TreeListNode project = new TreeListNode();
@@ -304,6 +304,8 @@ namespace UI
                 allConfig.SubItems.Add(Convert.ToString(totalFailAllConfigCount - acceptedFailureAllConfigCount - bugFailureAllConfigCount));
                 allConfig.SubItems.Add(Convert.ToString(acceptedFailureAllConfigCount));
                 allConfig.SubItems.Add(Convert.ToString(bugFailureAllConfigCount));
+                totalSuccessCount += totalSuccessAllConfigCount;
+                totalFailCount += totalFailAllConfigCount - acceptedFailureAllConfigCount - bugFailureAllConfigCount;
                 tln.Nodes.Add(allConfig);
 
                 successConfigTable = mongo.successConfigTable;
@@ -479,6 +481,8 @@ namespace UI
                     configs.SubItems.Add(Convert.ToString(failConfigCount - acceptedConfigCount - bugConfigCount));
                     configs.SubItems.Add(Convert.ToString(acceptedConfigCount));
                     configs.SubItems.Add(Convert.ToString(bugConfigCount));
+                    totalSuccessCount += successConfigCount;
+                    totalFailCount += failConfigCount - acceptedConfigCount - bugConfigCount;
                     tln.Nodes.Add(configs);
                 }
 
@@ -546,9 +550,13 @@ namespace UI
                         failConfig.SubItems.Add(Convert.ToString(table.Count));
                         failConfig.SubItems.Add(Convert.ToString(acceptedFailCount));
                         failConfig.SubItems.Add(Convert.ToString(bugFailCount));
+                        totalFailCount += table.Count;
                         tln.Nodes.Add(failConfig);
                     }
                 }
+
+                tln.SubItems.Add(Convert.ToString(totalSuccessCount));
+                tln.SubItems.Add(Convert.ToString(totalFailCount));
                 treeListView1.Nodes.Add(tln);
             }
             treeListView1.Focus();
