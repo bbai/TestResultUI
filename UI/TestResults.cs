@@ -727,12 +727,14 @@ namespace UI
                 TestRunComboBox.Items.Insert(i, keyList[i]);
             }
             ReadyLbl.Text = "Connection Successful";
+				GetTestRunBtn.Enabled = true;
+				GetDataByDaysBtn.Enabled = true;
 				TestRunComboBox.Focus();
         }
 
 		  private void GetTestRunBtn_Click(object sender, EventArgs e)
         {
-				if (TestRunComboBox.SelectedText.Length == 0)
+				if (TestRunComboBox.SelectedIndex == -1)
 				{
 					 MessageBox.Show("Please Choose Test Run", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					 TestRunComboBox.Focus();

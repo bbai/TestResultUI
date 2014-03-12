@@ -198,6 +198,7 @@
 				// 
 				// GetDataByDaysBtn
 				// 
+				this.GetDataByDaysBtn.Enabled = false;
 				this.GetDataByDaysBtn.Location = new System.Drawing.Point(1148, 23);
 				this.GetDataByDaysBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 				this.GetDataByDaysBtn.Name = "GetDataByDaysBtn";
@@ -312,6 +313,7 @@
 				// 
 				// GetTestRunBtn
 				// 
+				this.GetTestRunBtn.Enabled = false;
 				this.GetTestRunBtn.Location = new System.Drawing.Point(798, 25);
 				this.GetTestRunBtn.Name = "GetTestRunBtn";
 				this.GetTestRunBtn.Size = new System.Drawing.Size(80, 25);
