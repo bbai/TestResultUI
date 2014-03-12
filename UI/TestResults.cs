@@ -31,25 +31,25 @@ namespace UI
         public TestResults()
         {
             InitializeComponent();
-            this.AcceptButton = button1;
+            this.AcceptButton = ConnectBtn;
             TPsettings = new Properties.TP();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void DefaultBtn_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "10.0.3.26";
-            textBox2.Text = "UnitTestDB";
-            textBox3.Text = "UnitTestResults";
-            textBox5.Text = "27017";
-            textBox4.Focus();
+            DbAddressTxt.Text = "10.0.3.26";
+            DbNameTxt.Text = "UnitTestDB";
+            CollectionNameTxt.Text = "UnitTestResults";
+            PortTxt.Text = "27017";
+				ConnectBtn.Focus();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+		  private void GetDataByDaysBtn_Click(object sender, EventArgs e)
         {
-            if (textBox4.Text.Length == 0)
+            if (DaysTxt.Text.Length == 0)
             {
                 MessageBox.Show("Please Enter Days.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBox4.Focus();
+                DaysTxt.Focus();
             }
             else
             {
@@ -59,8 +59,6 @@ namespace UI
                 }
             }
         }
-
-
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -78,10 +76,10 @@ namespace UI
             }
             try
             {
-                if (textBox4.Text.Count() == 0)
+                if (DaysTxt.Text.Count() == 0)
                     mongo.AnalyzeData(Convert.ToInt32(e.Argument), 0);
                 else
-                    mongo.AnalyzeData(Convert.ToInt32(e.Argument), Convert.ToInt32(textBox4.Text));
+                    mongo.AnalyzeData(Convert.ToInt32(e.Argument), Convert.ToInt32(DaysTxt.Text));
             }
             catch (MongoConnectionException ex)
             {
@@ -94,7 +92,7 @@ namespace UI
         {
             base.Invoke((Action)delegate
             {
-                label6.Text = "Processing.." + e.ToString() + "%";
+                ReadyLbl.Text = "Processing.." + e.ToString() + "%";
             });
         }
 
@@ -103,15 +101,15 @@ namespace UI
 
             if (e.Cancelled)
                 return;
-            if (mongo == null || days != textBox4.Text || treeListView1.Nodes.Count == 0)
+            if (mongo == null || days != DaysTxt.Text || treeListView1.Nodes.Count == 0)
             {
-                if (textBox4.Text.Count() == 0)
+                if (DaysTxt.Text.Count() == 0)
                 {
                     days = "0";
                 }
                 else
                 {
-                    days = textBox4.Text;
+                    days = DaysTxt.Text;
                 }
                 treeListView1.Nodes.Clear();
 
@@ -554,7 +552,7 @@ namespace UI
                 treeListView1.Nodes.Add(tln);
             }
             treeListView1.Focus();
-            label6.Text = "Done!";
+            ReadyLbl.Text = "Done!";
         }
 
         private void treeListView1_MouseClick(object sender, MouseEventArgs e)
@@ -578,7 +576,7 @@ namespace UI
             }
             else
             {
-                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text,
+                FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text,
                     GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Failure");
                 failureTracker.ProcessFailure("Unknown");
                 node.SubItems[1].Text = "\u2714";
@@ -596,7 +594,7 @@ namespace UI
             }
             else
             {
-                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "AcceptedFailure");
+                FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "AcceptedFailure");
                 AcceptedFailure acceptedFailureDialog = new AcceptedFailure(failureTracker);
                 acceptedFailureDialog.Show();
                 acceptedFailureDialog.OnFormClosed += new AcceptedFailureDialogClosed(AcceptedFailureDialog_Closed);
@@ -631,7 +629,7 @@ namespace UI
             else
             {
                 CRForm crform;
-                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
+                FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
                 crform = new CRForm(failureTracker);
                 crform.OnFormClosed += new CRFormClosed(CRForm_Closed);
                 crform.Show();
@@ -696,7 +694,7 @@ namespace UI
 
         private void seeStatusMessageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
+            FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
             string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
             DialogResult result = MessageBox.Show(msg, "Copy this message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
             if (result == System.Windows.Forms.DialogResult.Yes)
@@ -705,10 +703,10 @@ namespace UI
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+		  private void ConnectBtn_Click(object sender, EventArgs e)
         {
-            mongo = new MongoDBHelper(textBox1.Text + ":" + textBox5.Text, textBox2.Text,
-                    textBox3.Text);
+            mongo = new MongoDBHelper(DbAddressTxt.Text + ":" + PortTxt.Text, DbNameTxt.Text,
+                    CollectionNameTxt.Text);
             SortByBuilder sbb = new SortByBuilder();
             sbb.Descending("_id");
             var lastDocs = mongo.collection.FindAllAs<BsonDocument>().SetSortOrder(sbb).SetLimit(15);
@@ -726,17 +724,26 @@ namespace UI
             }
             for (int i = 0; i < keyList.Count; i++)
             {
-                comboBox1.Items.Insert(i, keyList[i]);
+                TestRunComboBox.Items.Insert(i, keyList[i]);
             }
-            label6.Text = "Connection Successful";
+            ReadyLbl.Text = "Connection Successful";
+				TestRunComboBox.Focus();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+		  private void GetTestRunBtn_Click(object sender, EventArgs e)
         {
-            if (backgroundWorker1.IsBusy != true)
-            {
-                backgroundWorker1.RunWorkerAsync(comboBox1.SelectedIndex);
-            }
+				if (TestRunComboBox.SelectedText.Length == 0)
+				{
+					 MessageBox.Show("Please Choose Test Run", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					 TestRunComboBox.Focus();
+				}
+				else
+				{
+					 if (backgroundWorker1.IsBusy != true)
+					 {
+						  backgroundWorker1.RunWorkerAsync(TestRunComboBox.SelectedIndex);
+					 }
+				}
         }
     }
 }
