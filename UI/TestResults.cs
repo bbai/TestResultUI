@@ -31,39 +31,37 @@ namespace UI
         public TestResults()
         {
             InitializeComponent();
-            this.AcceptButton = button1;
+            this.AcceptButton = ConnectBtn;
             TPsettings = new Properties.TP();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void DefaultBtn_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "10.0.3.26";
-            textBox2.Text = "UnitTestDB";
-            textBox3.Text = "UnitTestResults";
-            textBox5.Text = "27017";
-            textBox4.Focus();
+            DbAddressTxt.Text = "10.0.3.26";
+            DbNameTxt.Text = "UnitTestDB";
+            CollectionNameTxt.Text = "UnitTestResults";
+            PortTxt.Text = "27017";
+				ConnectBtn.Focus();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+		  private void GetDataByDaysBtn_Click(object sender, EventArgs e)
         {
-            if (textBox4.Text.Length == 0)
+            if (DaysTxt.Text.Length == 0)
             {
                 MessageBox.Show("Please Enter Days.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBox4.Focus();
+                DaysTxt.Focus();
             }
             else
             {
                 if (backgroundWorker1.IsBusy != true)
                 {
-                    backgroundWorker1.RunWorkerAsync();
+                    backgroundWorker1.RunWorkerAsync(-1);
                 }
             }
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            mongo = new MongoDBHelper(textBox1.Text + ":" + textBox5.Text, textBox2.Text,
-                    textBox3.Text, Convert.ToInt32(textBox4.Text));
             mongo.OnProgressUpdate += new ProgressUpdate(mongo_ProgressChanged);
             if (treeListView1.InvokeRequired)
             {
@@ -78,7 +76,10 @@ namespace UI
             }
             try
             {
-                mongo.AnalyzeData();
+                if (DaysTxt.Text.Count() == 0)
+                    mongo.AnalyzeData(Convert.ToInt32(e.Argument), 0);
+                else
+                    mongo.AnalyzeData(Convert.ToInt32(e.Argument), Convert.ToInt32(DaysTxt.Text));
             }
             catch (MongoConnectionException ex)
             {
@@ -91,7 +92,7 @@ namespace UI
         {
             base.Invoke((Action)delegate
             {
-                label6.Text = "Processing.." + e.ToString() + "%";
+                ReadyLbl.Text = "Processing.." + e.ToString() + "%";
             });
         }
 
@@ -100,12 +101,18 @@ namespace UI
 
             if (e.Cancelled)
                 return;
-            if (mongo == null || days != textBox4.Text || treeListView1.Nodes.Count == 0)
+            if (mongo == null || days != DaysTxt.Text || treeListView1.Nodes.Count == 0)
             {
-                days = textBox4.Text;
+                if (DaysTxt.Text.Count() == 0)
+                {
+                    days = "0";
+                }
+                else
+                {
+                    days = DaysTxt.Text;
+                }
                 treeListView1.Nodes.Clear();
-
-                int[] results = mongo.GetNumTotalAndFail();
+            
                 if (treeListView1.Columns.Count != 7)
                 {
                     treeListView1.Columns.Clear();
@@ -136,8 +143,6 @@ namespace UI
                 TreeListNode tln = new TreeListNode();
                 tln.Text = "Test Run";
                 tln.ImageIndex = 1;
-                tln.SubItems.Add(Convert.ToString(results[0] - results[1]));
-                tln.SubItems.Add(Convert.ToString(results[1]));
                 TreeListNode allConfig = new TreeListNode();
 
                 successAllConfigTable = mongo.successAllConfigTable;
@@ -148,10 +153,14 @@ namespace UI
                 var failKey = failAllConfigTable.Keys;
                 List<string> failKeys = failKey.Cast<string>().ToList();
                 failKeys.Sort();
+
                 int totalSuccessAllConfigCount = 0;
                 int totalFailAllConfigCount = 0;
                 int acceptedFailureAllConfigCount = 0;
                 int bugFailureAllConfigCount = 0;
+                int totalSuccessCount = 0;
+                int totalFailCount = 0;
+
                 foreach (string projectName in successKeys)
                 {
                     TreeListNode project = new TreeListNode();
@@ -295,6 +304,8 @@ namespace UI
                 allConfig.SubItems.Add(Convert.ToString(totalFailAllConfigCount - acceptedFailureAllConfigCount - bugFailureAllConfigCount));
                 allConfig.SubItems.Add(Convert.ToString(acceptedFailureAllConfigCount));
                 allConfig.SubItems.Add(Convert.ToString(bugFailureAllConfigCount));
+                totalSuccessCount += totalSuccessAllConfigCount;
+                totalFailCount += totalFailAllConfigCount - acceptedFailureAllConfigCount - bugFailureAllConfigCount;
                 tln.Nodes.Add(allConfig);
 
                 successConfigTable = mongo.successConfigTable;
@@ -470,6 +481,8 @@ namespace UI
                     configs.SubItems.Add(Convert.ToString(failConfigCount - acceptedConfigCount - bugConfigCount));
                     configs.SubItems.Add(Convert.ToString(acceptedConfigCount));
                     configs.SubItems.Add(Convert.ToString(bugConfigCount));
+                    totalSuccessCount += successConfigCount;
+                    totalFailCount += failConfigCount - acceptedConfigCount - bugConfigCount;
                     tln.Nodes.Add(configs);
                 }
 
@@ -537,13 +550,17 @@ namespace UI
                         failConfig.SubItems.Add(Convert.ToString(table.Count));
                         failConfig.SubItems.Add(Convert.ToString(acceptedFailCount));
                         failConfig.SubItems.Add(Convert.ToString(bugFailCount));
+                        totalFailCount += table.Count;
                         tln.Nodes.Add(failConfig);
                     }
                 }
+
+                tln.SubItems.Add(Convert.ToString(totalSuccessCount));
+                tln.SubItems.Add(Convert.ToString(totalFailCount));
                 treeListView1.Nodes.Add(tln);
             }
             treeListView1.Focus();
-            label6.Text = "Done!";
+            ReadyLbl.Text = "Done!";
         }
 
         private void treeListView1_MouseClick(object sender, MouseEventArgs e)
@@ -567,7 +584,7 @@ namespace UI
             }
             else
             {
-                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text,
+                FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text,
                     GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Failure");
                 failureTracker.ProcessFailure("Unknown");
                 node.SubItems[1].Text = "\u2714";
@@ -585,7 +602,7 @@ namespace UI
             }
             else
             {
-                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "AcceptedFailure");
+                FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "AcceptedFailure");
                 AcceptedFailure acceptedFailureDialog = new AcceptedFailure(failureTracker);
                 acceptedFailureDialog.Show();
                 acceptedFailureDialog.OnFormClosed += new AcceptedFailureDialogClosed(AcceptedFailureDialog_Closed);
@@ -618,10 +635,9 @@ namespace UI
                 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
-            {
-                CRForm crform;
-                FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-                crform = new CRForm(failureTracker);
+            { 
+                FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
+					 CRForm crform = new CRForm(failureTracker);
                 crform.OnFormClosed += new CRFormClosed(CRForm_Closed);
                 crform.Show();
                 FillCrForm(crform);
@@ -685,13 +701,62 @@ namespace UI
 
         private void seeStatusMessageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FailureHelper failureTracker = new FailureHelper(textBox1.Text, textBox5.Text, textBox2.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
-            string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
-            DialogResult result = MessageBox.Show(msg, "Copy this message?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-            if (result == System.Windows.Forms.DialogResult.Yes)
+				var node = treeListView1.SelectedNodes[0];
+				if (node.SubItems.Count != 6)
+				{
+					 MessageBox.Show("Please Select a Failure Node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					 FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
+					 string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
+					 StatusMessage msgForm = new StatusMessage(msg);
+					 msgForm.Show();
+				}          
+        }
+		  private void ConnectBtn_Click(object sender, EventArgs e)
+        {
+            mongo = new MongoDBHelper(DbAddressTxt.Text + ":" + PortTxt.Text, DbNameTxt.Text,
+                    CollectionNameTxt.Text);
+            SortByBuilder sbb = new SortByBuilder();
+            sbb.Descending("_id");
+            var lastDocs = mongo.collection.FindAllAs<BsonDocument>().SetSortOrder(sbb).SetLimit(15);
+            ArrayList keyList = new ArrayList();
+            foreach (BsonDocument lastDoc in lastDocs)
             {
-                Clipboard.SetText(msg);
+                BsonObjectId id = lastDoc["_id"].AsObjectId;
+                BsonDocument testRun = lastDoc["TestRun"].AsBsonDocument;
+                string testRunName = testRun["@testRunName"].AsString;
+                string userName = testRun["@userName"].AsString;
+                string timeStamp = testRun["@timeStamp"].AsString;
+                string hashtableKey = @"""" + testRunName + @""" """ + userName + @""" """ + timeStamp + @"""";
+                //Track the order of each test run
+                keyList.Add(hashtableKey);
             }
+            for (int i = 0; i < keyList.Count; i++)
+            {
+                TestRunComboBox.Items.Insert(i, keyList[i]);
+            }
+            ReadyLbl.Text = "Connection Successful";
+				GetTestRunBtn.Enabled = true;
+				GetDataByDaysBtn.Enabled = true;
+				TestRunComboBox.Focus();
+        }
+
+		  private void GetTestRunBtn_Click(object sender, EventArgs e)
+        {
+				if (TestRunComboBox.SelectedIndex == -1)
+				{
+					 MessageBox.Show("Please Choose Test Run", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					 TestRunComboBox.Focus();
+				}
+				else
+				{
+					 if (backgroundWorker1.IsBusy != true)
+					 {
+						  backgroundWorker1.RunWorkerAsync(TestRunComboBox.SelectedIndex);
+					 }
+				}
         }
     }
 }

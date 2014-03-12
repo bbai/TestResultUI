@@ -31,21 +31,22 @@
         {
 				this.components = new System.ComponentModel.Container();
 				System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestResults));
-				this.groupBox1 = new System.Windows.Forms.GroupBox();
-				this.textBox5 = new System.Windows.Forms.TextBox();
-				this.label7 = new System.Windows.Forms.Label();
-				this.label6 = new System.Windows.Forms.Label();
-				this.button2 = new System.Windows.Forms.Button();
-				this.textBox3 = new System.Windows.Forms.TextBox();
-				this.label5 = new System.Windows.Forms.Label();
-				this.label3 = new System.Windows.Forms.Label();
-				this.label2 = new System.Windows.Forms.Label();
-				this.textBox2 = new System.Windows.Forms.TextBox();
-				this.textBox1 = new System.Windows.Forms.TextBox();
-				this.label1 = new System.Windows.Forms.Label();
-				this.button1 = new System.Windows.Forms.Button();
-				this.textBox4 = new System.Windows.Forms.TextBox();
-				this.label4 = new System.Windows.Forms.Label();
+				this.DbLoginGroupBox = new System.Windows.Forms.GroupBox();
+				this.ConnectBtn = new System.Windows.Forms.Button();
+				this.PortTxt = new System.Windows.Forms.TextBox();
+				this.PortLbl = new System.Windows.Forms.Label();
+				this.DefaultBtn = new System.Windows.Forms.Button();
+				this.ReadyLbl = new System.Windows.Forms.Label();
+				this.CollectionNameTxt = new System.Windows.Forms.TextBox();
+				this.StatusLbl = new System.Windows.Forms.Label();
+				this.CollectionNameLbl = new System.Windows.Forms.Label();
+				this.DbNameLbl = new System.Windows.Forms.Label();
+				this.DbNameTxt = new System.Windows.Forms.TextBox();
+				this.DbAddressTxt = new System.Windows.Forms.TextBox();
+				this.DbAddressLbl = new System.Windows.Forms.Label();
+				this.GetDataByDaysBtn = new System.Windows.Forms.Button();
+				this.DaysTxt = new System.Windows.Forms.TextBox();
+				this.DaysLbl = new System.Windows.Forms.Label();
 				this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 				this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 				this.failureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,166 +54,176 @@
 				this.bugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 				this.seeStatusMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 				this.treeListView1 = new SynapticEffect.Forms.TreeListView();
-				this.groupBox2 = new System.Windows.Forms.GroupBox();
-				this.button3 = new System.Windows.Forms.Button();
-				this.comboBox1 = new System.Windows.Forms.ComboBox();
-				this.label8 = new System.Windows.Forms.Label();
-				this.button4 = new System.Windows.Forms.Button();
-				this.groupBox1.SuspendLayout();
+				this.SelectDataGroupBox = new System.Windows.Forms.GroupBox();
+				this.GetTestRunBtn = new System.Windows.Forms.Button();
+				this.TestRunLbl = new System.Windows.Forms.Label();
+				this.TestRunComboBox = new System.Windows.Forms.ComboBox();
+				this.DbLoginGroupBox.SuspendLayout();
 				this.contextMenuStrip1.SuspendLayout();
-				this.groupBox2.SuspendLayout();
+				this.SelectDataGroupBox.SuspendLayout();
 				this.SuspendLayout();
 				// 
-				// groupBox1
+				// DbLoginGroupBox
 				// 
-				this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+				this.DbLoginGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-				this.groupBox1.BackColor = System.Drawing.Color.WhiteSmoke;
-				this.groupBox1.Controls.Add(this.button3);
-				this.groupBox1.Controls.Add(this.textBox5);
-				this.groupBox1.Controls.Add(this.label7);
-				this.groupBox1.Controls.Add(this.button2);
-				this.groupBox1.Controls.Add(this.label6);
-				this.groupBox1.Controls.Add(this.textBox3);
-				this.groupBox1.Controls.Add(this.label5);
-				this.groupBox1.Controls.Add(this.label3);
-				this.groupBox1.Controls.Add(this.label2);
-				this.groupBox1.Controls.Add(this.textBox2);
-				this.groupBox1.Controls.Add(this.textBox1);
-				this.groupBox1.Controls.Add(this.label1);
-				this.groupBox1.Location = new System.Drawing.Point(10, 10);
-				this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.groupBox1.Name = "groupBox1";
-				this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.groupBox1.Size = new System.Drawing.Size(1250, 70);
-				this.groupBox1.TabIndex = 6;
-				this.groupBox1.TabStop = false;
-				this.groupBox1.Text = "Database Login";
+				this.DbLoginGroupBox.BackColor = System.Drawing.Color.WhiteSmoke;
+				this.DbLoginGroupBox.Controls.Add(this.ConnectBtn);
+				this.DbLoginGroupBox.Controls.Add(this.PortTxt);
+				this.DbLoginGroupBox.Controls.Add(this.PortLbl);
+				this.DbLoginGroupBox.Controls.Add(this.DefaultBtn);
+				this.DbLoginGroupBox.Controls.Add(this.ReadyLbl);
+				this.DbLoginGroupBox.Controls.Add(this.CollectionNameTxt);
+				this.DbLoginGroupBox.Controls.Add(this.StatusLbl);
+				this.DbLoginGroupBox.Controls.Add(this.CollectionNameLbl);
+				this.DbLoginGroupBox.Controls.Add(this.DbNameLbl);
+				this.DbLoginGroupBox.Controls.Add(this.DbNameTxt);
+				this.DbLoginGroupBox.Controls.Add(this.DbAddressTxt);
+				this.DbLoginGroupBox.Controls.Add(this.DbAddressLbl);
+				this.DbLoginGroupBox.Location = new System.Drawing.Point(10, 10);
+				this.DbLoginGroupBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.DbLoginGroupBox.Name = "DbLoginGroupBox";
+				this.DbLoginGroupBox.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.DbLoginGroupBox.Size = new System.Drawing.Size(1250, 70);
+				this.DbLoginGroupBox.TabIndex = 10;
+				this.DbLoginGroupBox.TabStop = false;
+				this.DbLoginGroupBox.Text = "Database Login";
 				// 
-				// textBox5
+				// ConnectBtn
 				// 
-				this.textBox5.Location = new System.Drawing.Point(257, 27);
-				this.textBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.textBox5.Name = "textBox5";
-				this.textBox5.Size = new System.Drawing.Size(69, 22);
-				this.textBox5.TabIndex = 2;
+				this.ConnectBtn.Location = new System.Drawing.Point(941, 40);
+				this.ConnectBtn.Name = "ConnectBtn";
+				this.ConnectBtn.Size = new System.Drawing.Size(75, 25);
+				this.ConnectBtn.TabIndex = 5;
+				this.ConnectBtn.Text = "Connect";
+				this.ConnectBtn.UseVisualStyleBackColor = true;
+				this.ConnectBtn.Click += new System.EventHandler(this.ConnectBtn_Click);
 				// 
-				// label7
+				// PortTxt
 				// 
-				this.label7.AutoSize = true;
-				this.label7.Location = new System.Drawing.Point(215, 32);
-				this.label7.Name = "label7";
-				this.label7.Size = new System.Drawing.Size(38, 17);
-				this.label7.TabIndex = 7;
-				this.label7.Text = "Port:";
+				this.PortTxt.Location = new System.Drawing.Point(257, 27);
+				this.PortTxt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.PortTxt.Name = "PortTxt";
+				this.PortTxt.Size = new System.Drawing.Size(69, 22);
+				this.PortTxt.TabIndex = 2;
 				// 
-				// label6
+				// PortLbl
 				// 
-				this.label6.AutoSize = true;
-				this.label6.Location = new System.Drawing.Point(1087, 28);
-				this.label6.Name = "label6";
-				this.label6.Size = new System.Drawing.Size(49, 17);
-				this.label6.TabIndex = 8;
-				this.label6.Text = "Ready";
+				this.PortLbl.AutoSize = true;
+				this.PortLbl.Location = new System.Drawing.Point(215, 32);
+				this.PortLbl.Name = "PortLbl";
+				this.PortLbl.Size = new System.Drawing.Size(38, 17);
+				this.PortLbl.TabIndex = 11;
+				this.PortLbl.Text = "Port:";
 				// 
-				// button2
+				// DefaultBtn
 				// 
-				this.button2.Location = new System.Drawing.Point(941, 10);
-				this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.button2.Name = "button2";
-				this.button2.Size = new System.Drawing.Size(75, 25);
-				this.button2.TabIndex = 0;
-				this.button2.Text = "Default";
-				this.button2.UseVisualStyleBackColor = true;
-				this.button2.Click += new System.EventHandler(this.button2_Click);
+				this.DefaultBtn.Location = new System.Drawing.Point(941, 10);
+				this.DefaultBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.DefaultBtn.Name = "DefaultBtn";
+				this.DefaultBtn.Size = new System.Drawing.Size(75, 25);
+				this.DefaultBtn.TabIndex = 0;
+				this.DefaultBtn.Text = "Default";
+				this.DefaultBtn.UseVisualStyleBackColor = true;
+				this.DefaultBtn.Click += new System.EventHandler(this.DefaultBtn_Click);
 				// 
-				// textBox3
+				// ReadyLbl
 				// 
-				this.textBox3.Location = new System.Drawing.Point(706, 26);
-				this.textBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.textBox3.Name = "textBox3";
-				this.textBox3.Size = new System.Drawing.Size(216, 22);
-				this.textBox3.TabIndex = 4;
+				this.ReadyLbl.AutoSize = true;
+				this.ReadyLbl.Location = new System.Drawing.Point(1087, 28);
+				this.ReadyLbl.Name = "ReadyLbl";
+				this.ReadyLbl.Size = new System.Drawing.Size(49, 17);
+				this.ReadyLbl.TabIndex = 12;
+				this.ReadyLbl.Text = "Ready";
 				// 
-				// label5
+				// CollectionNameTxt
 				// 
-				this.label5.AutoSize = true;
-				this.label5.Location = new System.Drawing.Point(1037, 28);
-				this.label5.Name = "label5";
-				this.label5.Size = new System.Drawing.Size(52, 17);
-				this.label5.TabIndex = 9;
-				this.label5.Text = "Status:";
+				this.CollectionNameTxt.Location = new System.Drawing.Point(706, 26);
+				this.CollectionNameTxt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.CollectionNameTxt.Name = "CollectionNameTxt";
+				this.CollectionNameTxt.Size = new System.Drawing.Size(216, 22);
+				this.CollectionNameTxt.TabIndex = 4;
 				// 
-				// label3
+				// StatusLbl
 				// 
-				this.label3.AutoSize = true;
-				this.label3.Location = new System.Drawing.Point(575, 29);
-				this.label3.Name = "label3";
-				this.label3.Size = new System.Drawing.Size(114, 17);
-				this.label3.TabIndex = 9;
-				this.label3.Text = "Collection Name:";
+				this.StatusLbl.AutoSize = true;
+				this.StatusLbl.Location = new System.Drawing.Point(1037, 28);
+				this.StatusLbl.Name = "StatusLbl";
+				this.StatusLbl.Size = new System.Drawing.Size(52, 17);
+				this.StatusLbl.TabIndex = 13;
+				this.StatusLbl.Text = "Status:";
 				// 
-				// label2
+				// CollectionNameLbl
 				// 
-				this.label2.AutoSize = true;
-				this.label2.Location = new System.Drawing.Point(346, 31);
-				this.label2.Name = "label2";
-				this.label2.Size = new System.Drawing.Size(72, 17);
-				this.label2.TabIndex = 11;
-				this.label2.Text = "DB Name:";
+				this.CollectionNameLbl.AutoSize = true;
+				this.CollectionNameLbl.Location = new System.Drawing.Point(575, 29);
+				this.CollectionNameLbl.Name = "CollectionNameLbl";
+				this.CollectionNameLbl.Size = new System.Drawing.Size(114, 17);
+				this.CollectionNameLbl.TabIndex = 14;
+				this.CollectionNameLbl.Text = "Collection Name:";
 				// 
-				// textBox2
+				// DbNameLbl
 				// 
-				this.textBox2.Location = new System.Drawing.Point(424, 27);
-				this.textBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.textBox2.Name = "textBox2";
-				this.textBox2.Size = new System.Drawing.Size(133, 22);
-				this.textBox2.TabIndex = 3;
+				this.DbNameLbl.AutoSize = true;
+				this.DbNameLbl.Location = new System.Drawing.Point(346, 31);
+				this.DbNameLbl.Name = "DbNameLbl";
+				this.DbNameLbl.Size = new System.Drawing.Size(72, 17);
+				this.DbNameLbl.TabIndex = 15;
+				this.DbNameLbl.Text = "DB Name:";
 				// 
-				// textBox1
+				// DbNameTxt
 				// 
-				this.textBox1.Location = new System.Drawing.Point(101, 28);
-				this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.textBox1.Name = "textBox1";
-				this.textBox1.Size = new System.Drawing.Size(98, 22);
-				this.textBox1.TabIndex = 1;
+				this.DbNameTxt.Location = new System.Drawing.Point(424, 27);
+				this.DbNameTxt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.DbNameTxt.Name = "DbNameTxt";
+				this.DbNameTxt.Size = new System.Drawing.Size(133, 22);
+				this.DbNameTxt.TabIndex = 3;
 				// 
-				// label1
+				// DbAddressTxt
 				// 
-				this.label1.AutoSize = true;
-				this.label1.Location = new System.Drawing.Point(8, 32);
-				this.label1.Name = "label1";
-				this.label1.Size = new System.Drawing.Size(87, 17);
-				this.label1.TabIndex = 12;
-				this.label1.Text = "DB Address:";
+				this.DbAddressTxt.Location = new System.Drawing.Point(101, 28);
+				this.DbAddressTxt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.DbAddressTxt.Name = "DbAddressTxt";
+				this.DbAddressTxt.Size = new System.Drawing.Size(98, 22);
+				this.DbAddressTxt.TabIndex = 1;
 				// 
-				// button1
+				// DbAddressLbl
 				// 
-				this.button1.Location = new System.Drawing.Point(1148, 23);
-				this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.button1.Name = "button1";
-				this.button1.Size = new System.Drawing.Size(80, 25);
-				this.button1.TabIndex = 6;
-				this.button1.Text = "Get Data";
-				this.button1.UseVisualStyleBackColor = true;
-				this.button1.Click += new System.EventHandler(this.button1_Click);
+				this.DbAddressLbl.AutoSize = true;
+				this.DbAddressLbl.Location = new System.Drawing.Point(8, 32);
+				this.DbAddressLbl.Name = "DbAddressLbl";
+				this.DbAddressLbl.Size = new System.Drawing.Size(87, 17);
+				this.DbAddressLbl.TabIndex = 16;
+				this.DbAddressLbl.Text = "DB Address:";
 				// 
-				// textBox4
+				// GetDataByDaysBtn
 				// 
-				this.textBox4.Location = new System.Drawing.Point(1051, 27);
-				this.textBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-				this.textBox4.Name = "textBox4";
-				this.textBox4.Size = new System.Drawing.Size(64, 22);
-				this.textBox4.TabIndex = 5;
+				this.GetDataByDaysBtn.Enabled = false;
+				this.GetDataByDaysBtn.Location = new System.Drawing.Point(1148, 23);
+				this.GetDataByDaysBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.GetDataByDaysBtn.Name = "GetDataByDaysBtn";
+				this.GetDataByDaysBtn.Size = new System.Drawing.Size(80, 25);
+				this.GetDataByDaysBtn.TabIndex = 9;
+				this.GetDataByDaysBtn.Text = "Get Data";
+				this.GetDataByDaysBtn.UseVisualStyleBackColor = true;
+				this.GetDataByDaysBtn.Click += new System.EventHandler(this.GetDataByDaysBtn_Click);
 				// 
-				// label4
+				// DaysTxt
 				// 
-				this.label4.AutoSize = true;
-				this.label4.Location = new System.Drawing.Point(985, 30);
-				this.label4.Name = "label4";
-				this.label4.Size = new System.Drawing.Size(44, 17);
-				this.label4.TabIndex = 10;
-				this.label4.Text = "Days:";
+				this.DaysTxt.Location = new System.Drawing.Point(1051, 27);
+				this.DaysTxt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.DaysTxt.Name = "DaysTxt";
+				this.DaysTxt.Size = new System.Drawing.Size(64, 22);
+				this.DaysTxt.TabIndex = 8;
+				// 
+				// DaysLbl
+				// 
+				this.DaysLbl.AutoSize = true;
+				this.DaysLbl.Location = new System.Drawing.Point(985, 30);
+				this.DaysLbl.Name = "DaysLbl";
+				this.DaysLbl.Size = new System.Drawing.Size(44, 17);
+				this.DaysLbl.TabIndex = 17;
+				this.DaysLbl.Text = "Days:";
 				// 
 				// backgroundWorker1
 				// 
@@ -280,60 +291,53 @@
 				this.treeListView1.Size = new System.Drawing.Size(1250, 580);
 				this.treeListView1.SmallImageList = null;
 				this.treeListView1.StateImageList = null;
-				this.treeListView1.TabIndex = 1;
+				this.treeListView1.TabIndex = 18;
 				this.treeListView1.Text = "treeListView1";
 				this.treeListView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeListView1_MouseClick);
 				// 
-				// groupBox2
+				// SelectDataGroupBox
 				// 
-				this.groupBox2.BackColor = System.Drawing.Color.WhiteSmoke;
-				this.groupBox2.Controls.Add(this.button4);
-				this.groupBox2.Controls.Add(this.label8);
-				this.groupBox2.Controls.Add(this.comboBox1);
-				this.groupBox2.Controls.Add(this.textBox4);
-				this.groupBox2.Controls.Add(this.label4);
-				this.groupBox2.Controls.Add(this.button1);
-				this.groupBox2.Location = new System.Drawing.Point(10, 90);
-				this.groupBox2.Name = "groupBox2";
-				this.groupBox2.Size = new System.Drawing.Size(1250, 65);
-				this.groupBox2.TabIndex = 7;
-				this.groupBox2.TabStop = false;
-				this.groupBox2.Text = "Choose Run or Date Range";
+				this.SelectDataGroupBox.BackColor = System.Drawing.Color.WhiteSmoke;
+				this.SelectDataGroupBox.Controls.Add(this.GetTestRunBtn);
+				this.SelectDataGroupBox.Controls.Add(this.TestRunLbl);
+				this.SelectDataGroupBox.Controls.Add(this.TestRunComboBox);
+				this.SelectDataGroupBox.Controls.Add(this.DaysTxt);
+				this.SelectDataGroupBox.Controls.Add(this.DaysLbl);
+				this.SelectDataGroupBox.Controls.Add(this.GetDataByDaysBtn);
+				this.SelectDataGroupBox.Location = new System.Drawing.Point(10, 90);
+				this.SelectDataGroupBox.Name = "SelectDataGroupBox";
+				this.SelectDataGroupBox.Size = new System.Drawing.Size(1250, 65);
+				this.SelectDataGroupBox.TabIndex = 19;
+				this.SelectDataGroupBox.TabStop = false;
+				this.SelectDataGroupBox.Text = "Choose Run or Date Range";
 				// 
-				// button3
+				// GetTestRunBtn
 				// 
-				this.button3.Location = new System.Drawing.Point(941, 40);
-				this.button3.Name = "button3";
-				this.button3.Size = new System.Drawing.Size(75, 25);
-				this.button3.TabIndex = 11;
-				this.button3.Text = "Connect";
-				this.button3.UseVisualStyleBackColor = true;
+				this.GetTestRunBtn.Enabled = false;
+				this.GetTestRunBtn.Location = new System.Drawing.Point(798, 25);
+				this.GetTestRunBtn.Name = "GetTestRunBtn";
+				this.GetTestRunBtn.Size = new System.Drawing.Size(80, 25);
+				this.GetTestRunBtn.TabIndex = 7;
+				this.GetTestRunBtn.Text = "Get Data";
+				this.GetTestRunBtn.UseVisualStyleBackColor = true;
+				this.GetTestRunBtn.Click += new System.EventHandler(this.GetTestRunBtn_Click);
 				// 
-				// comboBox1
+				// TestRunLbl
 				// 
-				this.comboBox1.FormattingEnabled = true;
-				this.comboBox1.Location = new System.Drawing.Point(101, 26);
-				this.comboBox1.Name = "comboBox1";
-				this.comboBox1.Size = new System.Drawing.Size(671, 24);
-				this.comboBox1.TabIndex = 11;
+				this.TestRunLbl.AutoSize = true;
+				this.TestRunLbl.Location = new System.Drawing.Point(8, 29);
+				this.TestRunLbl.Name = "TestRunLbl";
+				this.TestRunLbl.Size = new System.Drawing.Size(70, 17);
+				this.TestRunLbl.TabIndex = 20;
+				this.TestRunLbl.Text = "Test Run:";
 				// 
-				// label8
+				// TestRunComboBox
 				// 
-				this.label8.AutoSize = true;
-				this.label8.Location = new System.Drawing.Point(8, 29);
-				this.label8.Name = "label8";
-				this.label8.Size = new System.Drawing.Size(70, 17);
-				this.label8.TabIndex = 12;
-				this.label8.Text = "Test Run:";
-				// 
-				// button4
-				// 
-				this.button4.Location = new System.Drawing.Point(798, 25);
-				this.button4.Name = "button4";
-				this.button4.Size = new System.Drawing.Size(80, 25);
-				this.button4.TabIndex = 13;
-				this.button4.Text = "Get Data";
-				this.button4.UseVisualStyleBackColor = true;
+				this.TestRunComboBox.FormattingEnabled = true;
+				this.TestRunComboBox.Location = new System.Drawing.Point(101, 26);
+				this.TestRunComboBox.Name = "TestRunComboBox";
+				this.TestRunComboBox.Size = new System.Drawing.Size(671, 24);
+				this.TestRunComboBox.TabIndex = 6;
 				// 
 				// TestResults
 				// 
@@ -341,52 +345,52 @@
 				this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 				this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
 				this.ClientSize = new System.Drawing.Size(1272, 755);
-				this.Controls.Add(this.groupBox2);
+				this.Controls.Add(this.SelectDataGroupBox);
 				this.Controls.Add(this.treeListView1);
-				this.Controls.Add(this.groupBox1);
+				this.Controls.Add(this.DbLoginGroupBox);
 				this.Cursor = System.Windows.Forms.Cursors.Default;
 				this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 				this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 				this.Name = "TestResults";
 				this.Text = "Test Results";
-				this.groupBox1.ResumeLayout(false);
-				this.groupBox1.PerformLayout();
+				this.DbLoginGroupBox.ResumeLayout(false);
+				this.DbLoginGroupBox.PerformLayout();
 				this.contextMenuStrip1.ResumeLayout(false);
-				this.groupBox2.ResumeLayout(false);
-				this.groupBox2.PerformLayout();
+				this.SelectDataGroupBox.ResumeLayout(false);
+				this.SelectDataGroupBox.PerformLayout();
 				this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.GroupBox DbLoginGroupBox;
+        private System.Windows.Forms.Button GetDataByDaysBtn;
+        private System.Windows.Forms.TextBox CollectionNameTxt;
+        private System.Windows.Forms.TextBox DaysTxt;
+        private System.Windows.Forms.Label DaysLbl;
+        private System.Windows.Forms.Label DbNameLbl;
+        private System.Windows.Forms.TextBox DbNameTxt;
+        private System.Windows.Forms.TextBox DbAddressTxt;
+        private System.Windows.Forms.Label DbAddressLbl;
+        private System.Windows.Forms.Label StatusLbl;
+        private System.Windows.Forms.Button DefaultBtn;
         private SynapticEffect.Forms.TreeListView treeListView1;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label ReadyLbl;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox PortTxt;
+        private System.Windows.Forms.Label PortLbl;
+        private System.Windows.Forms.Label CollectionNameLbl;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem failureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem acceptedFailureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem seeStatusMessageToolStripMenuItem;
-		  private System.Windows.Forms.GroupBox groupBox2;
-		  private System.Windows.Forms.Button button3;
-		  private System.Windows.Forms.Button button4;
-		  private System.Windows.Forms.Label label8;
-		  private System.Windows.Forms.ComboBox comboBox1;
+		  private System.Windows.Forms.GroupBox SelectDataGroupBox;
+		  private System.Windows.Forms.Button ConnectBtn;
+		  private System.Windows.Forms.Button GetTestRunBtn;
+		  private System.Windows.Forms.Label TestRunLbl;
+		  private System.Windows.Forms.ComboBox TestRunComboBox;
     }
 }
 
