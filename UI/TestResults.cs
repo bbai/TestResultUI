@@ -703,12 +703,9 @@ namespace UI
 					 FailureHelper failureTracker = new FailureHelper(DbAddressTxt.Text, PortTxt.Text, DbNameTxt.Text, GetSolutionName(), GetRuntimeVersion(), GetAutomationName(), "False", "Bug");
 					 string msg = failureTracker.GetStatusMsg(GetSolutionName(), GetRuntimeVersion(), GetAutomationName());
 					 StatusMessage msgForm = new StatusMessage(msg);
-
-				}
-
-            
+					 msgForm.Show();
+				}          
         }
-
 		  private void ConnectBtn_Click(object sender, EventArgs e)
         {
             mongo = new MongoDBHelper(DbAddressTxt.Text + ":" + PortTxt.Text, DbNameTxt.Text,
