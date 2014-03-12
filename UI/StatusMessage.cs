@@ -28,6 +28,7 @@ namespace UI
 
 		  private void CRlinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		  {
+				System.Diagnostics.Process.Start(CRlinkLbl.Text);
 				this.Close();
 		  }
 
