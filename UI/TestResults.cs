@@ -44,7 +44,7 @@ namespace UI
             DbNameTxt.Text = serverInfo["DBName"].ToString();
             CollectionNameTxt.Text = serverInfo["CollectionName"].ToString();
             PortTxt.Text = serverInfo["Port"].ToString();
-			ConnectBtn.Focus();
+				ConnectBtn.Focus();
         }
 
 		  private void GetDataByDaysBtn_Click(object sender, EventArgs e)
@@ -739,10 +739,15 @@ namespace UI
             for (int i = 0; i < keyList.Count; i++)
             {
                 TestRunComboBox.Items.Insert(i, keyList[i]);
-            }
+					 CompareTestComboBox.Items.Insert(i, keyList[i]);
+					 //temporary to fill box
+					 BaseComboBox.Items.Insert(i, keyList[i]);
+				}
             ReadyLbl.Text = "Connection Successful";
 				GetTestRunBtn.Enabled = true;
 				GetDataByDaysBtn.Enabled = true;
+				CompareSubmitBtn.Enabled = true;
+				//add logic to focus depending on selected tab
 				TestRunComboBox.Focus();
         }
 
@@ -761,5 +766,24 @@ namespace UI
 					 }
 				}
         }
+		  private void CompareSubmitBtn_Click(object sender, EventArgs e)
+		  {
+				//if test run is unchosen, alert and focus combo box
+				if (CompareTestComboBox.SelectedIndex == -1)
+				{
+					 MessageBox.Show("Please Choose a Test Run", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					 CompareTestComboBox.Focus();
+				}
+				//if base run is unchosen, alert and focus combo box
+				else if (BaseComboBox.SelectedIndex == -1)
+				{
+					 MessageBox.Show("Please Choose a Base Run", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					 BaseComboBox.Focus();
+				}
+				else
+				{
+					 //run background workers AND compare
+				}
+		  }
     }
 }
