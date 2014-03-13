@@ -56,6 +56,7 @@ namespace UI
             }
             else
             {
+                ReadyLbl.Text = "Initializing..";
                 if (backgroundWorker1.IsBusy != true)
                 {
                     backgroundWorker1.RunWorkerAsync(-1);
@@ -106,6 +107,7 @@ namespace UI
                 return;
             if (mongo == null || days != DaysTxt.Text || treeListView1.Nodes.Count == 0)
             {
+                ReadyLbl.Text = "Generating Trees..";
                 if (DaysTxt.Text.Count() == 0)
                 {
                     days = "0";
@@ -717,10 +719,17 @@ namespace UI
 					 msgForm.Show();
 				}          
         }
-		  private void ConnectBtn_Click(object sender, EventArgs e)
+		private void ConnectBtn_Click(object sender, EventArgs e)
         {
-            mongo = new MongoDBHelper(DbAddressTxt.Text + ":" + PortTxt.Text, DbNameTxt.Text,
+            try
+            {
+                mongo = new MongoDBHelper(DbAddressTxt.Text + ":" + PortTxt.Text, DbNameTxt.Text,
                     CollectionNameTxt.Text);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please Make Sure All Fields Entered Correctly", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             SortByBuilder sbb = new SortByBuilder();
             sbb.Descending("_id");
             var lastDocs = mongo.collection.FindAllAs<BsonDocument>().SetSortOrder(sbb).SetLimit(15);
@@ -743,7 +752,7 @@ namespace UI
 					 //temporary to fill box
 					 BaseComboBox.Items.Insert(i, keyList[i]);
 				}
-            ReadyLbl.Text = "Connection Successful";
+                ReadyLbl.Text = "Connection Successful";
 				GetTestRunBtn.Enabled = true;
 				GetDataByDaysBtn.Enabled = true;
 				CompareSubmitBtn.Enabled = true;
@@ -760,6 +769,7 @@ namespace UI
 				}
 				else
 				{
+                     ReadyLbl.Text = "Initializing..";
 					 if (backgroundWorker1.IsBusy != true)
 					 {
 						  backgroundWorker1.RunWorkerAsync(TestRunComboBox.SelectedIndex);
@@ -785,5 +795,6 @@ namespace UI
 					 //run background workers AND compare
 				}
 		  }
+
     }
 }

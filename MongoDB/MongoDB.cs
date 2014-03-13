@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
+using Newtonsoft.Json;
 
 namespace Mongo
 {
@@ -74,7 +75,7 @@ namespace Mongo
         public Hashtable GetProjectAutomationTable(BsonObjectId id, int days)
         {
             DateTime date = DateTime.Now.Subtract(TimeSpan.FromDays(days));
-            var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
+            List<BsonValue> projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
             Hashtable projectAutomationTable = new Hashtable();
             foreach (string project in projectNames)
             {
@@ -98,7 +99,6 @@ namespace Mongo
                         BsonArray testResults = config["test-results"].AsBsonArray;
                         foreach (BsonDocument testResult in testResults)
                         {
-
                             if (Convert.ToInt32(testResult["@total"]) != 0 && (testResult["@project-name"].Equals(project) == true))
                             {
                                 BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
@@ -151,14 +151,15 @@ namespace Mongo
             failAllConfigTable = new Hashtable();
             successConfigTable = new Hashtable();
             failConfigTable = new Hashtable();
-            var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
+            //var projectNames = collection.Distinct("TestRun.Configuration.test-results.@project-name").ToList();
             Hashtable projectAutomationTable = this.GetProjectAutomationTable(objectId, days);
-
+            var filteredTable = projectAutomationTable.Cast<DictionaryEntry>().Where(x => ((ArrayList)x.Value).Count != 0).ToDictionary(x => (string)x.Key, x=> (ArrayList)x.Value);
+            var projectNames = filteredTable.Keys;
             int progress = 0;
             int totalNumProject = projectNames.Count;
             foreach (string project in projectNames)
             {
-                ArrayList automationNameList = (ArrayList)projectAutomationTable[project];
+                ArrayList automationNameList = (ArrayList)filteredTable[project];
                 int report = progress * 100 / totalNumProject;
                 OnProgressUpdate(report);
                 foreach (string automation in automationNameList)
@@ -189,29 +190,6 @@ namespace Mongo
 
                         testSuccess = collection.Find(queryResults1);
                     }
-                    /*
-                    if (testSuccess.Count() == 0 && automationNameList.Count != 1)
-                    {
-                        queryResults1 = Query.And(
-                                            Query.GT("Date", mDate),
-                                            Query.EQ("test-results.@project-name", project),
-                                                Query.ElemMatch("test-run.test-results.test-suite.results.test-case",
-                                                    Query.And(
-                                                        Query.EQ("@name", automation),
-                                                        Query.EQ("@success", "True"))));
-                        testSuccess = collection.Find(queryResults1);
-                    }
-                    if (testSuccess.Count() == 0 && automationNameList.Count == 1)
-                    {
-                        queryResults1 = Query.And(
-                                            Query.GT("Date", mDate), 
-                                            Query.EQ("test-run.test-results.@project-name", project),
-                                            Query.And(
-                                                Query.EQ("test-run.test-results.test-suite.results.test-case.@name", automation),
-                                                Query.EQ("test-run.test-results.test-suite.results.test-case.@success", "True")));
-                        testSuccess = collection.Find(queryResults1);
-                    }
-                    */
                     MongoCursor<BsonDocument> testAll;
                     if (dropDownIndex == -1)
                     {
@@ -233,28 +211,6 @@ namespace Mongo
                                         Query.EQ("@name", automation)))));
                         testAll = collection.Find(queryResults2);
                     }
-                    /*
-                    if (testAll.Count() == 0 && automationNameList.Count != 1)
-                    {
-                        queryResults2 = Query.And(
-                                            Query.GT("Date", mDate),
-                                            Query.EQ("test-results.@project-name", project),
-                                                Query.ElemMatch("test-run.test-results.test-suite.results.test-case",
-                                                    Query.And(
-                                                        Query.EQ("@name", automation))));
-                        testAll = collection.Find(queryResults2);
-                    }
-                    if (testAll.Count() == 0 && automationNameList.Count == 1)
-                    {
-                        queryResults2 = Query.And(
-                                            Query.GT("Date", mDate),
-                                            Query.EQ("test-results.@project-name", project),
-                                                Query.ElemMatch("test-run.test-results.test-suite.results.test-case",
-                                                    Query.And(
-                                                        Query.EQ("@name", automation))));
-                        testAll = collection.Find(queryResults2);
-                    }
-                     */
                     MongoCursor<BsonDocument> testFail;
                     if (dropDownIndex == -1)
                     {
@@ -280,30 +236,6 @@ namespace Mongo
                                                                         Query.EQ("@success", "False"))))));
                         testFail = collection.Find(queryResults3);
                     }
-                    /*
-                    if (testFail.Count() == 0 && automationNameList.Count != 1)
-                    {
-                        queryResults3 = Query.And(
-                                            Query.GT("Date", mDate),
-                                            Query.EQ("test-results.@project-name", project),
-                                                Query.ElemMatch("test-run.test-results.test-suite.results.test-case",
-                                                    Query.And(
-                                                        Query.EQ("@name", automation),
-                                                        Query.EQ("@success", "False"))));
-                        testFail = collection.Find(queryResults3);
-                    }
-                    if (testFail.Count() == 0 && automationNameList.Count == 1)
-                    {
-
-                        queryResults3 = Query.And(
-                                            Query.GT("Date", mDate), 
-                                            Query.EQ("test-results.@project-name", project),
-                                                Query.And(
-                                                    Query.EQ("test-results.test-suite.results.test-case.@name", automation),
-                                                    Query.EQ("test-results.test-suite.results.test-case.@success", "False")));
-                        testFail = collection.Find(queryResults3);
-                    }
-                     */
                     if (testSuccess.Count() != testAll.Count() && testSuccess.Count() != 0)
                     {
                         IEnumerable<BsonDocument> diffs = testAll.Except(testSuccess);
@@ -317,98 +249,87 @@ namespace Mongo
                                                     Query.And(
                                                         Query.EQ("@name", automation), Query.EQ("@success", "False"))));
                             MongoCursor<BsonDocument> failCursor = failCollection.Find(failQuery);
+                            List<Automation> failureAutomationList = new List<Automation>();
                             BsonArray failAutomation = new BsonArray();
                             if (failCursor.Count() != 0)
                             {
                                 BsonDocument failTypeDoc = failCursor.First();
                                 BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
-                                failAutomation = failures["automation"].AsBsonArray;
+                                var failAutoJson = failures.ToJson();
+                                failureAutomationList = JsonConvert.DeserializeObject<Failures>(failAutoJson).automation;
                             }
                             string failureType = string.Empty;
                             string failureMsg = string.Empty;
-                            foreach (BsonDocument failAuto in failAutomation)
+                            if (failureAutomationList.Count != 0)
                             {
-                                if (failAuto["@name"].AsString.Equals(automation) == true)
-                                {
-                                    BsonDocument failStatus = failAuto["status"].AsBsonDocument;
-                                    failureType = failStatus["@failure-type"].AsString;
-                                    failureMsg = failStatus["@message"].AsString;
-                                }
+                                var failAutomationWithName = failureAutomationList.Find(x => x.name.Equals(automation));
+                                var failStatus = failAutomationWithName.status;
+                                failureType = failStatus.failureType;
+                                failureMsg = failStatus.message;
                             }
+
                             BsonArray configs = testRun["Configuration"].AsBsonArray;
                             foreach (BsonDocument config in configs)
                             {
-                                BsonArray testResults = config["test-results"].AsBsonArray;
-                                string key = config["@templateName"].AsString;
-                                foreach (BsonDocument testResult in testResults)
+                                var configJson = config.ToJson();
+                                var configDeserial = JsonConvert.DeserializeObject<Configuration>(configJson);
+                                string templateName = configDeserial.templateName;
+                                var testResultsDeserial = configDeserial.testResults;
+                                var testResultOnProject = testResultsDeserial.Find(x => x.projectName.Equals(project));
+                                var testSuite = testResultOnProject.testSuite;
+                                var testResults = testSuite.results;
+                                var testCase = testResults.TestCases;
+                                var unitTestResult = testCase.Find(x => x.name.Equals(automation));
+                                //To be done
+                                string errorMsg = string.Empty;
+
+                                if (failCursor.Count() == 0)
                                 {
-                                    if (testResult["@project-name"].Equals(project) == true)
+                                    failureType = "Failure";
+                                }
+                                if (failConfigTable.ContainsKey(templateName) == false)
+                                {
+                                    Hashtable projectTable = new Hashtable();
+                                    ArrayList list = new ArrayList();
+                                    Hashtable detailTable = new Hashtable();
+                                    list.Add(failureType);
+                                    list.Add(version);
+                                    list.Add(errorMsg);
+                                    detailTable.Add(automation, list);
+                                    projectTable.Add(project, detailTable);
+                                    failConfigTable.Add(templateName, projectTable);
+                                }
+                                else
+                                {
+                                    Hashtable table = (Hashtable)failConfigTable[templateName];
+                                    if (table == null)
                                     {
-                                        BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
-                                        BsonDocument results = testSuite["results"].AsBsonDocument;
-                                        BsonArray testCase = testCase = results["test-case"].AsBsonArray;
-                                        string errorMsg = string.Empty;
-
-                                        foreach (BsonDocument test in testCase)
+                                        table = new Hashtable();
+                                    }
+                                    if (table.ContainsKey(project))
+                                    {
+                                        Hashtable errorTable = (Hashtable)table[project];
+                                        if (errorTable.ContainsKey(automation) == false)
                                         {
-                                            if (test["@success"].Equals("False") && test["@name"].Equals(automation))
-                                            {
-                                                if (failCursor.Count() == 0)
-                                                {
-                                                    failureType = "Failure";
-                                                }
-                                                /*
-                                                BsonDocument failure = test["failure"].AsBsonDocument;
-                                                errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
-                                                 */
-
-                                                if (failConfigTable.ContainsKey(key) == false)
-                                                {
-                                                    Hashtable projectTable = new Hashtable();
-                                                    ArrayList list = new ArrayList();
-                                                    Hashtable detailTable = new Hashtable();
-                                                    list.Add(failureType);
-                                                    list.Add(version);
-                                                    list.Add(errorMsg);
-                                                    detailTable.Add(automation, list);
-                                                    projectTable.Add(project, detailTable);
-                                                    failConfigTable.Add(key, projectTable);
-                                                }
-                                                else
-                                                {
-                                                    Hashtable table = (Hashtable)failConfigTable[key];
-                                                    if (table == null)
-                                                    {
-                                                        table = new Hashtable();
-                                                    }
-                                                    if (table.ContainsKey(project))
-                                                    {
-                                                        Hashtable errorTable = (Hashtable)table[project];
-                                                        if (errorTable.ContainsKey(automation) == false)
-                                                        {
-                                                            ArrayList list = new ArrayList();
-                                                            list.Add(failureType);
-                                                            list.Add(version);
-                                                            list.Add(errorMsg);
-                                                            errorTable.Add(automation, list);
-                                                            table[project] = errorTable;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        Hashtable errorTable = new Hashtable();
-                                                        ArrayList list = new ArrayList();
-                                                        list.Add(failureType);
-                                                        list.Add(version);
-                                                        list.Add(errorMsg);
-                                                        errorTable.Add(automation, list);
-                                                        table.Add(project, errorTable);
-                                                    }
-                                                    failConfigTable[key] = table;
-                                                }
-                                            }
+                                            ArrayList list = new ArrayList();
+                                            list.Add(failureType);
+                                            list.Add(version);
+                                            list.Add(errorMsg);
+                                            errorTable.Add(automation, list);
+                                            table[project] = errorTable;
                                         }
                                     }
+                                    else
+                                    {
+                                        Hashtable errorTable = new Hashtable();
+                                        ArrayList list = new ArrayList();
+                                        list.Add(failureType);
+                                        list.Add(version);
+                                        list.Add(errorMsg);
+                                        errorTable.Add(automation, list);
+                                        table.Add(project, errorTable);
+                                    }
+                                    failConfigTable[templateName] = table;
                                 }
                             }
                         }
@@ -423,73 +344,62 @@ namespace Mongo
                             BsonArray configs = testRun["Configuration"].AsBsonArray;
                             foreach (BsonDocument config in configs)
                             {
-                                BsonArray testResults = config["test-results"].AsBsonArray;
-                                string key = config["@templateName"].AsString;
-                                foreach (BsonDocument testResult in testResults)
+                                var configJson = config.ToJson();
+                                var configDeserial = JsonConvert.DeserializeObject<Configuration>(configJson);
+                                string templateName = configDeserial.templateName;
+                                var testResultsDeserial = configDeserial.testResults;
+                                var testResultOnProject = testResultsDeserial.Find(x => x.projectName.Equals(project));
+                                var testSuite = testResultOnProject.testSuite;
+                                var testResults = testSuite.results;
+                                var testCase = testResults.TestCases;
+                                var unitTestResult = testCase.Find(x => x.name.Equals(automation));
+                                if (successConfigTable.ContainsKey(templateName) == false)
                                 {
-                                    if (testResult["@project-name"].Equals(project) == true)
+                                    Hashtable projectTable = new Hashtable();
+                                    Hashtable detailTable = new Hashtable();
+                                    ArrayList list = new ArrayList();
+                                    list.Add(version);
+                                    detailTable.Add(automation, list);
+                                    projectTable.Add(project, detailTable);
+                                    successConfigTable.Add(templateName, projectTable);
+                                }
+                                else
+                                {
+                                    Hashtable table = (Hashtable)successConfigTable[templateName];
+                                    if (table == null)
                                     {
-                                        BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
-                                        BsonDocument results = testSuite["results"].AsBsonDocument;
-                                        BsonArray testCase = testCase = results["test-case"].AsBsonArray;
-
-                                        foreach (BsonDocument test in testCase)
-                                        {
-                                            if (test["@success"].Equals("True") && test["@name"].Equals(automation))
-                                            {
-
-                                                if (successConfigTable.ContainsKey(key) == false)
-                                                {
-                                                    Hashtable projectTable = new Hashtable();
-                                                    Hashtable detailTable = new Hashtable();
-                                                    ArrayList list = new ArrayList();
-                                                    list.Add(version);
-                                                    detailTable.Add(automation, list);
-                                                    projectTable.Add(project, detailTable);
-                                                    successConfigTable.Add(key, projectTable);
-                                                }
-                                                else
-                                                {
-                                                    Hashtable table = (Hashtable)successConfigTable[key];
-                                                    if (table == null)
-                                                    {
-                                                        table = new Hashtable();
-                                                    }
-                                                    if (table.ContainsKey(project) == true)
-                                                    {
-
-                                                        Hashtable detailTable = (Hashtable)table[project];
-                                                        ArrayList list = new ArrayList();
-                                                        if (detailTable.ContainsKey(automation) == false)
-                                                        {
-                                                            list.Add(version);
-                                                            detailTable.Add(automation, list);
-                                                        }
-                                                        else
-                                                        {
-                                                            list = (ArrayList)detailTable[automation];
-                                                            list.Add(version);
-                                                            detailTable[automation] = list;
-                                                        }
-                                                        table[project] = detailTable;
-                                                    }
-                                                    else
-                                                    {
-                                                        Hashtable detailTable = new Hashtable();
-
-                                                        ArrayList list = new ArrayList();
-                                                        if (detailTable.ContainsKey(automation) == false)
-                                                        {
-                                                            list.Add(version);
-                                                            detailTable.Add(automation, list);
-                                                        }
-                                                        table.Add(project, detailTable);
-                                                    }
-                                                    successConfigTable[key] = table;
-                                                }
-                                            }
-                                        }
+                                        table = new Hashtable();
                                     }
+                                    if (table.ContainsKey(project) == true)
+                                    {
+                                        Hashtable detailTable = (Hashtable)table[project];
+                                        ArrayList list = new ArrayList();
+                                        if (detailTable.ContainsKey(automation) == false)
+                                        {
+                                            list.Add(version);
+                                            detailTable.Add(automation, list);
+                                        }
+                                        else
+                                        {
+                                            list = (ArrayList)detailTable[automation];
+                                            list.Add(version);
+                                            detailTable[automation] = list;
+                                        }
+                                        table[project] = detailTable;
+                                    }
+                                    else
+                                    {
+                                        Hashtable detailTable = new Hashtable();
+
+                                        ArrayList list = new ArrayList();
+                                        if (detailTable.ContainsKey(automation) == false)
+                                        {
+                                            list.Add(version);
+                                            detailTable.Add(automation, list);
+                                        }
+                                        table.Add(project, detailTable);
+                                    }
+                                    successConfigTable[templateName] = table;
                                 }
                             }
                         }
@@ -530,23 +440,23 @@ namespace Mongo
                                                 Query.And(
                                                     Query.EQ("@name", automation), Query.EQ("@success", "False"))));
                         MongoCursor<BsonDocument> failCursor = failCollection.Find(failQuery);
+                        List<Automation> failureAutomationList = new List<Automation>();
                         BsonArray failAutomation = new BsonArray();
                         if (failCursor.Count() != 0)
                         {
                             BsonDocument failTypeDoc = failCursor.First();
                             BsonDocument failures = failTypeDoc["failures"].AsBsonDocument;
-                            failAutomation = failures["automation"].AsBsonArray;
+                            var failAutoJson = failures.ToJson();
+                            failureAutomationList = JsonConvert.DeserializeObject<Failures>(failAutoJson).automation;
                         }
                         string failureType = string.Empty;
                         string failureMsg = string.Empty;
-                        foreach (BsonDocument failAuto in failAutomation)
+                        if (failureAutomationList.Count != 0)
                         {
-                            if (failAuto["@name"].AsString.Equals(automation) == true)
-                            {
-                                BsonDocument failStatus = failAuto["status"].AsBsonDocument;
-                                failureType = failStatus["@failure-type"].AsString;
-                                failureMsg = failStatus["@message"].AsString;
-                            }
+                            var failAutomationWithName = failureAutomationList.Find(x => x.name.Equals(automation));
+                            var failStatus = failAutomationWithName.status;
+                            failureType = failStatus.failureType;
+                            failureMsg = failStatus.message;
                         }
                         if (failCursor.Count() == 0)
                         {
@@ -559,26 +469,17 @@ namespace Mongo
                             BsonArray configs = testRun["Configuration"].AsBsonArray;
                             foreach (BsonDocument config in configs)
                             {
-                                BsonArray testResults = config["test-results"].AsBsonArray;
-                                foreach (BsonDocument testResult in testResults)
-                                {
-                                    if (testResult["@project-name"].Equals(project) == true)
-                                    {
-                                        BsonDocument testSuite = testResult["test-suite"].AsBsonDocument;
-                                        BsonDocument results = testSuite["results"].AsBsonDocument;
-                                        BsonArray testCase = results["test-case"].AsBsonArray;
-                                        /*
-                                        foreach (BsonDocument test in testCase)
-                                        {
-                                            if (test["@success"].Equals("False") && test["@name"].Equals(automation))
-                                            {
-                                                BsonDocument failure = test["failure"].AsBsonDocument;
-                                                errorMsg = failure["message"].AsBsonDocument["#cdata-section"].AsString;
-                                            }
-                                        }
-                                        */
-                                    }
-                                }
+                                var configJson = config.ToJson();
+                                var configDeserial = JsonConvert.DeserializeObject<Configuration>(configJson);
+                                string templateName = configDeserial.templateName;
+                                var testResultsDeserial = configDeserial.testResults;
+                                var testResultOnProject = testResultsDeserial.Find(x => x.projectName.Equals(project));
+                                var testSuite = testResultOnProject.testSuite;
+                                var testResults = testSuite.results;
+                                var testCase = testResults.TestCases;
+                                var unitTestResult = testCase.Find(x => x.name.Equals(automation));
+                                //To be done
+                                errorMsg = string.Empty;
                             }
                         }
                         if (failAllConfigTable.ContainsKey(project) == false)
@@ -621,3 +522,4 @@ namespace Mongo
         }
     }
 }
+
