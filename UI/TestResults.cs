@@ -56,6 +56,7 @@ namespace UI
             }
             else
             {
+                ReadyLbl.Text = "Initializing..";
                 if (backgroundWorker1.IsBusy != true)
                 {
                     backgroundWorker1.RunWorkerAsync(-1);
@@ -106,6 +107,7 @@ namespace UI
                 return;
             if (mongo == null || days != DaysTxt.Text || treeListView1.Nodes.Count == 0)
             {
+                ReadyLbl.Text = "Generating Trees..";
                 if (DaysTxt.Text.Count() == 0)
                 {
                     days = "0";
@@ -750,7 +752,7 @@ namespace UI
 					 //temporary to fill box
 					 BaseComboBox.Items.Insert(i, keyList[i]);
 				}
-            ReadyLbl.Text = "Connection Successful";
+                ReadyLbl.Text = "Connection Successful";
 				GetTestRunBtn.Enabled = true;
 				GetDataByDaysBtn.Enabled = true;
 				CompareSubmitBtn.Enabled = true;
@@ -767,6 +769,7 @@ namespace UI
 				}
 				else
 				{
+                     ReadyLbl.Text = "Initializing..";
 					 if (backgroundWorker1.IsBusy != true)
 					 {
 						  backgroundWorker1.RunWorkerAsync(TestRunComboBox.SelectedIndex);
@@ -792,5 +795,6 @@ namespace UI
 					 //run background workers AND compare
 				}
 		  }
+
     }
 }
