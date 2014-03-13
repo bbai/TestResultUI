@@ -746,6 +746,8 @@ namespace UI
             ReadyLbl.Text = "Connection Successful";
 				GetTestRunBtn.Enabled = true;
 				GetDataByDaysBtn.Enabled = true;
+				CompareSubmitBtn.Enabled = true;
+				//add logic to focus depending on selected tab
 				TestRunComboBox.Focus();
         }
 

@@ -441,6 +441,7 @@
 				// CompareSubmitBtn
 				// 
 				this.CompareSubmitBtn.BackColor = System.Drawing.SystemColors.ButtonFace;
+				this.CompareSubmitBtn.Enabled = false;
 				this.CompareSubmitBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 				this.CompareSubmitBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
 				this.CompareSubmitBtn.Location = new System.Drawing.Point(1113, 33);
