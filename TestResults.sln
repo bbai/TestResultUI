@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB", "MongoDB\MongoDB.csproj", "{13651E69-739E-498A-BD91-634C95EA3AFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mongo", "MongoDB\Mongo.csproj", "{13651E69-739E-498A-BD91-634C95EA3AFF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{BFC204C7-BBAC-4C1A-A196-56CBE0354D69}"
 EndProject
