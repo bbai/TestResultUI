@@ -64,7 +64,7 @@
 				this.compareTreeListView = new SynapticEffect.Forms.TreeListView();
 				this.ComparePickGroupBox = new System.Windows.Forms.GroupBox();
 				this.CompareSubmitBtn = new System.Windows.Forms.Button();
-				this.comboBox1 = new System.Windows.Forms.ComboBox();
+				this.CompareTestComboBox = new System.Windows.Forms.ComboBox();
 				this.TestLbl = new System.Windows.Forms.Label();
 				this.BaseLbl = new System.Windows.Forms.Label();
 				this.BaseComboBox = new System.Windows.Forms.ComboBox();
@@ -425,7 +425,7 @@
 				// 
 				this.ComparePickGroupBox.BackColor = System.Drawing.Color.WhiteSmoke;
 				this.ComparePickGroupBox.Controls.Add(this.CompareSubmitBtn);
-				this.ComparePickGroupBox.Controls.Add(this.comboBox1);
+				this.ComparePickGroupBox.Controls.Add(this.CompareTestComboBox);
 				this.ComparePickGroupBox.Controls.Add(this.TestLbl);
 				this.ComparePickGroupBox.Controls.Add(this.BaseLbl);
 				this.ComparePickGroupBox.Controls.Add(this.BaseComboBox);
@@ -449,14 +449,15 @@
 				this.CompareSubmitBtn.TabIndex = 4;
 				this.CompareSubmitBtn.Text = "Get Data";
 				this.CompareSubmitBtn.UseVisualStyleBackColor = false;
+				this.CompareSubmitBtn.Click += new System.EventHandler(this.CompareSubmitBtn_Click);
 				// 
-				// comboBox1
+				// CompareTestComboBox
 				// 
-				this.comboBox1.FormattingEnabled = true;
-				this.comboBox1.Location = new System.Drawing.Point(643, 33);
-				this.comboBox1.Name = "comboBox1";
-				this.comboBox1.Size = new System.Drawing.Size(435, 26);
-				this.comboBox1.TabIndex = 3;
+				this.CompareTestComboBox.FormattingEnabled = true;
+				this.CompareTestComboBox.Location = new System.Drawing.Point(643, 33);
+				this.CompareTestComboBox.Name = "CompareTestComboBox";
+				this.CompareTestComboBox.Size = new System.Drawing.Size(435, 26);
+				this.CompareTestComboBox.TabIndex = 3;
 				// 
 				// TestLbl
 				// 
@@ -567,7 +568,7 @@
 		  private System.Windows.Forms.TabPage ViewResultsTab;
 		  private System.Windows.Forms.TabPage CompareResultsTab;
 		  private System.Windows.Forms.GroupBox ComparePickGroupBox;
-		  private System.Windows.Forms.ComboBox comboBox1;
+		  private System.Windows.Forms.ComboBox CompareTestComboBox;
 		  private System.Windows.Forms.Label TestLbl;
 		  private System.Windows.Forms.Label BaseLbl;
 		  private System.Windows.Forms.ComboBox BaseComboBox;
