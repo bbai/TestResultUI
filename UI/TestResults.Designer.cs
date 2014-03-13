@@ -58,9 +58,25 @@
 				this.GetTestRunBtn = new System.Windows.Forms.Button();
 				this.TestRunLbl = new System.Windows.Forms.Label();
 				this.TestRunComboBox = new System.Windows.Forms.ComboBox();
+				this.tabControl1 = new System.Windows.Forms.TabControl();
+				this.ViewResultsTab = new System.Windows.Forms.TabPage();
+				this.CompareResultsTab = new System.Windows.Forms.TabPage();
+				this.compareTreeListView = new SynapticEffect.Forms.TreeListView();
+				this.ComparePickGroupBox = new System.Windows.Forms.GroupBox();
+				this.CompareSubmitBtn = new System.Windows.Forms.Button();
+				this.comboBox1 = new System.Windows.Forms.ComboBox();
+				this.TestLbl = new System.Windows.Forms.Label();
+				this.BaseLbl = new System.Windows.Forms.Label();
+				this.BaseComboBox = new System.Windows.Forms.ComboBox();
+				this.EmailMsgTxt = new System.Windows.Forms.RichTextBox();
+				this.EmailLbl = new System.Windows.Forms.Label();
 				this.DbLoginGroupBox.SuspendLayout();
 				this.contextMenuStrip1.SuspendLayout();
 				this.SelectDataGroupBox.SuspendLayout();
+				this.tabControl1.SuspendLayout();
+				this.ViewResultsTab.SuspendLayout();
+				this.CompareResultsTab.SuspendLayout();
+				this.ComparePickGroupBox.SuspendLayout();
 				this.SuspendLayout();
 				// 
 				// DbLoginGroupBox
@@ -199,7 +215,8 @@
 				// GetDataByDaysBtn
 				// 
 				this.GetDataByDaysBtn.Enabled = false;
-				this.GetDataByDaysBtn.Location = new System.Drawing.Point(1148, 23);
+				this.GetDataByDaysBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.GetDataByDaysBtn.Location = new System.Drawing.Point(1120, 23);
 				this.GetDataByDaysBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 				this.GetDataByDaysBtn.Name = "GetDataByDaysBtn";
 				this.GetDataByDaysBtn.Size = new System.Drawing.Size(80, 25);
@@ -210,18 +227,19 @@
 				// 
 				// DaysTxt
 				// 
-				this.DaysTxt.Location = new System.Drawing.Point(1051, 27);
+				this.DaysTxt.Location = new System.Drawing.Point(1023, 27);
 				this.DaysTxt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 				this.DaysTxt.Name = "DaysTxt";
-				this.DaysTxt.Size = new System.Drawing.Size(64, 22);
+				this.DaysTxt.Size = new System.Drawing.Size(64, 24);
 				this.DaysTxt.TabIndex = 8;
 				// 
 				// DaysLbl
 				// 
 				this.DaysLbl.AutoSize = true;
-				this.DaysLbl.Location = new System.Drawing.Point(985, 30);
+				this.DaysLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.DaysLbl.Location = new System.Drawing.Point(957, 30);
 				this.DaysLbl.Name = "DaysLbl";
-				this.DaysLbl.Size = new System.Drawing.Size(44, 17);
+				this.DaysLbl.Size = new System.Drawing.Size(46, 18);
 				this.DaysLbl.TabIndex = 17;
 				this.DaysLbl.Text = "Days:";
 				// 
@@ -283,12 +301,12 @@
 				this.treeListView1.ItemHeight = 20;
 				this.treeListView1.ItemMenu = null;
 				this.treeListView1.LabelEdit = false;
-				this.treeListView1.Location = new System.Drawing.Point(10, 165);
+				this.treeListView1.Location = new System.Drawing.Point(0, 75);
 				this.treeListView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 				this.treeListView1.Name = "treeListView1";
 				this.treeListView1.RowSelectColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
 				this.treeListView1.RowTrackColor = System.Drawing.Color.Empty;
-				this.treeListView1.Size = new System.Drawing.Size(1250, 580);
+				this.treeListView1.Size = new System.Drawing.Size(1243, 581);
 				this.treeListView1.SmallImageList = null;
 				this.treeListView1.StateImageList = null;
 				this.treeListView1.TabIndex = 18;
@@ -304,9 +322,11 @@
 				this.SelectDataGroupBox.Controls.Add(this.DaysTxt);
 				this.SelectDataGroupBox.Controls.Add(this.DaysLbl);
 				this.SelectDataGroupBox.Controls.Add(this.GetDataByDaysBtn);
-				this.SelectDataGroupBox.Location = new System.Drawing.Point(10, 90);
+				this.SelectDataGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.SelectDataGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
+				this.SelectDataGroupBox.Location = new System.Drawing.Point(0, 0);
 				this.SelectDataGroupBox.Name = "SelectDataGroupBox";
-				this.SelectDataGroupBox.Size = new System.Drawing.Size(1250, 65);
+				this.SelectDataGroupBox.Size = new System.Drawing.Size(1243, 65);
 				this.SelectDataGroupBox.TabIndex = 19;
 				this.SelectDataGroupBox.TabStop = false;
 				this.SelectDataGroupBox.Text = "Choose Run or Date Range";
@@ -314,6 +334,7 @@
 				// GetTestRunBtn
 				// 
 				this.GetTestRunBtn.Enabled = false;
+				this.GetTestRunBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 				this.GetTestRunBtn.Location = new System.Drawing.Point(798, 25);
 				this.GetTestRunBtn.Name = "GetTestRunBtn";
 				this.GetTestRunBtn.Size = new System.Drawing.Size(80, 25);
@@ -325,9 +346,10 @@
 				// TestRunLbl
 				// 
 				this.TestRunLbl.AutoSize = true;
+				this.TestRunLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 				this.TestRunLbl.Location = new System.Drawing.Point(8, 29);
 				this.TestRunLbl.Name = "TestRunLbl";
-				this.TestRunLbl.Size = new System.Drawing.Size(70, 17);
+				this.TestRunLbl.Size = new System.Drawing.Size(72, 18);
 				this.TestRunLbl.TabIndex = 20;
 				this.TestRunLbl.Text = "Test Run:";
 				// 
@@ -336,17 +358,161 @@
 				this.TestRunComboBox.FormattingEnabled = true;
 				this.TestRunComboBox.Location = new System.Drawing.Point(101, 26);
 				this.TestRunComboBox.Name = "TestRunComboBox";
-				this.TestRunComboBox.Size = new System.Drawing.Size(671, 24);
+				this.TestRunComboBox.Size = new System.Drawing.Size(671, 26);
 				this.TestRunComboBox.TabIndex = 6;
+				// 
+				// tabControl1
+				// 
+				this.tabControl1.Controls.Add(this.ViewResultsTab);
+				this.tabControl1.Controls.Add(this.CompareResultsTab);
+				this.tabControl1.Location = new System.Drawing.Point(10, 90);
+				this.tabControl1.Name = "tabControl1";
+				this.tabControl1.SelectedIndex = 0;
+				this.tabControl1.Size = new System.Drawing.Size(1250, 685);
+				this.tabControl1.TabIndex = 21;
+				// 
+				// ViewResultsTab
+				// 
+				this.ViewResultsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
+				this.ViewResultsTab.Controls.Add(this.SelectDataGroupBox);
+				this.ViewResultsTab.Controls.Add(this.treeListView1);
+				this.ViewResultsTab.Location = new System.Drawing.Point(4, 25);
+				this.ViewResultsTab.Name = "ViewResultsTab";
+				this.ViewResultsTab.Padding = new System.Windows.Forms.Padding(3);
+				this.ViewResultsTab.Size = new System.Drawing.Size(1242, 656);
+				this.ViewResultsTab.TabIndex = 0;
+				this.ViewResultsTab.Text = "View Test Results";
+				// 
+				// CompareResultsTab
+				// 
+				this.CompareResultsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
+				this.CompareResultsTab.Controls.Add(this.EmailLbl);
+				this.CompareResultsTab.Controls.Add(this.EmailMsgTxt);
+				this.CompareResultsTab.Controls.Add(this.compareTreeListView);
+				this.CompareResultsTab.Controls.Add(this.ComparePickGroupBox);
+				this.CompareResultsTab.Location = new System.Drawing.Point(4, 25);
+				this.CompareResultsTab.Name = "CompareResultsTab";
+				this.CompareResultsTab.Padding = new System.Windows.Forms.Padding(3);
+				this.CompareResultsTab.Size = new System.Drawing.Size(1242, 656);
+				this.CompareResultsTab.TabIndex = 1;
+				this.CompareResultsTab.Text = "Compare Test Results";
+				// 
+				// compareTreeListView
+				// 
+				this.compareTreeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+				this.compareTreeListView.BackColor = System.Drawing.Color.WhiteSmoke;
+				this.compareTreeListView.ColumnSortColor = System.Drawing.Color.Gainsboro;
+				this.compareTreeListView.ColumnTrackColor = System.Drawing.Color.WhiteSmoke;
+				this.compareTreeListView.GridLineColor = System.Drawing.Color.WhiteSmoke;
+				this.compareTreeListView.HeaderMenu = null;
+				this.compareTreeListView.ItemHeight = 20;
+				this.compareTreeListView.ItemMenu = null;
+				this.compareTreeListView.LabelEdit = false;
+				this.compareTreeListView.Location = new System.Drawing.Point(0, 90);
+				this.compareTreeListView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+				this.compareTreeListView.Name = "compareTreeListView";
+				this.compareTreeListView.RowSelectColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
+				this.compareTreeListView.RowTrackColor = System.Drawing.Color.Empty;
+				this.compareTreeListView.Size = new System.Drawing.Size(1243, 300);
+				this.compareTreeListView.SmallImageList = null;
+				this.compareTreeListView.StateImageList = null;
+				this.compareTreeListView.TabIndex = 19;
+				this.compareTreeListView.Text = "treeListView2";
+				// 
+				// ComparePickGroupBox
+				// 
+				this.ComparePickGroupBox.BackColor = System.Drawing.Color.WhiteSmoke;
+				this.ComparePickGroupBox.Controls.Add(this.CompareSubmitBtn);
+				this.ComparePickGroupBox.Controls.Add(this.comboBox1);
+				this.ComparePickGroupBox.Controls.Add(this.TestLbl);
+				this.ComparePickGroupBox.Controls.Add(this.BaseLbl);
+				this.ComparePickGroupBox.Controls.Add(this.BaseComboBox);
+				this.ComparePickGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.ComparePickGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
+				this.ComparePickGroupBox.Location = new System.Drawing.Point(0, 0);
+				this.ComparePickGroupBox.Name = "ComparePickGroupBox";
+				this.ComparePickGroupBox.Size = new System.Drawing.Size(1242, 80);
+				this.ComparePickGroupBox.TabIndex = 0;
+				this.ComparePickGroupBox.TabStop = false;
+				this.ComparePickGroupBox.Text = "Choose Base and Test Run";
+				// 
+				// CompareSubmitBtn
+				// 
+				this.CompareSubmitBtn.BackColor = System.Drawing.SystemColors.ButtonFace;
+				this.CompareSubmitBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.CompareSubmitBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
+				this.CompareSubmitBtn.Location = new System.Drawing.Point(1113, 33);
+				this.CompareSubmitBtn.Name = "CompareSubmitBtn";
+				this.CompareSubmitBtn.Size = new System.Drawing.Size(75, 25);
+				this.CompareSubmitBtn.TabIndex = 4;
+				this.CompareSubmitBtn.Text = "Get Data";
+				this.CompareSubmitBtn.UseVisualStyleBackColor = false;
+				// 
+				// comboBox1
+				// 
+				this.comboBox1.FormattingEnabled = true;
+				this.comboBox1.Location = new System.Drawing.Point(643, 33);
+				this.comboBox1.Name = "comboBox1";
+				this.comboBox1.Size = new System.Drawing.Size(435, 26);
+				this.comboBox1.TabIndex = 3;
+				// 
+				// TestLbl
+				// 
+				this.TestLbl.AutoSize = true;
+				this.TestLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.TestLbl.Location = new System.Drawing.Point(562, 36);
+				this.TestLbl.Name = "TestLbl";
+				this.TestLbl.Size = new System.Drawing.Size(72, 18);
+				this.TestLbl.TabIndex = 2;
+				this.TestLbl.Text = "Test Run:";
+				// 
+				// BaseLbl
+				// 
+				this.BaseLbl.AutoSize = true;
+				this.BaseLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.BaseLbl.Location = new System.Drawing.Point(6, 36);
+				this.BaseLbl.Name = "BaseLbl";
+				this.BaseLbl.Size = new System.Drawing.Size(77, 18);
+				this.BaseLbl.TabIndex = 1;
+				this.BaseLbl.Text = "Base Run:";
+				// 
+				// BaseComboBox
+				// 
+				this.BaseComboBox.FormattingEnabled = true;
+				this.BaseComboBox.Location = new System.Drawing.Point(89, 33);
+				this.BaseComboBox.Name = "BaseComboBox";
+				this.BaseComboBox.Size = new System.Drawing.Size(435, 26);
+				this.BaseComboBox.TabIndex = 0;
+				// 
+				// EmailMsgTxt
+				// 
+				this.EmailMsgTxt.Location = new System.Drawing.Point(0, 416);
+				this.EmailMsgTxt.Name = "EmailMsgTxt";
+				this.EmailMsgTxt.ReadOnly = true;
+				this.EmailMsgTxt.Size = new System.Drawing.Size(1246, 240);
+				this.EmailMsgTxt.TabIndex = 20;
+				this.EmailMsgTxt.Text = "";
+				// 
+				// EmailLbl
+				// 
+				this.EmailLbl.AutoSize = true;
+				this.EmailLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				this.EmailLbl.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+				this.EmailLbl.Location = new System.Drawing.Point(1, 396);
+				this.EmailLbl.Name = "EmailLbl";
+				this.EmailLbl.Size = new System.Drawing.Size(110, 18);
+				this.EmailLbl.TabIndex = 21;
+				this.EmailLbl.Text = "Emailed Report";
 				// 
 				// TestResults
 				// 
 				this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 				this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 				this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(144)))), ((int)(((byte)(24)))));
-				this.ClientSize = new System.Drawing.Size(1272, 755);
-				this.Controls.Add(this.SelectDataGroupBox);
-				this.Controls.Add(this.treeListView1);
+				this.ClientSize = new System.Drawing.Size(1272, 785);
+				this.Controls.Add(this.tabControl1);
 				this.Controls.Add(this.DbLoginGroupBox);
 				this.Cursor = System.Windows.Forms.Cursors.Default;
 				this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -358,6 +524,12 @@
 				this.contextMenuStrip1.ResumeLayout(false);
 				this.SelectDataGroupBox.ResumeLayout(false);
 				this.SelectDataGroupBox.PerformLayout();
+				this.tabControl1.ResumeLayout(false);
+				this.ViewResultsTab.ResumeLayout(false);
+				this.CompareResultsTab.ResumeLayout(false);
+				this.CompareResultsTab.PerformLayout();
+				this.ComparePickGroupBox.ResumeLayout(false);
+				this.ComparePickGroupBox.PerformLayout();
 				this.ResumeLayout(false);
 
         }
@@ -391,6 +563,18 @@
 		  private System.Windows.Forms.Button GetTestRunBtn;
 		  private System.Windows.Forms.Label TestRunLbl;
 		  private System.Windows.Forms.ComboBox TestRunComboBox;
+		  private System.Windows.Forms.TabControl tabControl1;
+		  private System.Windows.Forms.TabPage ViewResultsTab;
+		  private System.Windows.Forms.TabPage CompareResultsTab;
+		  private System.Windows.Forms.GroupBox ComparePickGroupBox;
+		  private System.Windows.Forms.ComboBox comboBox1;
+		  private System.Windows.Forms.Label TestLbl;
+		  private System.Windows.Forms.Label BaseLbl;
+		  private System.Windows.Forms.ComboBox BaseComboBox;
+		  private SynapticEffect.Forms.TreeListView compareTreeListView;
+		  private System.Windows.Forms.Button CompareSubmitBtn;
+		  private System.Windows.Forms.Label EmailLbl;
+		  private System.Windows.Forms.RichTextBox EmailMsgTxt;
     }
 }
 
